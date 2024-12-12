@@ -1,13 +1,16 @@
-import { Box, Button, Typography, Paper, Link, IconButton, InputAdornment } from '@mui/material';
+import { Box, Button, Typography, Paper, Link, IconButton, InputAdornment, CircularProgress } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState } from 'react';
 import CustomTextField from '../custom-components/CustomTextField';
 import CustomButton from '../custom-components/CustomButton';
+import CustomModal from '../custom-components/CustomModal';
 
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [openModal, setOpenModal] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Formik setup
     const formik = useFormik({
@@ -24,8 +27,11 @@ const LoginForm = () => {
                 .required('Password is required'),
         }),
         onSubmit: (values) => {
-            alert("Form Submitted");
-            console.log(values);
+            setIsSubmitting(true)
+            setTimeout(() => {
+                setIsSubmitting(false)
+                setOpenModal(values.email === 'hassaanasim25@gmail.com' && values.password === "asdasdasd")
+            }, 2000);
         },
     });
 
@@ -103,13 +109,15 @@ const LoginForm = () => {
                         fullWidth
                         type="submit"
                         variant="contained"
-                        // color="primary"
                         sx={{ mt: 2, fontSize: 16 }}
                     >
-                        Continue
+                        {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : ' Continue'}
                     </CustomButton>
                 </form>
             </Paper>
+
+            {/* Modal opens upon form submission */}
+            <CustomModal open={openModal} onClose={() => setOpenModal(false)} />
         </Box>
     );
 };

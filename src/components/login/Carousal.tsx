@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Fade, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, Fade, Typography, useTheme, useMediaQuery } from '@mui/material';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 const Carousel = () => {
     const theme = useTheme();
     const primaryColor = theme.palette.primary.main;
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if screen is mobile
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const [fadeIn, setFadeIn] = useState(true);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -61,24 +63,29 @@ const Carousel = () => {
             flex={1}
             display="flex"
             flexDirection="column"
-            justifyContent="center"
+            justifyContent="space-between"
             alignItems="center"
             padding={8}
+            height={isMobile ? "300px" : "70%"}
         >
             <Fade in={fadeIn} timeout={1000}>
-                <Box textAlign="center" width="100%">
-                    <Typography
-                        variant="h4"
-                        mb={2}
-                    >
-                        {items[currentIndex].text}
-                    </Typography>
+                <Typography
+                    variant="h4"
+                    mb={2}
+                >
+                    {items[currentIndex].text}
+                </Typography>
+            </Fade>
+            <Fade in={fadeIn} timeout={1000}>
+
+                <Box textAlign="center" width="100%" >
+
                     <Box
                         component="img"
                         src={`${process.env.PUBLIC_URL}/assets/svgs/${items[currentIndex].svg}`}
                         alt={`SVG ${currentIndex}`}
                         sx={{
-                            width: "100%", // Responsive width
+                            width: "80%", // Responsive width
                             height: 'auto', // Maintain aspect ratio
                             transition: 'width 0.2s ease-in-out', // Smooth resize
                         }}
