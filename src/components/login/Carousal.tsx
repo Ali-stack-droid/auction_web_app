@@ -11,9 +11,9 @@ const Carousel = () => {
 
     // List of SVG file names and their corresponding texts
     const items = [
-        { svg: 'loginImage1.svg', text: 'Login Image 1' },
-        { svg: 'loginImage2.svg', text: 'Login Image 2' },
-        { svg: 'loginImage1.svg', text: 'Login Image 3' },
+        { svg: 'imglogin1.svg', text: 'Login Image 1' },
+        { svg: 'imglogin2.svg', text: 'Login Image 2' },
+        { svg: 'imglogin1.svg', text: 'Login Image 3' },
     ];
 
     // Automatically update the current index every 3 seconds
