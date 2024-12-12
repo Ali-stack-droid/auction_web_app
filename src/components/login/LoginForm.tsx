@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState } from 'react';
 import CustomTextField from '../custom-components/CustomTextField';
+import CustomButton from '../custom-components/CustomButton';
 
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -80,7 +81,11 @@ const LoginForm = () => {
                                 input: {
                                     endAdornment: (
                                         <InputAdornment position="end">
-                                            <IconButton onClick={togglePasswordVisibility} edge="end">
+                                            <IconButton
+                                                onClick={togglePasswordVisibility}
+                                                edge="end"
+                                                sx={{ color: 'primary.main' }} // Set the icon color to primary color
+                                            >
                                                 {showPassword ? <VisibilityOff /> : <Visibility />}
                                             </IconButton>
                                         </InputAdornment>
@@ -94,15 +99,15 @@ const LoginForm = () => {
                             </Link>
                         </Box>
                     </Box>
-                    <Button
+                    <CustomButton
                         fullWidth
                         type="submit"
                         variant="contained"
-                        color="primary"
+                        // color="primary"
                         sx={{ mt: 2, fontSize: 16 }}
                     >
-                        Sign In
-                    </Button>
+                        Continue
+                    </CustomButton>
                 </form>
             </Paper>
         </Box>

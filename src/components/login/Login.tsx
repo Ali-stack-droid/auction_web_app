@@ -14,17 +14,15 @@ const App = () => {
             flexDirection={isMobile ? 'column' : 'row'} // Stack vertically on mobile
         >
             {/* Carousel on the left, only visible on non-mobile screens */}
-            {!isMobile && (
-                <Box
-                    flex={1}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    overflow="hidden"
-                >
-                    <Carousel />
-                </Box>
-            )}
+            <Box
+                flex={1}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                overflow="hidden"
+            >
+                <Carousel />
+            </Box>
 
             {/* Login form on the right */}
             <Box
