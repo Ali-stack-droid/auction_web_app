@@ -9,6 +9,11 @@ const theme = createTheme({
   typography: {
     fontFamily: '"Poppins", sans-serif',
   },
+  palette: {
+    primary: {
+      main: '#2F83E9', // Set primary color
+    },
+  },
 });
 
 const root = createRoot(
