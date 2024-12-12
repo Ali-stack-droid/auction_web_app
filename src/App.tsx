@@ -1,11 +1,32 @@
-import './App.css';
-import Login from './components/login/Login';
-// import TextField from './components/TextField';
+import { useEffect, useState } from 'react';
+// import { ApolloProvider } from '@apollo/client';
+// import { client } from 'src/apolloClient/client'; // Apollo client import
+import Routing from './routes/Routing'; // Import your routing setup
+import { Box } from '@mui/material';
+import Authentication from './components/authentication/Authentication';
 
-function App() {
+function App(props: any) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Use boolean instead of 0/1
+
+  // Check authentication status on component mount
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
   return (
-    <Login />
-    // <h1>a</h1>
+    // <ApolloProvider client={client}>
+    <Box>
+      {/* Render authentication if not authenticated */}
+      {!isAuthenticated && <Authentication history={props.history} />}
+
+      {/* Render Routing component if authenticated */}
+      {isAuthenticated && <Routing />}
+    </Box>
+    // </ApolloProvider>
   );
 }
 

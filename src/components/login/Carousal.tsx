@@ -1,25 +1,37 @@
-import { useState } from 'react';
-import { Box, IconButton } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, IconButton, Fade, Typography } from '@mui/material';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 const Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [fadeIn, setFadeIn] = useState(true);
 
-    // List of SVGs
-    const svgs = [
-        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="40" stroke="blue" strokeWidth="3" fill="lightblue" />
-        </svg>,
-        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-            <rect width="80" height="80" x="10" y="10" stroke="green" strokeWidth="3" fill="lightgreen" />
-        </svg>,
-        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="50,10 90,80 10,80" stroke="purple" strokeWidth="3" fill="lightpink" />
-        </svg>,
+    // List of SVG file names and their corresponding texts
+    const items = [
+        { svg: 'loginImage1.svg', text: 'Login Image 1' },
+        { svg: 'loginImage2.svg', text: 'Rectangle Shape' },
+        { svg: 'loginImage3.svg', text: 'Triangle Shape' },
     ];
 
+    // Automatically update the current index every 3 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFadeIn(false);
+            setTimeout(() => {
+                setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+                setFadeIn(true);
+            }, 500); // Wait for fade out before updating index
+        }, 3000); // 3 seconds
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, [items.length]);
+
+    // Handle manual navigation through dots
     const handleDotClick = (index: number) => {
-        setCurrentIndex(index);
+        setFadeIn(false);
+        setTimeout(() => {
+            setCurrentIndex(index);
+            setFadeIn(true);
+        }, 500); // Ensure smooth fade out before updating index
     };
 
     return (
@@ -32,20 +44,36 @@ const Carousel = () => {
             sx={{
                 bgcolor: '#1976d2',
                 color: '#fff',
-                minHeight: '100vh',
                 padding: 4,
             }}
         >
-            {/* Display the current SVG */}
-            <Box>{svgs[currentIndex]}</Box>
+            {/* Fade Animation */}
+            <Fade in={fadeIn} timeout={500}>
+                <Box textAlign="center">
+                    <Typography
+                        variant="h6"
+                        sx={{ marginBottom: 2, transition: 'opacity 0.8s ease-in-out' }}
+                    >
+                        {items[currentIndex].text}
+                    </Typography>
+                    <img
+                        src={`${process.env.PUBLIC_URL}/assets/svgs/${items[currentIndex].svg}`}
+                        alt={`SVG ${currentIndex}`}
+                        width="100"
+                        height="100"
+                    />
+                </Box>
+            </Fade>
 
-            {/* Navigation Dots */}
+            {/* Navigation Dots with Animation */}
             <Box display="flex" justifyContent="center" mt={2}>
-                {svgs.map((_, index) => (
+                {items.map((_, index) => (
                     <IconButton
                         key={index}
                         onClick={() => handleDotClick(index)}
                         sx={{
+                            transform: currentIndex === index ? 'scale(1.2)' : 'scale(1)',
+                            transition: 'transform 0.3s ease-in-out',
                             color: currentIndex === index ? '#fff' : 'rgba(255, 255, 255, 0.5)',
                         }}
                     >
