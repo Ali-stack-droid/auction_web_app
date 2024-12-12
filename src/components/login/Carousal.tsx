@@ -6,33 +6,28 @@ const Carousel = () => {
     const theme = useTheme();
     const primaryColor = theme.palette.primary.main;
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [fadeIn, setFadeIn] = useState(true); // Manage fade in/out state
+    const [fadeIn, setFadeIn] = useState(true);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    // List of SVG file names and their corresponding texts
     const items = [
-        { svg: 'imglogin1.svg', text: 'Login Image 1' },
-        { svg: 'imglogin2.svg', text: 'Login Image 2' },
-        { svg: 'imglogin1.svg', text: 'Login Image 3' },
+        { svg: 'imglogin1.svg', text: 'Lorem ipsum dolor sit amet' },
+        { svg: 'imglogin2.svg', text: 'Lorem ipsum dolor sit adipisicing' },
+        { svg: 'imglogin1.svg', text: 'Lorem ipsum dolor sit' },
     ];
 
-    // Automatically update the current index every 3 seconds
     useEffect(() => {
-        // Clear any existing interval to avoid duplication
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
 
-        // Start a new interval
         intervalRef.current = setInterval(() => {
-            setFadeIn(false); // Trigger fade out before changing
+            setFadeIn(false);
             setTimeout(() => {
                 setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
-                setFadeIn(true); // Fade in new image
-            }, 500); // Wait for fade out to complete before changing image
-        }, 5000); // 3 seconds
+                setFadeIn(true);
+            }, 500);
+        }, 5000);
 
-        // Cleanup on unmount
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -40,28 +35,24 @@ const Carousel = () => {
         };
     }, []);
 
-    // Handle manual navigation through dots
     const handleDotClick = (index: number) => {
-        // Clear the interval
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
 
-        // Set the index immediately and reset the interval
-        setFadeIn(false); // Fade out before updating
+        setFadeIn(false);
 
         setTimeout(() => {
             setCurrentIndex(index);
-            setFadeIn(true); // Fade in the new image
+            setFadeIn(true);
         }, 500);
 
-        // Restart the interval
         intervalRef.current = setInterval(() => {
             setFadeIn(false);
             setTimeout(() => {
                 setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
                 setFadeIn(true);
-            }, 350); // Wait for fade out to complete before changing image
+            }, 500);
         }, 5000);
     };
 
@@ -72,30 +63,29 @@ const Carousel = () => {
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
-            sx={{
-                color: '#fff',
-                padding: 4,
-            }}
+            padding={8}
         >
-            {/* Slide and Fade Animation for Text and Image */}
             <Fade in={fadeIn} timeout={1000}>
                 <Box textAlign="center" width="100%">
                     <Typography
-                        color="black"
-                        variant="h5"
+                        variant="h4"
                         mb={2}
                     >
                         {items[currentIndex].text}
                     </Typography>
-                    <img
+                    <Box
+                        component="img"
                         src={`${process.env.PUBLIC_URL}/assets/svgs/${items[currentIndex].svg}`}
                         alt={`SVG ${currentIndex}`}
-                    // height="auto" // Maintain aspect ratio
+                        sx={{
+                            width: "100%", // Responsive width
+                            height: 'auto', // Maintain aspect ratio
+                            transition: 'width 0.2s ease-in-out', // Smooth resize
+                        }}
                     />
                 </Box>
             </Fade>
 
-            {/* Navigation Dots with Animation */}
             <Box display="flex" justifyContent="center" mt={2}>
                 {items.map((_, index) => (
                     <IconButton
@@ -115,7 +105,7 @@ const Carousel = () => {
                                 fill: currentIndex === index ? primaryColor : 'white',
                                 transition: 'fill 0.5s ease-in-out, background-color 0.7s ease-in-out',
                             },
-                            transition: 'background-color 0.5s ease-in-out', // Sync button fill color
+                            transition: 'background-color 0.5s ease-in-out',
                         }}
                     >
                         <FiberManualRecordIcon />

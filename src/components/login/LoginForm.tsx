@@ -1,8 +1,13 @@
-import { Box, TextField, Button, Typography, Paper, Link } from '@mui/material';
+import { Box, Button, Typography, Paper, Link, IconButton, InputAdornment } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useState } from 'react';
+import CustomTextField from '../custom-components/CustomTextField';
 
 const LoginForm = () => {
+    const [showPassword, setShowPassword] = useState(false);
+
     // Formik setup
     const formik = useFormik({
         initialValues: {
@@ -18,16 +23,19 @@ const LoginForm = () => {
                 .required('Password is required'),
         }),
         onSubmit: (values) => {
-            alert("Form Submitted")
-            // Handle the form submission (for now, just log values)
+            alert("Form Submitted");
             console.log(values);
         },
     });
 
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
+
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" width={"100%"} >
+        <Box display="flex" justifyContent="center" alignItems="center" width="100%">
             <Paper elevation={0} sx={{ padding: 4, maxWidth: 400, width: '100%' }}>
-                <Typography fontSize={32} fontWeight={'bold'} py={0.5}>
+                <Typography variant={'h5'} py={0.5}>
                     Login
                 </Typography>
                 <Typography fontSize={16} gutterBottom>
@@ -35,12 +43,12 @@ const LoginForm = () => {
                 </Typography>
                 <form onSubmit={formik.handleSubmit}>
                     <Box width="100%" sx={{ py: 1 }}>
-                        <Typography fontSize={15}>Email:</Typography>
-                        <TextField
+                        <Typography fontWeight="600" fontSize={15} py={1}>
+                            Email:
+                        </Typography>
+                        <CustomTextField
                             fullWidth
                             type="email"
-                            margin="dense"
-                            variant="outlined"
                             required
                             name="email"
                             value={formik.values.email}
@@ -48,13 +56,16 @@ const LoginForm = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.email && Boolean(formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
+                            placeholder="Enter your email"
                         />
                     </Box>
                     <Box>
-                        <Typography fontSize={15}>Password:</Typography>
-                        <TextField
+                        <Typography fontWeight="600" fontSize={15} py={1}>
+                            Password:
+                        </Typography>
+                        <CustomTextField
                             fullWidth
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             margin="dense"
                             variant="outlined"
                             required
@@ -64,10 +75,21 @@ const LoginForm = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.password && Boolean(formik.errors.password)}
                             helperText={formik.touched.password && formik.errors.password}
+                            placeholder='**********'
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={togglePasswordVisibility} edge="end">
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
                         />
-                        {/* Forgot Password Link */}
                         <Box display="flex" justifyContent="flex-end" mt={1}>
-                            <Link href="/forgot-password" variant="body2">
+                            <Link href="/forgot-password" variant="body2" fontWeight={400} underline="hover">
                                 Forgot password?
                             </Link>
                         </Box>

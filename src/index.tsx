@@ -3,18 +3,10 @@ import { createRoot } from 'react-dom/client';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './index.css';  // Ensure Poppins is loaded in this file or index.html
 import App from './App';
+import theme from './theme';
 
 // Create the theme with Poppins font
-const theme = createTheme({
-  typography: {
-    fontFamily: '"Poppins", sans-serif',
-  },
-  palette: {
-    primary: {
-      main: '#2F83E9', // Set primary color
-    },
-  },
-});
+const customTheme = createTheme(theme);
 
 const root = createRoot(
   document.getElementById('root') as HTMLElement
@@ -22,7 +14,7 @@ const root = createRoot(
 
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={customTheme}>
       <App />
     </ThemeProvider>
   </React.StrictMode>
