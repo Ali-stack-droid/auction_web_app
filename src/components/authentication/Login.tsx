@@ -1,10 +1,19 @@
 import { Box, useMediaQuery, useTheme } from '@mui/material';
-import Carousel from './Carousal';
-import LoginForm from './LoginForm';
+import { useLocation } from 'react-router-dom'; // Import useLocation
+import Carousel from './login/Carousal';
+import LoginForm from './login/LoginForm';
+import ForgotPassword from './login/ForgotPassword';
+import { useState } from 'react';
+import ResetPassword from './login/ResetPaswword';
 
-const App = () => {
+const Login = ({ setIsAuthenticated }: any) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if screen is mobile
+
+    // Get the current location
+    const location = useLocation();
+
+    const [forgotPassword, setForgotPassword] = useState(false)
 
     return (
         <Box
@@ -24,7 +33,7 @@ const App = () => {
                 <Carousel />
             </Box>
 
-            {/* Login form on the right */}
+            {/* Login or Forgot Password form on the right */}
             <Box
                 flex={1}
                 display="flex"
@@ -32,10 +41,16 @@ const App = () => {
                 alignItems="center"
                 overflow="hidden"
             >
-                <LoginForm />
+                {/* Conditionally render LoginForm or ForgotPasswordForm based on the URL */}
+                {forgotPassword ? (
+                    // <ForgotPassword setForgotPassword={setForgotPassword} />
+                    <ResetPassword />
+                ) : (
+                    <LoginForm setIsAuthenticated={setIsAuthenticated} setForgotPassword={setForgotPassword} />
+                )}
             </Box>
         </Box>
     );
 };
 
-export default App;
+export default Login;

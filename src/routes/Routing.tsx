@@ -1,47 +1,37 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SideBar from '../components/sidebar/SideBar';
+import { Box } from '@mui/material';
 
 // Page Components
 const Dashboard = () => <div>Dashboard Page</div>;
 const Auction = () => <div>Auction Page</div>;
 const LiveStreaming = () => <div>Live Streaming Page</div>;
 const PaymentTracking = () => <div>Payment Tracking Page</div>;
+const Login = React.lazy(() => import('../components/authentication/Login'));  // Lazy load Login component
 
-const Logout = () => {
-    const navigate = useNavigate();
-    // Logout Logic Here
-    const handleLogout = () => {
-        console.log('Logged out successfully');
-        navigate('/'); // Redirect to the login or home page
-    };
-
-    return (
-        <button onClick={handleLogout} style={{ marginTop: '20px' }}>
-            Logout
-        </button>
-    );
-};
-
-const AppRoutes = () => {
+const AppRoutes = ({ isAuthenticated, setIsAuthenticated }: { isAuthenticated: boolean, setIsAuthenticated: any }) => {
     return (
         <Router>
-            <div style={{ display: 'flex' }}>
-                {/* Sidebar */}
-                <SideBar />
+            <Box style={{ display: 'flex' }}>
+                {/* Sidebar: Show it only when authenticated */}
+                {isAuthenticated && <SideBar />}
 
-                {/* Main Content */}
-                <div style={{ flex: 1, padding: '20px' }}>
+                {/* Main Content Area */}
+                <Box style={{ flex: 1, padding: '20px' }}>
                     <Routes>
-                        <Route path="/" element={<Navigate to="/dashboard" />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/auction" element={<Auction />} />
-                        <Route path="/livestreaming" element={<LiveStreaming />} />
-                        <Route path="/paymenttracking" element={<PaymentTracking />} />
-                        <Route path="/logout" element={<Logout />} />
+                        {/* Login Route */}
+                        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
+
+                        {/* Protected Routes (Only for authenticated users) */}
+                        <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
+                        <Route path="/auction" element={isAuthenticated ? <Auction /> : <Navigate to="/" />} />
+                        <Route path="/livestreaming" element={isAuthenticated ? <LiveStreaming /> : <Navigate to="/" />} />
+                        <Route path="/paymenttracking" element={isAuthenticated ? <PaymentTracking /> : <Navigate to="/" />} />
+
                     </Routes>
-                </div>
-            </div>
+                </Box>
+            </Box>
         </Router>
     );
 };

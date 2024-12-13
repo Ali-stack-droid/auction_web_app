@@ -3,11 +3,11 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState } from 'react';
-import CustomTextField from '../custom-components/CustomTextField';
-import CustomButton from '../custom-components/CustomButton';
-import CustomModal from '../custom-components/CustomModal';
+import CustomTextField from '../../custom-components/CustomTextField';
+import CustomButton from '../../custom-components/CustomButton';
+import CustomModal from '../../custom-components/CustomModal';
 
-const LoginForm = () => {
+const LoginForm = ({ setIsAuthenticated, setForgotPassword }: any) => {
     const [showPassword, setShowPassword] = useState(false);
     const [openModal, setOpenModal] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,6 +29,7 @@ const LoginForm = () => {
         onSubmit: (values) => {
             setIsSubmitting(true)
             setTimeout(() => {
+                setIsAuthenticated(true)
                 setIsSubmitting(false)
                 setOpenModal(values.email === 'hassaanasim25@gmail.com' && values.password === "asdasdasd")
             }, 2000);
@@ -63,7 +64,7 @@ const LoginForm = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.email && Boolean(formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
-                            placeholder="Enter your email"
+                            placeholder="user123@gmail.com"
                         />
                     </Box>
                     <Box>
@@ -100,7 +101,7 @@ const LoginForm = () => {
                             }}
                         />
                         <Box display="flex" justifyContent="flex-end" mt={1}>
-                            <Link href="/forgot-password" variant="body2" fontWeight={400} underline="hover">
+                            <Link onClick={() => setForgotPassword(true)} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
                                 Forgot password?
                             </Link>
                         </Box>

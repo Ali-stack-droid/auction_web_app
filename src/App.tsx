@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
-// import { ApolloProvider } from '@apollo/client';
-// import { client } from 'src/apolloClient/client'; // Apollo client import
-import Routing from './routes/Routing'; // Import your routing setup
 import { Box } from '@mui/material';
-import Authentication from './components/authentication/Authentication';
+import { BrowserRouter as Router } from 'react-router-dom'; // Use BrowserRouter instead of Router
+import Routing from './routes/Routing'; // Import your routing setup
+import Login from './components/authentication/Login';
 
 function App(props: any) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Use boolean instead of 0/1
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check authentication status on component mount
   useEffect(() => {
+    // Check authentication status from localStorage on component mount
     if (localStorage.getItem('token')) {
       setIsAuthenticated(true);
     } else {
@@ -18,15 +17,13 @@ function App(props: any) {
   }, []);
 
   return (
-    // <ApolloProvider client={client}>
     <Box>
-      {/* Render authentication if not authenticated */}
-      {!isAuthenticated && <Authentication history={props.history} />}
+      {/* Render Login if not authenticated */}
+      {isAuthenticated && <Login setIsAuthenticated={setIsAuthenticated} />}
 
-      {/* Render Routing component if authenticated */}
-      {isAuthenticated && <Routing />}
+      {/* Render Routing (authenticated pages) if authenticated */}
+      {!isAuthenticated && <Routing isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
     </Box>
-    // </ApolloProvider>
   );
 }
 

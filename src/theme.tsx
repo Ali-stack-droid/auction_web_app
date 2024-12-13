@@ -18,6 +18,9 @@ export default {
     primary: {
       main: '#2F83E9', // Set primary color
     },
+    secondary: {
+      main: '#19549F', // Set primary color
+    },
   },
   components: {
     MuiCssBaseline: {
