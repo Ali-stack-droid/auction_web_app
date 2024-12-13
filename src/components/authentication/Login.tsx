@@ -4,7 +4,7 @@ import Carousel from './login/Carousal';
 import LoginForm from './login/LoginForm';
 import ForgotPassword from './login/ForgotPassword';
 import { useState } from 'react';
-import ResetPassword from './login/ResetPaswword';
+import ResetPassword from './login/ResetPassword';
 
 const Login = ({ setIsAuthenticated }: any) => {
     const theme = useTheme();
