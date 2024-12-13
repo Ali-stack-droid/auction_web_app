@@ -3,11 +3,14 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomTextField from '../../custom-components/CustomTextField';
 import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
 
 const LoginForm = ({ setIsAuthenticated, setForgotPassword }: any) => {
+    const navigate = useNavigate();
+
     const [showPassword, setShowPassword] = useState(false);
     const [openModal, setOpenModal] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,9 +32,17 @@ const LoginForm = ({ setIsAuthenticated, setForgotPassword }: any) => {
         onSubmit: (values) => {
             setIsSubmitting(true)
             setTimeout(() => {
-                setIsAuthenticated(true)
+                if (values.email === 'hassaanasim25@gmail.com' && values.password === "asdasdasd") {
+                    navigate('/')
+                    setOpenModal(true)
+                    localStorage.setItem('token', 'qwerty')
+                    setTimeout(() => {
+                        setIsAuthenticated(true)
+                    }, 3000);
+                } else {
+                    localStorage.removeItem('token')
+                }
                 setIsSubmitting(false)
-                setOpenModal(values.email === 'hassaanasim25@gmail.com' && values.password === "asdasdasd")
             }, 2000);
         },
     });
@@ -68,7 +79,7 @@ const LoginForm = ({ setIsAuthenticated, setForgotPassword }: any) => {
                         />
                     </Box>
                     <Box>
-                        <Typography fontWeight="600" fontSize={15} py={1}>
+                        <Typography fontWeight="600" fontSize={15} pt={1}>
                             Password:
                         </Typography>
                         <CustomTextField

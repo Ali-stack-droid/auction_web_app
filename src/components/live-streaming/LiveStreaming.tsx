@@ -1,8 +1,11 @@
 import React from 'react'
+import SideBarWrapper from '../sidebar/SideBarWrapper'
 
 const LiveStreaming = () => {
     return (
-        <div>LiveStreaming</div>
+        <SideBarWrapper>
+            <h1>Live Streaming</h1>
+        </SideBarWrapper>
     )
 }
 

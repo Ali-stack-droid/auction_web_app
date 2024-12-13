@@ -1,8 +1,11 @@
 import React from 'react'
+import SideBarWrapper from '../sidebar/SideBarWrapper'
 
 const Auction = () => {
     return (
-        <div>Auction</div>
+        <SideBarWrapper>
+            <div>Auction</div>
+        </SideBarWrapper>
     )
 }
 

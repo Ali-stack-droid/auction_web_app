@@ -2,23 +2,30 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 
-const SideBar = () => {
+const SideBar = ({ }: any) => {
+
     const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/logout')
+    }
 
     return (
         <Box
             sx={{
+                position: "sticky",
+                left: 0,
                 width: 250,
                 height: '100vh',
                 backgroundColor: '#f5f5f5',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                padding: 2,
             }}
         >
             {/* Logo */}
-            <div style={{ fontWeight: 'bold', marginBottom: '20px' }}>LOGO</div>
+            <h1 style={{ fontWeight: 'bold', marginBottom: '20px', padding: 10 }}>LOGO</h1>
 
             {/* Navigation Buttons */}
             <Button fullWidth onClick={() => navigate('/dashboard')} sx={{ marginBottom: 2 }}>
@@ -35,7 +42,7 @@ const SideBar = () => {
             </Button>
 
             {/* Logout Button */}
-            <Button fullWidth onClick={() => navigate('/logout')} color="error" sx={{ marginTop: 'auto' }}>
+            <Button fullWidth onClick={() => handleLogout()} color="error" sx={{ marginTop: 'auto' }}>
                 Logout
             </Button>
         </Box>

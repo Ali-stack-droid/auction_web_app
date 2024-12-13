@@ -17,12 +17,14 @@ function App(props: any) {
   }, []);
 
   return (
+    // Already under a Router.
     <Box>
-      {/* Render Login if not authenticated */}
-      {isAuthenticated && <Login setIsAuthenticated={setIsAuthenticated} />}
-
-      {/* Render Routing (authenticated pages) if authenticated */}
-      {!isAuthenticated && <Routing isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
+      {
+        // Render Login if not authenticated
+        !isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> :
+          // Render Routing (authenticated pages) if authenticated
+          isAuthenticated && <Routing isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
+      }
     </Box>
   );
 }

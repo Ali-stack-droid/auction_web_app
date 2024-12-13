@@ -35,6 +35,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                 <Typography variant="body1" textAlign="center" mt={2}>
                     You have successfully logged into the system!
                 </Typography>
+
             </DialogContent>
         </Dialog >
     );
