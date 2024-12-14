@@ -1,43 +1,56 @@
 import React from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Box, Typography, Button } from '@mui/material';
+import { Dialog, DialogContent, IconButton, Box, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-interface CustomModalProps {
-    open: boolean;
-    onClose: () => void;
-}
+const CustomModal = ({ open, onClose, modalType }: any) => {
+    const modalContent = [
+        {
+            type: "login",
+            title: "Congratulations!",
+            desc: "You have successfully logged into the system!",
+            svg: `${process.env.PUBLIC_URL}/assets/svgs/congratulation.svg`,
+        },
+        {
+            type: "password",
+            title: "Congratulations!",
+            desc: "Your password has been updated successfully!",
+            svg: `${process.env.PUBLIC_URL}/assets/svgs/check.svg`,
+        },
+    ];
 
-const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
+    // Find the content for the current modalType
+    const content = modalContent.find((item) => item.type === modalType);
+
+    if (!content) return null; // Return nothing if no content matches the modalType
+
     return (
         <Dialog open={open} onClose={onClose}>
-            <IconButton onClick={onClose} color='primary' sx={{ position: 'absolute', right: 0 }}>
+            <IconButton onClick={onClose} color="primary" sx={{ position: 'absolute', right: 0 }}>
                 <HighlightOffIcon />
             </IconButton>
             <DialogContent sx={{ my: 2 }}>
                 <Box display="flex" justifyContent="center" alignItems="center">
                     <Box
                         component="img"
-                        src={`${process.env.PUBLIC_URL}/assets/svgs/congratulation.svg`}
-                        alt={`Login Successful`}
+                        src={content.svg}
+                        alt={content.title}
                         sx={{
                             width: "120px", // Responsive width
                             height: 'auto', // Maintain aspect ratio
                             transition: 'width 0.2s ease-in-out', // Smooth resize
                         }}
                     />
-
                 </Box>
 
-                <Typography variant="h4" textAlign="center" mt={2} color='primary'>
-                    Congratulations!
+                <Typography variant="h4" textAlign="center" mt={2} color="primary">
+                    {content.title}
                 </Typography>
 
                 <Typography variant="body1" textAlign="center" mt={2}>
-                    You have successfully logged into the system!
+                    {content.desc}
                 </Typography>
-
             </DialogContent>
-        </Dialog >
+        </Dialog>
     );
 };
 

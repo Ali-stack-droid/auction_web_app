@@ -1,9 +1,157 @@
-import React from 'react'
+import { Box, Typography, Paper, Link, IconButton, InputAdornment, CircularProgress } from '@mui/material';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
-const SetNewPassword = () => {
+import CustomTextField from '../../custom-components/CustomTextField';
+import CustomButton from '../../custom-components/CustomButton';
+import CustomModal from '../../custom-components/CustomModal';
+
+const SetNewPassword = ({ setIsAuthenticated }: any) => {
+    const navigate = useNavigate();
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Formik setup
+    const formik = useFormik({
+        initialValues: {
+            password: '',
+            confirmPassword: '',
+        },
+        validationSchema: Yup.object({
+            password: Yup.string()
+                .min(8, 'Password should be at least 8 characters')
+                .matches(/[A-Z]/, 'Password must include at least one uppercase letter')
+                .matches(/[a-z]/, 'Password must include at least one lowercase letter')
+                .matches(/\d/, 'Password must include at least one number')
+                .matches(/[@$!%*?&]/, 'Password must include at least one special character')
+                .required('Password is required'),
+            confirmPassword: Yup.string()
+                .oneOf([Yup.ref('password')], 'Passwords must match')
+                .required('Confirm password is required'),
+        }),
+        onSubmit: (values) => {
+            setIsSubmitting(true);
+            setTimeout(() => {
+                // Logic for resetting the password (e.g., API call)
+                // navigate('/login'); // Navigate back to login after resetting password
+                setOpenModal(true);
+                setIsSubmitting(false);
+            }, 2000);
+        },
+    });
+
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
+
     return (
-        <h1>SetNewPassword</h1>
-    )
-}
+        <Box display="flex" justifyContent="center" alignItems="center" width="100%">
+            <Paper elevation={0} sx={{ padding: 4, maxWidth: 400, width: '100%' }}>
+                <Typography variant={'h5'} py={0.5}>
+                    Set a new password
+                </Typography>
+                <Typography fontSize={16} gutterBottom>
+                    Your password must include special characters, capital letters, numbers, and lowercase letters.
+                </Typography>
+                <form onSubmit={formik.handleSubmit}>
+                    <Box width="100%" sx={{ py: 1 }}>
+                        <Typography fontWeight="600" fontSize={15} py={1}>
+                            Password:
+                        </Typography>
+                        <CustomTextField
+                            fullWidth
+                            type={showPassword ? 'text' : 'password'}
+                            margin="dense"
+                            variant="outlined"
+                            required
+                            name="password"
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                            placeholder="**********"
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={togglePasswordVisibility}
+                                                edge="end"
+                                                sx={{ color: 'primary.main' }}
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Box>
 
-export default SetNewPassword
+                    <Box width="100%" sx={{ py: 1 }}>
+                        <Typography fontWeight="600" fontSize={15} py={1}>
+                            Confirm Password:
+                        </Typography>
+                        <CustomTextField
+                            fullWidth
+                            type={showPassword ? 'text' : 'password'}
+                            margin="dense"
+                            variant="outlined"
+                            required
+                            name="confirmPassword"
+                            value={formik.values.confirmPassword}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                            helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                            placeholder="**********"
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={togglePasswordVisibility}
+                                                edge="end"
+                                                sx={{ color: 'primary.main' }}
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Box>
+
+                    <CustomButton
+                        fullWidth
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 2, fontSize: 16 }}
+                    >
+                        {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : 'Reset Password'}
+                    </CustomButton>
+                </form>
+
+                {/* Link to navigate back to Login */}
+                <Box mt={2} textAlign="center">
+                    <Link onClick={() => navigate('/login')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
+                        <KeyboardBackspaceIcon sx={{ fontSize: 16, px: 0.5 }} /> Back to Login
+                    </Link>
+                </Box>
+            </Paper>
+
+            {/* Modal opens upon form submission */}
+            <CustomModal open={openModal} modalType={'password'} onClose={() => setOpenModal(false)} />
+        </Box>
+    );
+};
+
+export default SetNewPassword;

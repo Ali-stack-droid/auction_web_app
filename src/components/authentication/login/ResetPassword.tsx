@@ -1,4 +1,4 @@
-import { Box, Typography, Button, CircularProgress, Link, TextField } from '@mui/material';
+import { Box, Typography, CircularProgress, Link } from '@mui/material';
 
 import CustomButton from '../../custom-components/CustomButton';
 import CustomTextField from '../../custom-components/CustomTextField';
@@ -43,6 +43,22 @@ const ResetPassword = ({ }: any) => {
             }
         }
     };
+
+    const handleFormSubmit = () => {
+        const code = values.join('');
+        setIsSubmitting(true);
+        setTimeout(() => {
+            // Simulate verification
+            if (code === '1234') {
+                navigate('/new-password'); // Redirect to the next step
+            } else {
+                // Handle invalid code (you can add an error message here)
+                alert('Invalid code!');
+            }
+            setIsSubmitting(false);
+        }, 2000);
+    }
+
     return (
         <Box
             flex={1}
@@ -82,14 +98,14 @@ const ResetPassword = ({ }: any) => {
                     variant="contained"
                     color="primary"
                     sx={{ mt: 2 }}
-                    onClick={() => navigate('new-password')}
+                    onClick={() => handleFormSubmit()}
                 >
                     {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : 'Continue'}
                 </CustomButton>
 
                 {/* Link to go back to Login page */}
                 <Box mt={2} textAlign="center">
-                    <Link onClick={() => navigate('/login')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Link onClick={() => navigate('/')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <KeyboardBackspaceIcon sx={{ fontSize: 16, px: 0.5 }} /> Back to Login
                     </Link>
                 </Box>

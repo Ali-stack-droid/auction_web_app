@@ -44,7 +44,7 @@ const Login = ({ setIsAuthenticated }: any) => {
             >
                 {location.pathname === '/forgot-password' ? <ForgotPassword />
                     : location.pathname === '/reset-password' ? <ResetPassword />
-                        : location.pathname === '/set-new-password' ? <SetNewPassword />
+                        : location.pathname === '/new-password' ? <SetNewPassword />
                             : <LoginForm setIsAuthenticated={setIsAuthenticated} />}
 
             </Box>

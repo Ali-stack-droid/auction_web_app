@@ -129,7 +129,7 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
             </Paper>
 
             {/* Modal opens upon form submission */}
-            <CustomModal open={openModal} onClose={() => setOpenModal(false)} />
+            <CustomModal open={openModal} modalType={'login'} onClose={() => setOpenModal(false)} />
         </Box>
     );
 };
