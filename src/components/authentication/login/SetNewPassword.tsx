@@ -37,10 +37,9 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
         }),
         onSubmit: (values) => {
             setIsSubmitting(true);
+            setOpenModal(true);
             setTimeout(() => {
-                // Logic for resetting the password (e.g., API call)
-                // navigate('/login'); // Navigate back to login after resetting password
-                setOpenModal(true);
+                navigate('/login'); // Navigate back to login after resetting password
                 setIsSubmitting(false);
             }, 2000);
         },
