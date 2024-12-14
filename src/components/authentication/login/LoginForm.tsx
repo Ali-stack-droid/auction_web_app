@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Paper, Link, IconButton, InputAdornment, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, Link, IconButton, InputAdornment, CircularProgress } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -8,7 +8,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
 
-const LoginForm = ({ setIsAuthenticated, setForgotPassword }: any) => {
+const LoginForm = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +32,7 @@ const LoginForm = ({ setIsAuthenticated, setForgotPassword }: any) => {
         onSubmit: (values) => {
             setIsSubmitting(true)
             setTimeout(() => {
-                if (values.email === 'hassaanasim25@gmail.com' && values.password === "asdasdasd") {
+                if (values.email === 'test@gmail.com' && values.password === "testadmin") {
                     navigate('/')
                     setOpenModal(true)
                     localStorage.setItem('token', 'qwerty')
@@ -112,7 +112,7 @@ const LoginForm = ({ setIsAuthenticated, setForgotPassword }: any) => {
                             }}
                         />
                         <Box display="flex" justifyContent="flex-end" mt={1}>
-                            <Link onClick={() => setForgotPassword(true)} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
+                            <Link onClick={() => navigate('/forgot-password')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
                                 Forgot password?
                             </Link>
                         </Box>

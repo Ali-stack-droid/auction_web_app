@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom'; // Import useLocation
 import Carousel from './login/Carousal';
 import LoginForm from './login/LoginForm';
 import ForgotPassword from './login/ForgotPassword';
-import { useState } from 'react';
 import ResetPassword from './login/ResetPassword';
+import SetNewPassword from './login/SetNewPassword';
 
 const Login = ({ setIsAuthenticated }: any) => {
     const theme = useTheme();
@@ -13,7 +13,8 @@ const Login = ({ setIsAuthenticated }: any) => {
     // Get the current location
     const location = useLocation();
 
-    const [forgotPassword, setForgotPassword] = useState(false)
+    let renderComponent;
+
 
     return (
         <Box
@@ -33,7 +34,7 @@ const Login = ({ setIsAuthenticated }: any) => {
                 <Carousel />
             </Box>
 
-            {/* Login or Forgot Password form on the right */}
+            {/* Login form on the right */}
             <Box
                 flex={1}
                 display="flex"
@@ -41,13 +42,11 @@ const Login = ({ setIsAuthenticated }: any) => {
                 alignItems="center"
                 overflow="hidden"
             >
-                {/* Conditionally render LoginForm or ForgotPasswordForm based on the URL */}
-                {forgotPassword ? (
-                    // <ForgotPassword setForgotPassword={setForgotPassword} />
-                    <ResetPassword />
-                ) : (
-                    <LoginForm setIsAuthenticated={setIsAuthenticated} setForgotPassword={setForgotPassword} />
-                )}
+                {location.pathname === '/forgot-password' ? <ForgotPassword />
+                    : location.pathname === '/reset-password' ? <ResetPassword />
+                        : location.pathname === '/set-new-password' ? <SetNewPassword />
+                            : <LoginForm setIsAuthenticated={setIsAuthenticated} />}
+
             </Box>
         </Box>
     );

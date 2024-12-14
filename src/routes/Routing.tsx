@@ -1,55 +1,82 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
+import TempComponent from './TempComponent';
 
 // Page Components
 const Login = React.lazy(() => import('../components/authentication/Login'));
-// const SideBarWrapper = React.lazy(() => import('../components/sidebar/SideBarWrapper'));
 const Dashboard = React.lazy(() => import('../components/sidebar/SideBarWrapper'));
 const Auction = React.lazy(() => import('../components/sidebar/SideBarWrapper'));
 const LiveStreaming = React.lazy(() => import('../components/sidebar/SideBarWrapper'));
 const PaymentTracking = React.lazy(() => import('../components/sidebar/SideBarWrapper'));
 
-const AppRoutes = ({ isAuthenticated, setIsAuthenticated }: { isAuthenticated: boolean, setIsAuthenticated: any }) => {
-
-
-
-    const Logout = () => {
-        setIsAuthenticated(false);
-        return (<></>)
+// ProtectedRoute Component
+const ProtectedRoute = ({ isAuthenticated, children }: any) => {
+    if (!isAuthenticated) {
+        return <Navigate to="/login" />;
     }
+    return children;
+};
 
+const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
 
     return (
         <Box style={{ display: 'flex' }}>
-            {/* Sidebar: Show it only when authenticated */}
-            {/* {isAuthenticated && <SideBar setIsAuthenticated={setIsAuthenticated} />} */}
-
             {/* Main Content Area */}
             <Box style={{ flex: 1, padding: '20px' }}>
                 <Routes>
                     {/* Login Route */}
-                    <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-                    <Route path="logout" element={<Logout />} />
+                    <Route
+                        path="/login"
+                        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />}
+                    />
 
-                    {/* Protected Routes (Only for authenticated users) */}
-                    {isAuthenticated && (
-                        <Route
-                            path="/*"
-                            element={
-                                <Routes>
-                                    <Route path="dashboard" element={<Dashboard />} />
-                                    <Route path="auction" element={<Auction />} />
-                                    <Route path="livestreaming" element={<LiveStreaming />} />
-                                    <Route path="paymenttracking" element={<PaymentTracking />} />
-                                </Routes>
-                            }
-                        />
-                    )}
+                    <Route path="/forgot-password" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+                    <Route path="/reset-password" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+                    <Route path="/set-new-password" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+
+                    {/* Protected Routes */}
+                    <Route
+                        path="/"
+                        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}
+                    />
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/auction"
+                        element={
+                            <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                <Auction />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/livestreaming"
+                        element={
+                            <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                <LiveStreaming />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/paymenttracking"
+                        element={
+                            <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                <PaymentTracking />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/logout" element={<TempComponent setIsAuthenticated={setIsAuthenticated} />} />
                 </Routes>
             </Box>
         </Box>
     );
 };
 
-export default AppRoutes;
+export default Routing;

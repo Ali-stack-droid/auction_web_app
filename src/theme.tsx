@@ -1,4 +1,4 @@
-export default {
+const theme = {
   typography: {
     fontFamily: '"Poppins", sans-serif',
     h5: {
@@ -19,7 +19,7 @@ export default {
       main: '#2F83E9', // Set primary color
     },
     secondary: {
-      main: '#19549F', // Set primary color
+      main: '#19549F', // Set secondary color
     },
   },
   components: {
@@ -31,4 +31,6 @@ export default {
       },
     },
   },
-}
+};
+
+export default theme;

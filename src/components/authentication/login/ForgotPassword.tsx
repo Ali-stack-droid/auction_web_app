@@ -5,8 +5,10 @@ import CustomButton from '../../custom-components/CustomButton';
 import CustomTextField from '../../custom-components/CustomTextField';
 import { useState } from 'react';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = ({ setForgotPassword }: any) => {
+    const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Formik setup for forgot password
@@ -25,7 +27,7 @@ const ForgotPassword = ({ setForgotPassword }: any) => {
                 // Here you can call an API to send reset instructions
                 console.log('Password reset email sent to:', values.email);
                 setIsSubmitting(false);
-                setForgotPassword(false)
+                navigate('/reset-password')
             }, 2000);
         },
     });
@@ -76,7 +78,7 @@ const ForgotPassword = ({ setForgotPassword }: any) => {
 
                 {/* Link to go back to Login page */}
                 <Box mt={2} textAlign="center">
-                    <Link onClick={() => setForgotPassword(false)} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Link onClick={() => navigate('/login')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <KeyboardBackspaceIcon sx={{ fontSize: 16, px: 0.5 }} /> Back to Login
                     </Link>
                 </Box>

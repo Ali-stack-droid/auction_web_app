@@ -13,7 +13,7 @@ const CustomTextField = styled(TextField)(({ theme }) => ({
             border: `1px solid ${theme.palette.grey[300]}`,
         },
         "&:hover fieldset": {
-            border: '1px solid black',
+            border: `1px solid ${theme.palette.grey[400]}`,
             transition: 'border 0.3s ease-in-out'
         },
         "&.Mui-focused fieldset": {
