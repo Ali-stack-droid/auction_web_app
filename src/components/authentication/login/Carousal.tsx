@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { Box, IconButton, Fade, Typography, useTheme, useMediaQuery } from '@mui/material';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { useCarousalStyles } from './LoginStyles';
 
 const Carousel = () => {
     const theme = useTheme();
     const primaryColor = theme.palette.primary.main;
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if screen is mobile
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const classes = useCarousalStyles();
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [fadeIn, setFadeIn] = useState(true);
@@ -60,59 +62,40 @@ const Carousel = () => {
 
     return (
         <Box
-            flex={1}
-            display="flex"
-            flexDirection="column"
-            justifyContent="space-between"
-            alignItems="center"
-            padding={8}
-            height={isMobile ? "300px" : "70%"}
+            className={classes.container}
+            style={{
+                height: isMobile ? '300px' : '70%',
+            }}
         >
             <Fade in={fadeIn} timeout={1000}>
-                <Typography
-                    variant="h4"
-                    mb={2}
-                >
+                <Typography variant="h4" className={classes.text}>
                     {items[currentIndex].text}
                 </Typography>
             </Fade>
             <Fade in={fadeIn} timeout={1000}>
-
-                <Box textAlign="center" width="100%" >
-
+                <Box className={classes.imageWrapper}>
                     <Box
                         component="img"
                         src={`${process.env.PUBLIC_URL}/assets/svgs/${items[currentIndex].svg}`}
                         alt={`SVG ${currentIndex}`}
-                        sx={{
-                            width: "80%", // Responsive width
-                            height: 'auto', // Maintain aspect ratio
-                            transition: 'width 0.2s ease-in-out', // Smooth resize
-                        }}
+                        className={classes.image}
                     />
                 </Box>
             </Fade>
 
-            <Box display="flex" justifyContent="center" mt={2}>
+            <Box className={classes.dotsContainer}>
                 {items.map((_, index) => (
                     <IconButton
                         key={index}
                         onClick={() => handleDotClick(index)}
+                        className={classes.dotButton}
                         sx={{
-                            size: 'small',
-                            width: 18,
-                            height: 18,
-                            margin: '0 4px',
                             backgroundColor: currentIndex === index ? primaryColor : 'transparent',
                             border: `2px solid ${primaryColor}`,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
                             '& svg': {
                                 fill: currentIndex === index ? primaryColor : 'white',
-                                transition: 'fill 0.5s ease-in-out, background-color 0.7s ease-in-out',
+                                transition: 'fill 0.5s ease-in-out',
                             },
-                            transition: 'background-color 0.5s ease-in-out',
                         }}
                     >
                         <FiberManualRecordIcon />

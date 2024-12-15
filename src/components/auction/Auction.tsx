@@ -1,5 +1,5 @@
 import React from 'react'
-import SideBarWrapper from '../sidebar/SideBarWrapper'
+import SideBarWrapper from '../layout/AppProvider'
 
 const Auction = () => {
     return (

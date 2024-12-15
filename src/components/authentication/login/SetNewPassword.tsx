@@ -9,9 +9,11 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import CustomTextField from '../../custom-components/CustomTextField';
 import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
+import { useSetNewPasswordStyles } from './LoginStyles';  // Import the new styles
 
 const SetNewPassword = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
+    const classes = useSetNewPasswordStyles();  // Use the styles hook
 
     const [showPassword, setShowPassword] = useState(false);
     const [openModal, setOpenModal] = useState(false);
@@ -50,19 +52,17 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" width="100%">
-            <Paper elevation={0} sx={{ padding: 4, maxWidth: 400, width: '100%' }}>
-                <Typography variant={'h5'} py={0.5}>
+        <Box className={classes.container}>
+            <Paper elevation={0} className={classes.paper}>
+                <Typography variant={'h5'} className={classes.title}>
                     Set a new password
                 </Typography>
-                <Typography fontSize={16} gutterBottom>
+                <Typography className={classes.description}>
                     Your password must include special characters, capital letters, numbers, and lowercase letters.
                 </Typography>
                 <form onSubmit={formik.handleSubmit}>
-                    <Box width="100%" sx={{ py: 1 }}>
-                        <Typography fontWeight="600" fontSize={15} py={1}>
-                            Password:
-                        </Typography>
+                    <Box className={classes.textFieldWrapper}>
+                        <Typography className={classes.label}>Password:</Typography>
                         <CustomTextField
                             fullWidth
                             type={showPassword ? 'text' : 'password'}
@@ -94,10 +94,8 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
                         />
                     </Box>
 
-                    <Box width="100%" sx={{ py: 1 }}>
-                        <Typography fontWeight="600" fontSize={15} py={1}>
-                            Confirm Password:
-                        </Typography>
+                    <Box className={classes.textFieldWrapper}>
+                        <Typography className={classes.label}>Confirm Password:</Typography>
                         <CustomTextField
                             fullWidth
                             type={showPassword ? 'text' : 'password'}
@@ -133,7 +131,7 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
                         fullWidth
                         type="submit"
                         variant="contained"
-                        sx={{ mt: 2, fontSize: 16 }}
+                        className={classes.buttonWrapper}
                     >
                         {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : 'Reset Password'}
                     </CustomButton>
@@ -145,8 +143,6 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
                         <KeyboardBackspaceIcon sx={{ fontSize: 16, px: 0.5 }} /> Back to Login
                     </Link>
                 </Box>
-
-
             </Paper>
 
             {/* Modal opens upon form submission */}

@@ -6,11 +6,13 @@ import ForgotPassword from './login/ForgotPassword';
 import ResetPassword from './login/ResetPassword';
 import SetNewPassword from './login/SetNewPassword';
 import { useState, useEffect } from 'react';
+import { useLoginStyles } from './login/LoginStyles';
 
 const Login = ({ setIsAuthenticated }: any) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
+    const classes = useLoginStyles();
 
     const [currentComponent, setCurrentComponent]: any = useState(null);
     const [fadeIn, setFadeIn] = useState(false);
@@ -38,33 +40,16 @@ const Login = ({ setIsAuthenticated }: any) => {
     }, [location.pathname]);
 
     return (
-        <Box
-            display="flex"
-            minHeight="92vh"
-            overflow="hidden"
-            flexDirection={isMobile ? 'column' : 'row'}
-        >
+        <Box className={classes.root}>
             {/* Carousel */}
-            <Box
-                flex={1}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                overflow="hidden"
-            >
+            <Box className={classes.carouselContainer}>
                 <Carousel />
             </Box>
 
             {/* Animated Component */}
-            <Box
-                flex={1}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                overflow="hidden"
-            >
+            <Box className={classes.componentContainer}>
                 <Fade in={fadeIn} timeout={300}>
-                    <div style={{ width: '100%' }}>{currentComponent}</div>
+                    <div className={classes.fadeWrapper}>{currentComponent}</div>
                 </Fade>
             </Box>
         </Box>
