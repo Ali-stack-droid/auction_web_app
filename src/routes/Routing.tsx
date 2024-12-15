@@ -5,10 +5,10 @@ import TempComponent from './TempComponent';
 
 // Page Components
 const Login = React.lazy(() => import('../components/authentication/Login'));
-const Dashboard = React.lazy(() => import('../components/layout/AppProvider'));
-const Auction = React.lazy(() => import('../components/layout/AppProvider'));
-const LiveStreaming = React.lazy(() => import('../components/layout/AppProvider'));
-const PaymentTracking = React.lazy(() => import('../components/layout/AppProvider'));
+const Dashboard = React.lazy(() => import('../components/dashboard/Dashboard'));
+const Auction = React.lazy(() => import('../components/auction/Auction'));
+const LiveStreaming = React.lazy(() => import('../components/live-streaming/LiveStreaming'));
+const PaymentTracking = React.lazy(() => import('../components/payment-tracking/PaymentTracking'));
 
 // ProtectedRoute Component
 const ProtectedRoute = ({ isAuthenticated, children }: any) => {
@@ -58,7 +58,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             }
                         />
                         <Route
-                            path="/livestreaming"
+                            path="/live"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <LiveStreaming />
@@ -66,7 +66,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             }
                         />
                         <Route
-                            path="/paymenttracking"
+                            path="/payment"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <PaymentTracking />

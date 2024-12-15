@@ -15,8 +15,7 @@ const AppProvider = ({ children }: any) => {
                 <Header />
 
                 {/* Content area below the header */}
-                <Box sx={{ flex: 1, padding: '20px', marginTop: '64px', overflowY: 'auto' }}>
-                    {/* The header is fixed, so we add marginTop to push the content down */}
+                <Box sx={{ flex: 1, overflowY: 'auto', border: '1px solid red' }}>
                     {children}
                 </Box>
             </Box>

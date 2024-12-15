@@ -4,7 +4,6 @@ const useHeaderStyles = makeStyles({
     headerContainer: {
         position: 'sticky',
         padding: '10px 0',
-        border: '1px solid black',
     },
     toolbar: {
         display: 'flex',
@@ -37,7 +36,6 @@ const useHeaderStyles = makeStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        border: '1px solid red',
     },
     iconButton: {
         '& .appBarIcons': {
