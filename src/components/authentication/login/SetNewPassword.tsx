@@ -141,10 +141,12 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
 
                 {/* Link to navigate back to Login */}
                 <Box mt={2} textAlign="center">
-                    <Link onClick={() => navigate('/login')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
+                    <Link onClick={() => navigate('/login')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <KeyboardBackspaceIcon sx={{ fontSize: 16, px: 0.5 }} /> Back to Login
                     </Link>
                 </Box>
+
+
             </Paper>
 
             {/* Modal opens upon form submission */}

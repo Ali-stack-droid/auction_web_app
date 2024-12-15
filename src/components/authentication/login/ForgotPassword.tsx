@@ -7,7 +7,7 @@ import { useState } from 'react';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useNavigate } from 'react-router-dom';
 
-const ForgotPassword = ({ setForgotPassword }: any) => {
+const ForgotPassword = ({ }: any) => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
 

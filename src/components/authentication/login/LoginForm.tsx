@@ -32,16 +32,16 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
         onSubmit: (values) => {
             setIsSubmitting(true)
             setTimeout(() => {
-                if (values.email === 'test@gmail.com' && values.password === "testadmin") {
+                // if (values.email === 'test@gmail.com' && values.password === "testadmin") {
+                setOpenModal(true)
+                localStorage.setItem('token', 'qwerty')
+                setTimeout(() => {
                     navigate('/')
-                    setOpenModal(true)
-                    localStorage.setItem('token', 'qwerty')
-                    setTimeout(() => {
-                        setIsAuthenticated(true)
-                    }, 3000);
-                } else {
-                    localStorage.removeItem('token')
-                }
+                    setIsAuthenticated(true)
+                }, 3000);
+                // } else {
+                // localStorage.removeItem('token')
+                // }
                 setIsSubmitting(false)
             }, 2000);
         },
