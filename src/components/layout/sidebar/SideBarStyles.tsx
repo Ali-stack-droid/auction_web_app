@@ -13,8 +13,8 @@ const useSideBarStyles = makeStyles({
         padding: '0 12px'
     },
     logo: {
-        fontWeight: '600',
-        marginBottom: '20px',
+        fontWeight: '700',
+        marginBottom: '24px',
         padding: '10px',
     },
     menu: {
