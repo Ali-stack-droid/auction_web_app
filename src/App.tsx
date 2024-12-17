@@ -1,26 +1,24 @@
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // Use BrowserRouter instead of Router
-import Routing from './routes/Routing'; // Import your routing setup
-import Login from './components/authentication/Login';
+import Routing from './routes/Routing';
+import { Box, CircularProgress } from '@mui/material';
 
-function App(props: any) {
+function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true); // New loading state
 
   useEffect(() => {
-    // Check authentication status from localStorage on component mount
-    if (localStorage.getItem('token')) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+    // Check authentication status from localStorage
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token); // Set isAuthenticated based on token
+    setLoading(false); // Authentication check complete
   }, []);
 
-  return (
-    // Already under a Router.
-    <Routing isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
+  if (loading) {
+    // Show a loader until authentication is verified
+    return <Box>Loading...</Box>
+  }
 
-  );
+  return <Routing isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />;
 }
 
 export default App;
