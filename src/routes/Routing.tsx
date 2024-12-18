@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import TempComponent from './TempComponent';
+import AppProvider from '../components/layout/AppProvider';
 
 // Page Components
 const Login = React.lazy(() => import('../components/authentication/Login'));
@@ -15,7 +16,7 @@ const ProtectedRoute = ({ isAuthenticated, children }: any) => {
     if (!isAuthenticated) {
         return <Navigate to="/login" />;
     }
-    return children;
+    return <AppProvider>{children}</AppProvider>;
 };
 
 const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {

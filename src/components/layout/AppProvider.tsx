@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Box, Grid, Toolbar, Typography } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import SideBar from './sidebar/SideBar';
 import Header from './header/Header'; // Import your Header component
 
@@ -13,9 +13,10 @@ const AppProvider = ({ children }: any) => {
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 {/* Header on top */}
                 <Header />
+                <Divider variant='fullWidth' sx={{ opacity: 0.5 }} />
 
                 {/* Content area below the header */}
-                <Box sx={{ flex: 1, overflowY: 'auto', border: '1px solid red' }}>
+                <Box sx={{ flex: 1, overflowY: 'auto', padding: 1 }}>
                     {children}
                 </Box>
             </Box>
