@@ -1,64 +1,51 @@
-import React from 'react';
-import { Box, Card, CardContent, CardMedia, Typography, Button, Stack } from '@mui/material';
-import PlaceIcon from '@mui/icons-material/Place';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
+import { Card, CardContent, CardMedia, Typography, Button, Tooltip, Box } from '@mui/material';
+import { useAuctionCardStyles } from './AuctionStyles';
+import AuctionDetails from './AuctionDetails';
 
 const AuctionCard = ({ auction }: any) => {
+    const classes = useAuctionCardStyles();
+
     return (
-        <Card sx={{ maxWidth: 345, borderRadius: 3, boxShadow: 3, padding: 1.2 }}>
+        <Card className={classes.card} elevation={2} >
             {/* Auction Image */}
             <CardMedia
                 component="img"
                 height="200"
                 image={auction.image}
                 alt="Auction Image"
-                sx={{
-                    borderRadius: 3,
-                }}
+                className={classes.media}
             />
+            <Box className={classes.contentWrapper}>
+                {/* Auction Details */}
+                <Box className={classes.content}>
+                    <Box className={classes.titleContainer}>
 
-            {/* Auction Details */}
-            <CardContent>
-                {/* Title */}
-                <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {auction.name}
-                </Typography>
+                        {/* Title */}
+                        <Tooltip title={auction.name}>
+                            <Typography className={classes.title} gutterBottom>
+                                {auction.name.length > 33 ? `${auction.name.substring(0, 33)}...` : auction.name}
+                            </Typography>
+                        </Tooltip>
 
-                {/* View Catalog Button */}
-                <Button
-                    variant="contained"
-                    size="small"
-                    sx={{ textTransform: 'none', borderRadius: 2, mb: 1 }}
-                >
-                    View Catalog
-                </Button>
+                        {/* View Catalog Button */}
+                        <Button variant="contained" size="small" className={classes.button}>
+                            View Catalog
+                        </Button>
+                    </Box>
+                </Box>
 
                 {/* Location, Date, and Lots */}
-                <Stack spacing={1} direction="column">
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <PlaceIcon fontSize="small" color="primary" />
-                        <Typography variant="body2">{auction.location}</Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <AccessTimeIcon fontSize="small" color="primary" />
-                        <Typography variant="body2">{auction.dateRange}</Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <Inventory2Icon fontSize="small" color="primary" />
-                        <Typography variant="body2">{auction.lotsAvailable}</Typography>
-                    </Box>
-                </Stack>
-            </CardContent>
+                <AuctionDetails auction={auction} />
 
-            {/* Action Buttons */}
-            <Box display="flex" justifyContent="space-around" p={1}>
-                <Button variant="outlined" size="small" color="primary">
-                    Edit
-                </Button>
-                <Button variant="outlined" size="small" color="error">
-                    Delete
-                </Button>
+                {/* Action Buttons */}
+                <Box className={classes.actionButtons}>
+                    <Button variant="contained" size="small" color="primary">
+                        Edit
+                    </Button>
+                    <Button variant="contained" size="small" color="error">
+                        Delete
+                    </Button>
+                </Box>
             </Box>
         </Card>
     );
