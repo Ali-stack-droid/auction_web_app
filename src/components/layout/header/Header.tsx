@@ -32,7 +32,7 @@ import CustomNotifications from '../../custom-components/CustomNotifications';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-    const theme = useTheme();
+    const theme: any = useTheme();
     const classes = useHeaderStyles();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate()
@@ -97,7 +97,7 @@ const Header = () => {
                                 InputProps={{
                                     endAdornment: (
                                         <Button className={classes.searchButton}>
-                                            <SearchIcon sx={{ color: 'white' }} />
+                                            <SearchIcon sx={{ color: theme.palette.primary.main3 }} />
                                         </Button>
                                     ),
                                 }}

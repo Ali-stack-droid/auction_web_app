@@ -7,6 +7,7 @@ import { useState } from 'react';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useNavigate } from 'react-router-dom';
 import { useForgotPasswordStyles } from './LoginStyles';
+import theme from '../../../theme';
 
 const ForgotPassword = ({ }: any) => {
     const navigate = useNavigate();
@@ -66,7 +67,7 @@ const ForgotPassword = ({ }: any) => {
                     sx={{ mt: 2 }}
                     onClick={() => formik.handleSubmit()}
                 >
-                    {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : 'Continue'}
+                    {isSubmitting ? <CircularProgress sx={{ color: theme.palette.primary.main3 }} /> : 'Continue'}
                 </CustomButton>
 
                 {/* Link to go back to Login page */}

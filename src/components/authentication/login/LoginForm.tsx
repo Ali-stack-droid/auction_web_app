@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import CustomTextField from '../../custom-components/CustomTextField';
 import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
+import theme from '../../../theme';
 
 const LoginForm = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
@@ -123,7 +124,7 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
                         variant="contained"
                         sx={{ mt: 2, fontSize: 16 }}
                     >
-                        {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : ' Continue'}
+                        {isSubmitting ? <CircularProgress sx={{ color: theme.palette.primary.main3 }} /> : ' Continue'}
                     </CustomButton>
                 </form>
             </Paper>

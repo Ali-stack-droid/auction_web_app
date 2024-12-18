@@ -16,10 +16,18 @@ const theme = {
   },
   palette: {
     primary: {
-      main: '#2F83E9', // Set primary color
+      main: "#2F83E9",
+      main1: "#2D3748",
+      main2: "#838383",
+      main3: "#FFFFFF",
+      main4: "#E2E8F0",
+      main5: "#212121",
+      main6: "#DBDFED",
+      main7: "#C4C4C4",
+      main8: "#19549F",
     },
     secondary: {
-      main: '#19549F', // Set secondary color
+      main: '#FF5630', // Set secondary color
     },
   },
   components: {

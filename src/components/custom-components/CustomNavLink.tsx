@@ -5,7 +5,8 @@ interface CustomNavLinkProps {
     isSelected: boolean;
 }
 
-const CustomNavLink = styled(Link, { shouldForwardProp: (prop) => prop !== 'isSelected' })<CustomNavLinkProps>(({ isSelected }) => ({
+
+const CustomNavLink = styled(Link, { shouldForwardProp: (prop) => prop !== 'isSelected' })<CustomNavLinkProps>(({ theme, isSelected }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -14,11 +15,11 @@ const CustomNavLink = styled(Link, { shouldForwardProp: (prop) => prop !== 'isSe
     height: '45px',
     textDecoration: 'none',
     borderRadius: '10px',
-    backgroundColor: isSelected ? '#2F83E9' : 'white',
-    color: isSelected ? '#fff' : '#838383',
+    backgroundColor: isSelected ? theme.palette.primary.main : theme.palette.primary.main3,
+    color: isSelected ? theme.palette.primary.main3 : theme.palette.primary.main2,
     transition: 'background-color 0.3s ease, color 0.3s ease',
     '&:hover': {
-        backgroundColor: !isSelected && 'rgba(47, 131, 233, 0.2)',
+        backgroundColor: !isSelected && theme.palette.primary.main4,
     },
 }));
 

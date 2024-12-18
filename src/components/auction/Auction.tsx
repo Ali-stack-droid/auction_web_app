@@ -61,7 +61,7 @@ const Auction = () => {
                     {isCurrentAuction && (
                         <Button
                             variant="outlined"
-                            sx={{ textTransform: 'none', color: '#212121', borderColor: theme.palette.primary.main }}
+                            sx={{ textTransform: 'none', color: theme.palette.primary.main5, borderColor: theme.palette.primary.main }}
                         >
                             Add Auction
                         </Button>
@@ -80,7 +80,7 @@ const Auction = () => {
                             sx={{
                                 textTransform: 'none',
                                 backgroundColor: isCurrentAuction ? `${theme.palette.primary.main} !important` : "inherit",
-                                color: isCurrentAuction ? "white !important" : "#212121 !important",
+                                color: (isCurrentAuction ? "white" : theme.palette.primary.main5),
                                 transition: 'background 0.2s ease-in-out, color 0.2s ease-in-out',
                             }}
                         >
@@ -91,7 +91,7 @@ const Auction = () => {
                             sx={{
                                 textTransform: 'none',
                                 backgroundColor: isCurrentAuction ? "inherit" : `${theme.palette.primary.main} !important`,
-                                color: isCurrentAuction ? "#212121 !important" : "white !important",
+                                color: (isCurrentAuction ? theme.palette.primary.main5 : "white") + " !important",
                                 transition: 'background 0.2s ease-in-out, color 0.2s ease-in-out',
                             }}
                         >

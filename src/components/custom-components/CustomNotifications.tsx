@@ -8,7 +8,8 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
-    Avatar
+    Avatar,
+    useTheme
 } from '@mui/material';
 import {
     Check as CheckIcon
@@ -39,6 +40,7 @@ const notifications = [
 ];
 
 const CustomNotifications = () => {
+    const theme: any = useTheme()
     const handleMarkAsRead = (id: any) => {
         console.log(`Mark notification ${id} as read`);
     };
@@ -49,7 +51,7 @@ const CustomNotifications = () => {
                 maxHeight: '300px',
                 overflowY: 'auto',
                 padding: '8px',
-                border: '1px solid #ccc',
+                border: `1px solid ${theme.palette.primary.main6}`,
                 borderRadius: '8px',
             }}
         >
@@ -65,7 +67,7 @@ const CustomNotifications = () => {
                             borderRadius: '4px',
                             transition: 'background-color 0.3s',
                             '&:hover': {
-                                backgroundColor: '#f5f5f5',
+                                backgroundColor: theme.palette.primary.main4,
                             },
                         }}
                     >

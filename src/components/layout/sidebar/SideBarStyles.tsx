@@ -1,4 +1,5 @@
 import { makeStyles } from '@mui/styles';
+import theme from '../../../theme';
 
 const useSideBarStyles = makeStyles({
     sideBarContainer: {
@@ -9,7 +10,7 @@ const useSideBarStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        borderRight: '1px solid #DBDFED',
+        borderRight: `1px solid ${theme.palette.primary.main6}`,
         padding: '0 12px'
     },
     logo: {
@@ -21,7 +22,7 @@ const useSideBarStyles = makeStyles({
         width: '100%',
         fontSize: '16px',
         fontWeight: '500',
-        color: '#333333',
+        color: theme.palette.primary.main5,
         textAlign: 'left'
     },
     navText: {

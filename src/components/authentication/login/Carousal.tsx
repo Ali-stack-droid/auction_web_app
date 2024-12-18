@@ -4,8 +4,9 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { useCarousalStyles } from './LoginStyles';
 
 const Carousel = () => {
-    const theme = useTheme();
+    const theme: any = useTheme();
     const primaryColor = theme.palette.primary.main;
+
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const classes = useCarousalStyles();
 
@@ -93,7 +94,7 @@ const Carousel = () => {
                             backgroundColor: currentIndex === index ? primaryColor : 'transparent',
                             border: `2px solid ${primaryColor}`,
                             '& svg': {
-                                fill: currentIndex === index ? primaryColor : 'white',
+                                fill: currentIndex === index ? primaryColor : theme.palette.primary.main3,
                                 transition: 'fill 0.5s ease-in-out',
                             },
                         }}

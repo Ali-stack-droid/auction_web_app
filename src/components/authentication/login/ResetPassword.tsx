@@ -64,7 +64,7 @@ const ResetPassword = () => {
                             onKeyDown={(e: any) => handleKeyDown(e, index)}
                             inputProps={{
                                 maxLength: 1,
-                                style: { textAlign: 'center', fontSize: 32, color: theme.palette.secondary.main, overflow: 'hidden' },
+                                style: { textAlign: 'center', fontSize: 32, color: theme.palette.primary.main8, overflow: 'hidden' },
                                 inputMode: 'numeric',
                             }}
                         />
@@ -77,7 +77,7 @@ const ResetPassword = () => {
                     sx={{ mt: 2 }}
                     onClick={handleFormSubmit}
                 >
-                    {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : 'Continue'}
+                    {isSubmitting ? <CircularProgress sx={{ color: theme.palette.primary.main3 }} /> : 'Continue'}
                 </CustomButton>
                 {/* Link to go back to Login page */}
                 <Box mt={2} textAlign="center">

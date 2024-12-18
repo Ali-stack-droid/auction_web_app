@@ -10,6 +10,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
 import { useSetNewPasswordStyles } from './LoginStyles';  // Import the new styles
+import theme from '../../../theme';
 
 const SetNewPassword = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
@@ -133,7 +134,7 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
                         variant="contained"
                         className={classes.buttonWrapper}
                     >
-                        {isSubmitting ? <CircularProgress sx={{ color: 'white' }} /> : 'Reset Password'}
+                        {isSubmitting ? <CircularProgress sx={{ color: theme.palette.primary.main3 }} /> : 'Reset Password'}
                     </CustomButton>
                 </form>
 

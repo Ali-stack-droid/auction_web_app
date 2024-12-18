@@ -1,4 +1,5 @@
 import { makeStyles } from '@mui/styles';
+import theme from '../../../theme';
 
 const useHeaderStyles = makeStyles({
     headerContainer: {
@@ -16,14 +17,14 @@ const useHeaderStyles = makeStyles({
         gap: '4px',
     },
     dashboard: {
-        color: '#383838',
+        color: theme.palette.primary.main2,
         display: 'flex',
         alignItems: 'center',
         fontSize: 14,
         marginRight: 1,
     },
     auction: {
-        color: '#383838',
+        color: theme.palette.primary.main2,
         display: 'flex',
         alignItems: 'center',
         gap: 5,
@@ -37,7 +38,7 @@ const useHeaderStyles = makeStyles({
         color: 'gray',
         '& span': {
             cursor: 'pointer',
-            color: '#1976d2',
+            color: theme.palette.primary.main,
         },
     },
     centerSection: {
@@ -54,37 +55,24 @@ const useHeaderStyles = makeStyles({
         position: 'absolute',
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: '#2F83E9',
-        border: '1px solid #DBDFED',
+        backgroundColor: theme.palette.primary.main,
+        border: `1px solid ${theme.palette.primary.main6}`,
         height: '100%',
         borderRadius: '0 15px 15px 0',
         right: 0
-    },
-    rightSection: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        border: '1px solid red'
-    },
-    iconButton: {
-        '& .appBarIcons': {
-            color: '#C4C4C4',
-            height: '30px',
-            width: '30px',
-        },
     },
     avatar: {
         height: '30px',
         width: '30px',
         fontSize: 16,
-        border: '2px solid #C4C4C4',
-        backgroundColor: '#2F83E9'
+        border: `2px solid ${theme.palette.primary.main7}`,
+        backgroundColor: theme.palette.primary.main
     },
     badge: {
         '& .MuiBadge-badge': {
             fontSize: 10,
-            backgroundColor: '#FF5630',
-            color: '#fff',
+            backgroundColor: theme.palette.secondary.main,
+            color: theme.palette.primary.main3,
         },
     },
 });
