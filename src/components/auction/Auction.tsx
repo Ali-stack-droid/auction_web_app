@@ -1,35 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Box,
-    Button,
-    Menu,
-    MenuItem,
-    Typography,
     Fade,
-    ToggleButton,
-    ToggleButtonGroup,
+    Container,
+    Grid,
 } from '@mui/material';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import theme from '../../theme';
+import { useNavigate } from 'react-router-dom';
+import AuctionCard from './AuctionCard';
+import CustomDialogue from '../custom-components/CustomDialogue';
 import auctionData from './auctionData';
-import AuctionContent from './AuctionContent';
+import AuctionHeader from './components/AuctionHeader';
 
-const Auction = () => {
+const Auction = ({ type }: { type: string }) => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Menu anchor
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
     const [filteredData, setFilteredData] = useState(auctionData); // Filtered data state
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
 
-    // Handle Menu Open/Close
-    const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
-    const handleMenuClose = () => setAnchorEl(null);
-
-    // Handle Filter Selection
-    const handleFilterChange = (location: string) => {
-        setSelectedLocation((prev: any) => (prev === location ? null : location)); // Toggle location filter
-        handleMenuClose(); // Close menu after selection
+    // Open confirmation modal
+    const handleDeleteAuction = (id: string) => {
+        setDeleteAuctionId(id);
+        setConfirmDelete(true);
     };
+
+    // Close modal
+    const handleCloseModal = () => {
+        setConfirmDelete(false);
+        setDeleteAuctionId(null);
+    };
+
+    // Confirm deletion
+    const handleConfirmDelete = () => {
+        if (deleteAuctionId) {
+            handleDelete(deleteAuctionId); // Call the delete handler
+        }
+        handleCloseModal();
+    };
+
+    const navigate = useNavigate()
+
+    // Handle Edit
+    const handleEdit = (id: string) => {
+        navigate(`edit/${id}`); // Navigate to the edit route with auction ID
+    };
+
+    // Handle Delete
+    const handleDelete = (id: string) => {
+        const updatedData = filteredData.filter((auction: any) => auction.id !== id); // Remove auction by ID
+        setFilteredData(updatedData); // Update state with filtered data
+    };
+
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
@@ -46,17 +68,40 @@ const Auction = () => {
     }, [isCurrentAuction, selectedLocation]);
 
     return (
-        <AuctionContent
-            isCurrentAuction={isCurrentAuction}
-            setIsCurrentAuction={setIsCurrentAuction}
-            anchorEl={anchorEl}
-            handleMenuOpen={handleMenuOpen}
-            handleMenuClose={handleMenuClose}
-            handleFilterChange={handleFilterChange}
-            selectedLocation={selectedLocation}
-            fadeIn={fadeIn}
-            filteredData={filteredData}
-        />
+        <Box sx={{ padding: 2 }}>
+            <AuctionHeader
+                type={type}
+                isCurrent={isCurrentAuction}
+                onToggle={() => setIsCurrentAuction((prev) => !prev)}
+                selectedLocation={selectedLocation}
+                setSelectedLocation={setSelectedLocation}
+            />
+
+            {/* Auction Cards */}
+            <Fade in={fadeIn} timeout={200}>
+                <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                    <Grid container spacing={3}>
+                        {filteredData.map((auction: any) => (
+                            <Grid item xs={12} sm={6} md={4} xl={3} key={auction.id}>
+                                <AuctionCard
+                                    auction={auction}
+                                    handleEdit={handleEdit}
+                                    handleDelete={() => handleDeleteAuction(auction.id)}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </Fade>
+
+            {/* Confirmation Modal */}
+            <CustomDialogue
+                confirmDelete={confirmDelete}
+                handleCloseModal={handleCloseModal}
+                handleConfirmDelete={handleConfirmDelete}
+            />
+
+        </Box>
     );
 };
 

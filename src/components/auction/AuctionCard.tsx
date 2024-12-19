@@ -1,8 +1,12 @@
 import { Card, CardContent, CardMedia, Typography, Button, Tooltip, Box } from '@mui/material';
-import { useAuctionCardStyles } from './AuctionStyles';
 import AuctionDetails from './AuctionDetails';
+import { useAuctionCardStyles } from './AuctionStyles';
 
-const AuctionCard = ({ auction }: any) => {
+const AuctionCard = ({
+    auction,
+    handleEdit,
+    handleDelete
+}: any) => {
     const classes = useAuctionCardStyles();
 
     return (
@@ -39,10 +43,10 @@ const AuctionCard = ({ auction }: any) => {
 
                 {/* Action Buttons */}
                 <Box className={classes.actionButtons}>
-                    <Button variant="contained" size="small" color="primary">
+                    <Button variant="contained" size="small" color="primary" onClick={() => handleEdit(auction.id)}>
                         Edit
                     </Button>
-                    <Button variant="contained" size="small" color="error">
+                    <Button variant="contained" size="small" color="error" onClick={() => handleDelete(auction.id)}>
                         Delete
                     </Button>
                 </Box>

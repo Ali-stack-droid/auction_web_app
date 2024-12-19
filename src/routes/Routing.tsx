@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { Box } from '@mui/material';
 import TempComponent from './TempComponent';
 import AppProvider from '../components/layout/AppProvider';
+import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
 const Login = React.lazy(() => import('../components/authentication/Login'));
@@ -51,10 +52,10 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             }
                         />
                         <Route
-                            path="/auction"
+                            path="/auction/*"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <Auction />
+                                    <AuctionRoutes />
                                 </ProtectedRoute>
                             }
                         />
