@@ -43,10 +43,10 @@ const AuctionCard = ({
 
                 {/* Action Buttons */}
                 <Box className={classes.actionButtons}>
-                    <Button variant="contained" size="small" color="primary" onClick={() => handleEdit(auction.id)}>
+                    <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(auction.id)}>
                         Edit
                     </Button>
-                    <Button variant="contained" size="small" color="error" onClick={() => handleDelete(auction.id)}>
+                    <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDelete(auction.id)}>
                         Delete
                     </Button>
                 </Box>

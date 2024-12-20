@@ -20,6 +20,7 @@ export const useAuctionCardStyles = makeStyles({
     content: {
         padding: 0,
         marginTop: 20,
+        // minHeight: "70px",
     },
     titleContainer: {
         display: 'flex',
@@ -39,12 +40,22 @@ export const useAuctionCardStyles = makeStyles({
         marginLeft: 10,
         fontSize: 13,
         padding: 0,
+        minWidth: "208.68px!important",
+        mineight: "38.34px !important",
+        border: '1px solid red',
+
     },
     actionButtons: {
         display: 'flex',
         alignItems: 'start',
         gap: 15,
+        marginTop: "20px"
     },
+    actionButton: {
+        width: "95px",
+        height: "37.47px",
+
+    }
 });
 
 export const useAuctionDetailStyles = makeStyles({
