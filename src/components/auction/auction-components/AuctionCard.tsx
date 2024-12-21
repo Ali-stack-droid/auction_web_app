@@ -30,7 +30,7 @@ const AuctionCard = ({
                     {/* Title */}
                     <Tooltip title={cardData.name}>
                         <Typography className={classes.title} gutterBottom>
-                            {cardData.name.length > 33 ? `${cardData.name.substring(0, 33)}...` : cardData.name}
+                            {cardData.name.length > 43 ? `${cardData.name.substring(0, 33)}...` : cardData.name}
                         </Typography>
                     </Tooltip>
 

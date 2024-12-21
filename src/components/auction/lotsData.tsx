@@ -1,0 +1,13 @@
+const lots = [
+    { id: 1, lotNumber: "1", name: "Elegant Gold Necklace Collection", description: "A vintage gold necklace with intricate design.", countDown: "1 day", location: "New York, USA", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "current" },
+    { id: 2, lotNumber: "2", name: "Luxury Diamond Ring Collection", description: "A rare diamond ring with flawless clarity.", countDown: "2 days", location: "United Kingdom, London", image: `${process.env.PUBLIC_URL}/assets/pngs/mercedes.png`, type: "past" },
+    { id: 3, lotNumber: "3", name: "Beautiful Pearl Earrings Collection", description: "A pair of elegant pearl earrings.", countDown: "3 days", location: "Pakistan, Islamabad", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "current" },
+    { id: 4, lotNumber: "4", name: "Vintage Antique Brooch Collection", description: "A beautifully crafted antique brooch.", countDown: "5 days", location: "New York, USA", image: `${process.env.PUBLIC_URL}/assets/pngs/mercedes.png`, type: "past" },
+    { id: 5, lotNumber: "5", name: "Stylish Silver Bracelet Collection", description: "A delicate silver bracelet with intricate carvings.", countDown: "7 days", location: "United Kingdom, London", image: `${process.env.PUBLIC_URL}/assets/pngs/watch.png`, type: "current" },
+    { id: 6, lotNumber: "6", name: "Classic Vintage Watch Collection", description: "A rare vintage wristwatch from the 1950s.", countDown: "9 days", location: "Pakistan, Islamabad", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "past" },
+    { id: 7, lotNumber: "7", name: "Timeless Gold Ring Collection", description: "A luxurious gold ring with a custom design.", countDown: "11 days", location: "New York, USA", image: `${process.env.PUBLIC_URL}/assets/pngs/watch.png`, type: "current" },
+    { id: 8, lotNumber: "8", name: "Sapphire Pendant Jewelry Collection", description: "A sapphire pendant with a modern touch.", countDown: "13 days", location: "United Kingdom, London", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "past" },
+    { id: 9, lotNumber: "9", name: "Exquisite Emerald Brooch Collection", description: "A beautiful emerald brooch with antique value.", countDown: "15 days", location: "Pakistan, Islamabad", image: `${process.env.PUBLIC_URL}/assets/pngs/mercedes.png`, type: "current" },
+]
+
+export default lots;

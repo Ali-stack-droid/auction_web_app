@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import AuctionCard from './auction-components/AuctionCard';
+import lots from './lotsData';
 
 // Define the type interface for LotsData
 interface Lot {
@@ -25,27 +26,15 @@ interface Lot {
 const Lots = () => {
     const [isCurrentLot, setIsCurrentLot] = useState(true); // Toggle between Current and Past Lots
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
-    const [lotsData, setLotsData] = useState<Lot[]>([]); // Original data state
+    const [lotsData, setLotsData] = useState<Lot[]>(lots); // Original data state
     const [filteredData, setFilteredData] = useState<Lot[]>([]); // Filtered data state
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteLotId, setDeleteLotId] = useState<string | null>(null);
 
     useEffect(() => {
-        const initialData: Lot[] = [
-            { id: 1, lotNumber: "1", name: "Gold Necklace", description: "A vintage gold necklace with intricate design.", countDown: "1 day", location: "New York, USA", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "current" },
-            { id: 2, lotNumber: "2", name: "Diamond Ring", description: "A rare diamond ring with flawless clarity.", countDown: "2 days", location: "United Kingdom, London", image: `${process.env.PUBLIC_URL}/assets/pngs/mercedes.png`, type: "past" },
-            { id: 3, lotNumber: "3", name: "Pearl Earrings", description: "A pair of elegant pearl earrings.", countDown: "3 days", location: "Pakistan, Islamabad", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "current" },
-            { id: 4, lotNumber: "4", name: "Antique Brooch", description: "A beautifully crafted antique brooch.", countDown: "5 days", location: "New York, USA", image: `${process.env.PUBLIC_URL}/assets/pngs/mercedes.png`, type: "past" },
-            { id: 5, lotNumber: "5", name: "Silver Bracelet", description: "A delicate silver bracelet with intricate carvings.", countDown: "7 days", location: "United Kingdom, London", image: `${process.env.PUBLIC_URL}/assets/pngs/watch.png`, type: "current" },
-            { id: 6, lotNumber: "6", name: "Vintage Watch", description: "A rare vintage wristwatch from the 1950s.", countDown: "9 days", location: "Pakistan, Islamabad", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "past" },
-            { id: 7, lotNumber: "7", name: "Gold Ring", description: "A luxurious gold ring with a custom design.", countDown: "11 days", location: "New York, USA", image: `${process.env.PUBLIC_URL}/assets/pngs/watch.png`, type: "current" },
-            { id: 8, lotNumber: "8", name: "Sapphire Pendant", description: "A sapphire pendant with a modern touch.", countDown: "13 days", location: "United Kingdom, London", image: `${process.env.PUBLIC_URL}/assets/pngs/jacket.png`, type: "past" },
-            { id: 9, lotNumber: "9", name: "Emerald Brooch", description: "A beautiful emerald brooch with antique value.", countDown: "15 days", location: "Pakistan, Islamabad", image: `${process.env.PUBLIC_URL}/assets/pngs/mercedes.png`, type: "current" },
-        ];
-        setLotsData(initialData);
-        setFilteredData(initialData); // Initialize filtered data
-    }, []);
+        setFilteredData(lots)
+    }, [lots])
 
     // Open confirmation modal
     const handleDeleteLot = (id: string) => {
@@ -83,7 +72,7 @@ const Lots = () => {
     // Filtered Data based on `type` and `location`
     useEffect(() => {
         const newFilteredData = lotsData.filter((lot) => {
-            const matchesType = lot.countDown.includes(isCurrentLot ? "day" : "days");
+            const matchesType = lot.type === (isCurrentLot ? "current" : "past");
             const matchesLocation = selectedLocation ? lot.location === selectedLocation : true;
             return matchesType && matchesLocation;
         });

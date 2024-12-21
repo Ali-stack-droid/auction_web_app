@@ -63,6 +63,12 @@ export const useAuctionDetailStyles = makeStyles({
         flexDirection: 'column',
         gap: 10,
     },
+    lotContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: "space-between",
+        gap: 30,
+    },
     row: {
         display: 'flex',
         flexWrap: 'wrap',
