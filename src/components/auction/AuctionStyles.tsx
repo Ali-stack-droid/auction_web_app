@@ -3,13 +3,13 @@ import theme from '../../theme';
 
 export const useAuctionCardStyles = makeStyles({
     card: {
-        maxWidth: 345,
-        minHeight: 370,
-        padding: 15,
-        borderRadius: 15,
+        maxWidth: "345px",
+        minHeight: "370px",
+        padding: "15px",
+        borderRadius: "15px",
     },
     media: {
-        borderRadius: 15,
+        borderRadius: "15px",
     },
     contentWrapper: {
         display: 'flex',
@@ -18,32 +18,24 @@ export const useAuctionCardStyles = makeStyles({
         minHeight: '250px'
     },
     content: {
-        padding: 0,
-        marginTop: 20,
-        // minHeight: "70px",
-    },
-    titleContainer: {
+        marginTop: "15px",
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'start',
     },
     title: {
-        fontSize: 16,
+        fontSize: "18px",
         fontWeight: 600,
         color: theme.palette.primary.main1,
         flex: 1,
     },
-    button: {
-        height: "35px",
-        width: 100,
+    catalogButton: {
+        height: "37.47px",
+        width: "98.47px",
         textTransform: 'none',
-        marginLeft: 10,
-        fontSize: 13,
+        marginLeft: 15,
+        fontSize: 12,
         padding: 0,
-        minWidth: "208.68px!important",
-        mineight: "38.34px !important",
-        border: '1px solid red',
-
     },
     actionButtons: {
         display: 'flex',
@@ -52,9 +44,10 @@ export const useAuctionCardStyles = makeStyles({
         marginTop: "20px"
     },
     actionButton: {
+        textTransform: "none",
+        fontSize: "13px",
         width: "95px",
         height: "37.47px",
-
     }
 });
 
@@ -62,7 +55,7 @@ export const useAuctionDetailStyles = makeStyles({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        gap: 15,
+        gap: 10,
     },
     row: {
         display: 'flex',
@@ -76,11 +69,10 @@ export const useAuctionDetailStyles = makeStyles({
         gap: 8,
     },
     flexItem: {
-        flex: '1 1 auto',
-        minWidth: '120px',
+        // flex: '1',
     },
     text: {
-        fontSize: 13,
+        fontSize: "14px",
         color: theme.palette.primary.main2,
-    },
+    }
 });

@@ -5,7 +5,6 @@ import { useState } from 'react';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import theme from '../../../theme';
 import { useNavigate } from 'react-router-dom';
-import { makeStyles } from '@mui/styles';
 import { useLoginStyles, useResetPasswordStyles } from './LoginStyles'; // Assuming LoginStyles is correctly exported
 
 const ResetPassword = () => {
