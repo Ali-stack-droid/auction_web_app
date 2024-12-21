@@ -9,10 +9,15 @@ import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
 import theme from '../../../theme';
 import { SignInUser } from '../../Services/Methods';
+import { RootState } from '../../Redux/store';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../Redux/UserSlice';
 
 const LoginForm = ({ setIsAuthenticated }: any) => {
-    const navigate = useNavigate();
+    const dispatch = useDispatch()
 
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [openModal, setOpenModal] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,10 +63,11 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
 
         try {
             const response =  await SignInUser(payload)
+            dispatch(setUser(response.data))
             console.log("login api response =", JSON.stringify(response, null, 2));
 
         } catch (error:any) {
-            console.log(error);
+            console.log(error.response);
         }
     }
 
