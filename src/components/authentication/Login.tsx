@@ -39,6 +39,8 @@ const Login = ({ setIsAuthenticated }: any) => {
         return () => clearTimeout(timer); // Clean up the timer
     }, [location.pathname]);
 
+  
+
     return (
         <Box className={classes.root}>
             {/* Carousel */}

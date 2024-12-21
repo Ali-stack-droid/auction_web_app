@@ -8,6 +8,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
 import theme from '../../../theme';
+import { SignInUser } from '../../Services/Methods';
 
 const LoginForm = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
@@ -47,6 +48,22 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
             }, 2000);
         },
     });
+
+    const LoginUser = async() => {
+
+        let payload = {
+            email: "uxman@gmail.com",
+            password: "1010"
+        }
+
+        try {
+            const response =  await SignInUser(payload)
+            console.log("login api response =", JSON.stringify(response, null, 2));
+
+        } catch (error:any) {
+            console.log(error);
+        }
+    }
 
     const togglePasswordVisibility = () => {
         setShowPassword((prev) => !prev);
@@ -113,7 +130,11 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
                             }}
                         />
                         <Box display="flex" justifyContent="flex-end" mt={1}>
-                            <Link onClick={() => navigate('/forgot-password')} variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
+                            <Link onClick={() => 
+                    LoginUser()
+
+                                // navigate('/forgot-password')
+                                } variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
                                 Forgot password?
                             </Link>
                         </Box>
