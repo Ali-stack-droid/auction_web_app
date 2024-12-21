@@ -34,33 +34,24 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
         onSubmit: (values) => {
             setIsSubmitting(true)
             setTimeout(() => {
-                // if (values.email === 'test@gmail.com' && values.password === "testadmin") {
                 setOpenModal(true)
                 localStorage.setItem('token', 'qwerty')
                 setTimeout(() => {
                     navigate('/')
+                    // loginUser(values)
                     setIsAuthenticated(true)
                 }, 3000);
-                // } else {
-                // localStorage.removeItem('token')
-                // }
                 setIsSubmitting(false)
             }, 2000);
         },
     });
 
-    const LoginUser = async() => {
-
-        let payload = {
-            email: "uxman@gmail.com",
-            password: "1010"
-        }
-
+    const loginUser = async (payload: LogInPayload) => {
         try {
-            const response =  await SignInUser(payload)
+            // check status and show error if any
+            const response = await SignInUser(payload)
             console.log("login api response =", JSON.stringify(response, null, 2));
-
-        } catch (error:any) {
+        } catch (error: any) {
             console.log(error);
         }
     }
@@ -130,11 +121,10 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
                             }}
                         />
                         <Box display="flex" justifyContent="flex-end" mt={1}>
-                            <Link onClick={() => 
-                    LoginUser()
-
-                                // navigate('/forgot-password')
-                                } variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
+                            <Link onClick={() =>
+                                navigate('/forgot-password')
+                            }
+                                variant="body2" fontWeight={400} underline="hover" sx={{ cursor: 'pointer' }}>
                                 Forgot password?
                             </Link>
                         </Box>

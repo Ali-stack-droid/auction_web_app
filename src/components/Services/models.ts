@@ -1,4 +1,4 @@
-interface SingInPayload {
+interface LogInPayload {
     email: string,
     password: string
 }

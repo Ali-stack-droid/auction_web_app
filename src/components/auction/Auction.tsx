@@ -6,12 +6,12 @@ import {
     Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import AuctionCard from './AuctionCard';
+import AuctionCard from './auction-components/AuctionCard';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import auctionData from './auctionData';
-import AuctionHeader from './components/AuctionHeader';
+import AuctionHeader from './auction-components/AuctionHeader';
 
-const Auction = ({ type }: { type: string }) => {
+const Auction = () => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
     const [filteredData, setFilteredData] = useState(auctionData); // Filtered data state
@@ -67,10 +67,11 @@ const Auction = ({ type }: { type: string }) => {
         }, 200);
     }, [isCurrentAuction, selectedLocation]);
 
+
     return (
         <Box sx={{ padding: 2 }}>
             <AuctionHeader
-                type={type}
+                headerType={"auction"}
                 isCurrent={isCurrentAuction}
                 onToggle={() => setIsCurrentAuction((prev) => !prev)}
                 selectedLocation={selectedLocation}
@@ -84,7 +85,8 @@ const Auction = ({ type }: { type: string }) => {
                         {filteredData.map((auction: any) => (
                             <Grid item xs={12} sm={6} md={4} xl={3} key={auction.id}>
                                 <AuctionCard
-                                    auction={auction}
+                                    headerType={"auction"}
+                                    cardData={auction}
                                     handleEdit={handleEdit}
                                     handleDelete={() => handleDeleteAuction(auction.id)}
                                 />

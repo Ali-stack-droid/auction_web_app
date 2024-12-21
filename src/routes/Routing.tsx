@@ -1,14 +1,16 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import TempComponent from './TempComponent';
 import AppProvider from '../components/layout/AppProvider';
-import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
+import Auction from '../components/auction/Auction';
+import Lots from '../components/auction/Lots';
+// import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
 const Login = React.lazy(() => import('../components/authentication/Login'));
 const Dashboard = React.lazy(() => import('../components/dashboard/Dashboard'));
-const Auction = React.lazy(() => import('../components/auction/Auction'));
+// const Auction = React.lazy(() => import('../components/auction/Auction'));
 const LiveStreaming = React.lazy(() => import('../components/live-streaming/LiveStreaming'));
 const PaymentTracking = React.lazy(() => import('../components/payment-tracking/PaymentTracking'));
 
@@ -21,7 +23,7 @@ const ProtectedRoute = ({ isAuthenticated, children }: any) => {
 };
 
 const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
-
+    const [selectedAuction, setSelectedAuction] = useState(0)
     return (
         <Box style={{ display: 'flex' }}>
             {/* Main Content Area */}
@@ -52,10 +54,18 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             }
                         />
                         <Route
-                            path="/auction/*"
+                            path="/auction"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <AuctionRoutes />
+                                    <Auction />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/auction/lots"
+                            element={
+                                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                    <Lots />
                                 </ProtectedRoute>
                             }
                         />

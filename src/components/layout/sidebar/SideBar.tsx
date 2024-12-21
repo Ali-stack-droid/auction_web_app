@@ -16,7 +16,7 @@ const SideBar = () => {
 
     const navItems = [
         { label: 'Dashboard', path: '/dashboard', icon: <GridViewRoundedIcon /> },
-        { label: 'Auction', path: '/auction/current-auctions', icon: <FestivalRoundedIcon /> },
+        { label: 'Auction', path: '/auction', icon: <FestivalRoundedIcon /> },
         { label: 'Live Streaming', path: '/live', icon: <OndemandVideoRoundedIcon /> },
         { label: 'Payment Tracking', path: '/payment', icon: <PriceChangeRoundedIcon /> },
         { label: 'Logout', path: '/logout', icon: <LogoutRoundedIcon /> },
