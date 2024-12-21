@@ -4,7 +4,7 @@ import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import ViewInArRoundedIcon from '@mui/icons-material/ViewInArRounded';
 import { useAuctionDetailStyles } from './AuctionStyles';
 
-const AuctionDetails = ({ auction }: any) => {
+const AuctionDetails = ({ auctionDetails }: any) => {
     const classes = useAuctionDetailStyles();
 
     return (
@@ -14,13 +14,13 @@ const AuctionDetails = ({ auction }: any) => {
                 {/* Location */}
                 <Box className={classes.iconText}>
                     <PlaceIcon fontSize="small" color="primary" />
-                    <Typography className={classes.text}>{auction.location}</Typography>
+                    <Typography className={classes.text}>{auctionDetails.location}</Typography>
                 </Box>
                 {/* Date Range */}
                 <Box className={`${classes.iconText} ${classes.flexItem}`}>
                     <WatchLaterRoundedIcon fontSize="small" color="primary" />
                     <Typography className={classes.text} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                        {auction.dateRange}
+                        {auctionDetails.dateRange}
                     </Typography>
                 </Box>
             </Box>
@@ -30,7 +30,7 @@ const AuctionDetails = ({ auction }: any) => {
                 {/* Lots Available */}
                 <Box className={classes.iconText}>
                     <ViewInArRoundedIcon fontSize="small" color="primary" />
-                    <Typography className={classes.text}>{auction.lotsAvailable}</Typography>
+                    <Typography className={classes.text}>{auctionDetails.lotsAvailable}</Typography>
                 </Box>
             </Box>
         </Box>

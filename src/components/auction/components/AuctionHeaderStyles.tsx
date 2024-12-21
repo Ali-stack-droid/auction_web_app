@@ -1,3 +1,4 @@
+
 import { makeStyles } from '@mui/styles';
 
 const useAuctionHeaderStyles = makeStyles((theme: any) => ({
@@ -30,26 +31,24 @@ const useAuctionHeaderStyles = makeStyles((theme: any) => ({
         border: '1px solid #E2E8F0',
         height: '40px',
         borderRadius: '5px',
-        minWidth: '200px',
-        maxWidth: '200px',
+        minWidth: '260px',
+        maxWidth: '260px',
     },
     toggleButton: {
         textTransform: 'none',
-        transition: 'background 0.2s ease-in-out, color 0.2s ease-in-out',
+        transition: 'background 0.25s ease-in-out, color 0.3s ease-in-out, font-size 0.25s ease-in-out',
         border: 'none',
         borderRadius: '5px !important',
+        width: "120px",
         '&.current': {
-            fontSize: '9px',
+            fontSize: '11px',
             backgroundColor: `${theme.palette.primary.main} !important`,
             color: 'white !important',
-            width: "100px"
         },
         '&.past': {
-            fontSize: '8px',
+            fontSize: '10px',
             backgroundColor: 'inherit',
             color: `${theme.palette.primary.main5} !important`,
-            width: "45%",
-            whiteSpace: 'nowrap'
         },
     },
     filterButton: {

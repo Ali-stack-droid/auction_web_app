@@ -1,6 +1,7 @@
-import { Card, CardContent, CardMedia, Typography, Button, Tooltip, Box } from '@mui/material';
+import { Card, CardMedia, Typography, Button, Tooltip, Box } from '@mui/material';
 import AuctionDetails from './AuctionDetails';
 import { useAuctionCardStyles } from './AuctionStyles';
+import { useNavigate } from 'react-router-dom';
 
 const AuctionCard = ({
     auction,
@@ -8,7 +9,7 @@ const AuctionCard = ({
     handleDelete
 }: any) => {
     const classes = useAuctionCardStyles();
-
+    const navigate = useNavigate();
     return (
         <Card className={classes.card} elevation={2} >
             {/* Auction Image */}
@@ -22,24 +23,21 @@ const AuctionCard = ({
             <Box className={classes.contentWrapper}>
                 {/* Auction Details */}
                 <Box className={classes.content}>
-                    <Box className={classes.titleContainer}>
+                    {/* Title */}
+                    <Tooltip title={auction.name}>
+                        <Typography className={classes.title} gutterBottom>
+                            {auction.name.length > 33 ? `${auction.name.substring(0, 33)}...` : auction.name}
+                        </Typography>
+                    </Tooltip>
 
-                        {/* Title */}
-                        <Tooltip title={auction.name}>
-                            <Typography className={classes.title} gutterBottom>
-                                {auction.name.length > 33 ? `${auction.name.substring(0, 33)}...` : auction.name}
-                            </Typography>
-                        </Tooltip>
-
-                        {/* View Catalog Button */}
-                        <Button variant="contained" size="small" className={classes.button}>
-                            View Catalog
-                        </Button>
-                    </Box>
+                    {/* View Catalog Button */}
+                    <Button onClick={() => navigate('/auction/current-lots')} variant="contained" size="small" className={classes.catalogButton}>
+                        View Catalog
+                    </Button>
                 </Box>
 
                 {/* Location, Date, and Lots */}
-                <AuctionDetails auction={auction} />
+                <AuctionDetails auctionDetails={auction.details} />
 
                 {/* Action Buttons */}
                 <Box className={classes.actionButtons}>

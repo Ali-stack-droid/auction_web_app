@@ -6,8 +6,6 @@ import {
     Badge,
     Avatar,
     Box,
-    Breadcrumbs,
-    Link,
     Button,
     useMediaQuery,
     useTheme,
@@ -26,7 +24,6 @@ import useHeaderStyles from './HeaderStyles';
 import HomeIcon from '@mui/icons-material/Home';
 import {
     Logout as LogoutIcon,
-    Person as PersonIcon,
 } from '@mui/icons-material';
 import CustomNotifications from '../../custom-components/CustomNotifications';
 import { useNavigate } from 'react-router-dom';

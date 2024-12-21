@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default ({ setIsAuthenticated }: any) => {
+const TempComponent = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
     useEffect(() => {
         localStorage.removeItem('token');
@@ -11,3 +11,4 @@ export default ({ setIsAuthenticated }: any) => {
     return (<></>)
 }
 
+export default TempComponent

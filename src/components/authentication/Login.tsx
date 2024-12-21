@@ -1,4 +1,4 @@
-import { Box, Fade, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Fade } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import Carousel from './login/Carousal';
 import LoginForm from './login/LoginForm';
@@ -9,8 +9,6 @@ import { useState, useEffect } from 'react';
 import { useLoginStyles } from './login/LoginStyles';
 
 const Login = ({ setIsAuthenticated }: any) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
     const classes = useLoginStyles();
 

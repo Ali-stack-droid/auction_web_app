@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForgotPasswordStyles } from './LoginStyles';
 import theme from '../../../theme';
 
-const ForgotPassword = ({ }: any) => {
+const ForgotPassword = () => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const classes = useForgotPasswordStyles();

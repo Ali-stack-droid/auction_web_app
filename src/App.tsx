@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Routing from './routes/Routing';
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
