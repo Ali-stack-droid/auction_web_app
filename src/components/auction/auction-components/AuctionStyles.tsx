@@ -54,6 +54,30 @@ export const useAuctionCardStyles = makeStyles({
         fontWeight: "600",
         fontSize: "11px"
 
+    },
+    soldButton: {
+        backgroundColor: "#009045",
+        position: 'absolute',
+        top: "10px",
+        left: "10px",
+        pointerEvents: 'none', // Prevent interaction while keeping styles
+        opacity: 0.9, // Maintain original appearance
+        width: "98.34px",
+        height: "37.47px",
+        fontSize: "13px",
+        textTransform: "none"
+    },
+    unSoldButton: {
+        backgroundColor: "#C91818",
+        position: 'absolute',
+        top: "10px",
+        left: "10px",
+        pointerEvents: 'none', // Prevent interaction while keeping styles
+        opacity: 0.9, // Maintain original appearance
+        width: "98.34px",
+        height: "37.47px",
+        fontSize: "13px",
+        textTransform: "none"
     }
 });
 

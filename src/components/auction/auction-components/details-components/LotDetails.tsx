@@ -10,11 +10,12 @@ const LotDetails = ({ lotData }: any) => {
 
     return (
         <Box className={classes.lotContainer}>
-            <Typography fontSize={12} width={"70%"}>
-                {lotData.description}
+            <Typography fontSize={12} width={"70%"} height={'50px'}>
+                {lotData.description.length > 43 ? `${lotData.description.substring(0, 100)}...` : lotData.description}
+
             </Typography>
-            <Box display={'flex'} justifyContent={"space-between"} alignItems={"center"} >
-                <Box display={"flex"} flex={0.8}>
+            <Box display={'flex'} justifyContent={"space-between"} alignItems={"center"} flexWrap={'wrap'} >
+                <Box display={"flex"} flex={0.8} whiteSpace={'nowrap'}>
                     <Typography color={theme.palette.primary.main9} fontWeight={500}>Lot Number</Typography>
                     <Typography ml={0.5} color={theme.palette.primary.main2}>: #&nbsp;{lotData.lotNumber}</Typography>
                 </Box>

@@ -24,6 +24,9 @@ const SideBar = () => {
 
     const location = useLocation();
     const isSelected = (path: string) => {
+        if (path === "/auction") {
+            return location.pathname.replace(/\/+$/, '').includes(path);
+        }
         return path === location.pathname;
     }
 

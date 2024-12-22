@@ -13,17 +13,50 @@ const AuctionCard = ({
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
 
+    const handleCardMediaClick = () => {
+        if (headerType === "lots") {
+            navigate(`/auction/lots/details?lotId=${cardData.id}`);
+        }
+    };
 
     return (
         <Card className={classes.card} elevation={2} >
             {/* Auction Image */}
-            <CardMedia
-                component="img"
-                height="200"
-                image={cardData.image}
-                alt={headerType === "Auction" ? "Auction" : "Lot" + " Image"}
-                className={classes.media}
-            />
+            <Box sx={{
+                position: 'relative', // Ensure the button is positioned relative to the Box
+            }}>
+                <CardMedia
+                    sx={
+                        headerType === "lots" ? {
+                            cursor: headerType === "lots" ? "pointer" : "default",
+                            transition: 'transform 0.3s, box-shadow 0.3s',
+                            ...(headerType === "lots" && {
+                                '&:hover': {
+                                    transform: 'scale(1.01)',
+                                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                                },
+                            })
+                        } : {}
+                    }
+                    onClick={handleCardMediaClick}
+                    component="img"
+                    height="200"
+                    image={cardData.image}
+                    alt={headerType === "Auction" ? "Auction" : "Lot" + " Image"}
+                    className={classes.media}
+                />
+                {
+                    headerType === "lots" &&
+                    <Button
+                        variant="contained"
+                        size="small"
+                        className={`${classes.soldButton} ${!cardData.sold ? classes.unSoldButton : ''}`}
+                    >
+                        {cardData.sold ? "Sold" : "Unsold"}
+                    </Button>
+                }
+
+            </Box>
             <Box className={classes.contentWrapper}>
                 {/* Auction Details */}
                 <Box className={classes.content}>
@@ -38,13 +71,19 @@ const AuctionCard = ({
                     {headerType === "auction" ?
                         <Button onClick={() => navigate('/auction/lots')} variant="contained" size="small" className={classes.catalogButton}>
                             View Catalog
-                        </Button> :
+                        </Button>
+                        :
                         <Box>
                             <Typography className={classes.smallTitle} gutterBottom>
                                 Highest Bid
                             </Typography>
-                            <Button onClick={() => navigate('/auction/lots')} variant="contained" size="small" className={classes.catalogButton}>
-                                View Catalog
+                            <Button variant="contained" size="small" className={classes.catalogButton}
+                                sx={{
+                                    pointerEvents: 'none', // Prevent interaction while keeping styles
+                                    opacity: 1, // Maintain original appearance
+                                }}
+                            >
+                                {cardData.highestBid}
                             </Button>
                         </Box>
                     }
