@@ -54,7 +54,7 @@ const Dashboard = () => {
             <Box className={classes.dashboardContainer}>
                 {data.map((item, index) => (
                     <Card key={index} className={classes.card} elevation={0}>
-                        <CardContent className={classes.cardContent}>
+                        <CardContent>
                             <Box>
                                 <Box className={classes.cardHeader}>
                                     <Typography className={classes.cardTitle}>

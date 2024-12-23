@@ -17,15 +17,8 @@ const useDashboardStyles = makeStyles((theme: any) => ({
     },
     card: {
         width: "350px",
-        // height: '200px',
         borderRadius: "14px",
         border: `1px solid ${theme.palette.primary.main4}`,
-    },
-    cardContent: {
-        // height: "180px",
-        // display: 'flex',
-        // flexDirection: "column",
-        // justifyContent: "space-between",
     },
     cardHeader: {
         display: "flex",
