@@ -7,6 +7,8 @@ import Auction from '../components/auction/Auction';
 import Lots from '../components/auction/Lots';
 import LotDetailPage from '../components/auction/detail-pages/LotDetailPage';
 import AuctionDetailPage from '../components/auction/detail-pages/AuctionDetailPage';
+import CreateAuction from '../components/auction/create-edit-pages/CreateAuction';
+import CreatePage from '../components/auction/create-edit-pages/CreatePage';
 // import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
@@ -60,6 +62,14 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <Auction />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/auction/create"
+                            element={
+                                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                    <CreatePage />
                                 </ProtectedRoute>
                             }
                         />

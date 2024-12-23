@@ -26,6 +26,7 @@ const theme = {
       main7: "#C4C4C4",
       main8: "#19549F",
       main9: "#2D8CF0",
+      main10: "#383838",
     },
     secondary: {
       main: '#FF5630', // Set secondary color
