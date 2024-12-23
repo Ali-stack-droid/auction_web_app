@@ -6,6 +6,7 @@ import AppProvider from '../components/layout/AppProvider';
 import Auction from '../components/auction/Auction';
 import Lots from '../components/auction/Lots';
 import LotDetailPage from '../components/auction/detail-pages/LotDetailPage';
+import AuctionDetailPage from '../components/auction/detail-pages/AuctionDetailPage';
 // import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
@@ -75,6 +76,14 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <LotDetailPage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/auction/details"
+                            element={
+                                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                    <AuctionDetailPage />
                                 </ProtectedRoute>
                             }
                         />

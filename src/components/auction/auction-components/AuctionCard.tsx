@@ -16,6 +16,8 @@ const AuctionCard = ({
     const handleCardMediaClick = () => {
         if (headerType === "lots") {
             navigate(`/auction/lots/details?lotId=${cardData.id}`);
+        } else {
+            navigate(`/auction/details?aucId=${cardData.id}`);
         }
     };
 
