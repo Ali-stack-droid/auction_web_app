@@ -20,24 +20,12 @@ const AuctionCard = ({
     };
 
     return (
-        <Card className={classes.card} elevation={2} >
+        <Card className={classes.card} elevation={2}>
             {/* Auction Image */}
             <Box sx={{
                 position: 'relative', // Ensure the button is positioned relative to the Box
             }}>
                 <CardMedia
-                    sx={
-                        headerType === "lots" ? {
-                            cursor: headerType === "lots" ? "pointer" : "default",
-                            transition: 'transform 0.3s, box-shadow 0.3s',
-                            ...(headerType === "lots" && {
-                                '&:hover': {
-                                    transform: 'scale(1.01)',
-                                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-                                },
-                            })
-                        } : {}
-                    }
                     onClick={handleCardMediaClick}
                     component="img"
                     height="200"

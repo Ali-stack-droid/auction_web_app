@@ -12,10 +12,19 @@ import {
 import useDetailStyles from "./DetailPageStyles";
 import lotsData from "../lotsData";
 import { getQueryParam } from "../../../helper/GetQueryParam";
+import theme from "../../../theme";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
+import { useNavigate } from "react-router-dom";
+import CustomDialogue from "../../custom-components/CustomDialogue";
+import WinnerModal from "./WinnerModal";
 
 const LotDetailPage = () => {
     const classes = useDetailStyles();
     const [lotDetails, setLotDeatils]: any = useState({})
+    const [confirmDelete, setConfirmDelete] = useState(false)
+    const [deleteLotId, setDeleteLotId] = useState(0)
+    const [winnerModal, setWinnerModal] = useState(false)
 
     useEffect(() => {
         if (lotsData) {
@@ -23,29 +32,54 @@ const LotDetailPage = () => {
         }
     }, [lotsData])
 
+
+    const navigate = useNavigate()
+
+    // Handle Edit
+    const handleEdit = (id: string) => {
+        navigate(`edit/${id}`); // Navigate to the edit route with auction ID
+    };
+
+    // Open confirmation modal
+    const handleDeleteLot = (id: number) => {
+        setDeleteLotId(id);
+        setConfirmDelete(true);
+    };
+
+    // Close modal
+    const handleCloseModal = () => {
+        setConfirmDelete(false);
+        setDeleteLotId(0);
+    };
+
+    // Confirm deletion
+    const handleConfirmDelete = () => {
+        navigate('/auction/lots')
+        handleCloseModal();
+    };
+
+    const handleWinnerDetails = () => {
+        setWinnerModal(true)
+    }
+
     return (
-        <Box p={2} sx={{
-            // minHeight: "100vh" 
-        }}>
+        <Box p={2}>
             <Box>
-                <Typography className={classes.title}>
+                <Typography className={classes.title} pb={2}>
                     Lot Details
                 </Typography>
             </Box>
-            {JSON.stringify(lotDetails)}
             <Grid container spacing={4}>
                 {/* Left Section */}
                 <Grid item xs={12} md={6}>
-                    <Card sx={{ position: "relative", overflow: "visible" }}>
+                    <Card className={classes.card} elevation={2}>
                         {/* Main Image */}
                         <CardMedia
                             component="img"
-                            height="300"
-                            image="https://via.placeholder.com/500"
+                            image={lotDetails.image}
                             alt="Lot Image"
-                            sx={{ borderRadius: "8px" }}
+                            className={classes.media}
                         />
-                        {/* Unsold Badge */}
                         <Button
                             variant="contained"
                             size="small"
@@ -55,93 +89,108 @@ const LotDetailPage = () => {
                         </Button>
 
                         {/* Thumbnails */}
-                        <Box display="flex" justifyContent="center" mt={2} gap={2}>
-                            {[...Array(4)].map((_, index) => (
+                        <Box className={classes.thmbnailsWrapper}>
+                            {[...Array(3)].map((_, index) => (
                                 <CardMedia
                                     key={index}
                                     component="img"
-                                    image="https://via.placeholder.com/100"
+                                    image={lotDetails.image}
                                     alt="Thumbnail"
-                                    sx={{
-                                        width: 80,
-                                        height: 80,
-                                        borderRadius: "8px",
-                                        border: "2px solid #ddd",
-                                        cursor: "pointer",
-                                    }}
+                                    className={classes.thumbnails}
                                 />
                             ))}
                         </Box>
                     </Card>
 
                     {/* Winner and View Bidders */}
-                    <Box display="flex" gap={2} mt={3}>
-                        <Button variant="contained" color="primary" fullWidth>
+                    <Box className={classes.buttonContainer}>
+                        <Button
+                            variant="contained"
+                            className={classes.winnerButton}
+                            onClick={handleWinnerDetails}
+                        >
                             Winner Detail
                         </Button>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            fullWidth
-                            startIcon={
-                                <Tooltip title="View Bidders">
-                                    <Avatar
-                                        src="https://via.placeholder.com/50"
-                                        alt="Bidder"
-                                        sx={{ width: 24, height: 24 }}
-                                    />
-                                </Tooltip>
-                            }
-                        >
+                        <Button variant="outlined" className={classes.viewButton}>
                             View Bidders
                         </Button>
                     </Box>
+
                 </Grid>
 
                 {/* Right Section */}
                 <Grid item xs={12} md={6}>
                     <Box>
-                        <Typography variant="h5" fontWeight={600} gutterBottom>
+                        <Typography className={classes.rightTitle}>
                             {lotDetails.name}
                         </Typography>
-                        <Typography variant="h5" fontWeight={600} gutterBottom>
+                        <Typography gutterBottom className={classes.rightTitle}>
                             {lotDetails.location}
                         </Typography>
-                        <Typography color="text.secondary" mb={4}>
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio voluptate blanditiis laudantium maxime pariatur neque quia eum magnam, quaerat alias dignissimos? Adipisci, quis alias iste ex magnam dolorum recusandae optio?
+                        <Typography className={classes.description} mb={2}>
+                            {lotDetails.details?.description}
+                        </Typography>
+                        <Typography className={classes.description} mb={2}>
+                            {lotDetails.details?.description}
                         </Typography>
 
                         {/* Details */}
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                            <strong>Date and Time:</strong> 23-04-2024 to 30-04-2024 | 08:00
-                            AM to 12:00 PM
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                            <strong>Order Number:</strong> #345 | <strong>Lot:</strong> 45 |
-                            <strong> Category:</strong> ABCXYZ | <strong>Sub-Category:</strong>{" "}
-                            ABCXYZ
+                        <Typography className={classes.dateTime} color={theme.palette.primary.main2} gutterBottom>
+                            Date and Time
                         </Typography>
 
+                        <Box className={classes.row}>
+                            <Box className={classes.iconText}>
+                                <CalendarMonthIcon fontSize="small" color="primary" />
+                                <Typography className={classes.text}>{lotDetails.details?.date}</Typography>
+                            </Box>
+                            <Box className={classes.iconText}>
+                                <WatchLaterRoundedIcon fontSize="small" color="primary" />
+                                <Typography className={classes.text} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                                    {lotDetails.details?.time}
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        <Box className={classes.detailRow}>
+                            <Box className={classes.details}>
+                                <Typography className={classes.detailHeading}>Order Number</Typography>
+                                <Typography className={classes.detailText} >&nbsp;: #{lotDetails.details?.orderNumber}</Typography>
+                            </Box>
+                            <Box className={classes.details}>
+                                <Typography className={classes.detailHeading}>Lot</Typography>
+                                <Typography className={classes.detailText}  >&nbsp;:&nbsp;{lotDetails.details?.lot}</Typography>
+                            </Box>
+                            <Box className={classes.details}>
+                                <Typography className={classes.detailHeading}>Category</Typography>
+                                <Typography className={classes.detailText} >&nbsp;:&nbsp;{lotDetails.details?.category}</Typography>
+                            </Box>
+                            <Box className={classes.details}>
+                                <Typography className={classes.detailHeading}>Sub-Category</Typography>
+                                <Typography className={classes.detailText}  >&nbsp;:&nbsp;{lotDetails.details?.subCategory}</Typography>
+                            </Box>
+                        </Box>
+
                         {/* Buttons */}
-                        <Box display="flex" gap={2} mt={4}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ flex: 1, height: 40 }}
-                            >
+                        <Box className={classes.actionButtons}>
+                            <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(lotDetails.id)}>
                                 Edit
                             </Button>
-                            <Button
-                                variant="contained"
-                                color="error"
-                                sx={{ flex: 1, height: 40 }}
-                            >
+                            <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDeleteLot(lotDetails.id)}>
                                 Delete
                             </Button>
                         </Box>
                     </Box>
                 </Grid>
             </Grid>
+            {/* Confirmation Modal */}
+            <CustomDialogue
+                confirmDelete={confirmDelete}
+                handleCloseModal={handleCloseModal}
+                handleConfirmDelete={handleConfirmDelete}
+            />
+
+            <WinnerModal open={winnerModal} onClose={() => setWinnerModal(false)} />
         </Box>
     );
 };
