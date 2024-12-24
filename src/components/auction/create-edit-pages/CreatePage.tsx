@@ -1,23 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CreateAuction from './CreateAuction';
 import LocationForm from './LocationForm';
 import AddLot from './AddLot';
+import { Box } from '@mui/material';
 
 const CreatePage = () => {
     const [isContinue, setIsContinue] = useState(false);
-    const [isLot, setIsLot] = useState(false);
+    const [isAddLot, setIsAddLot] = useState(false);
+
+    useEffect(() => {
+        if (isContinue || isAddLot) {
+            document.getElementById('childContainer')?.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    }, [isContinue, isAddLot]);
 
     return (
-        <>
-            {isContinue && isLot ? (
-                // <AddLot />
-                <h1>Sorry! This page is under Development...</h1>
-            ) : isContinue ? (
-                <LocationForm setIsLot={setIsLot} />
+        <Box sx={{ padding: 2 }}>
+            {isContinue && isAddLot ? (
+                <AddLot />
+            ) : isContinue && !isAddLot ? (
+                <LocationForm setIsAddLot={setIsAddLot} />
             ) : (
                 <CreateAuction setIsContinue={setIsContinue} />
             )}
-        </>
+        </Box>
     );
 };
 

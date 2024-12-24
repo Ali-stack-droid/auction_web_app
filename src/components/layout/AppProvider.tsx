@@ -16,7 +16,7 @@ const AppProvider = ({ children }: any) => {
                 <Divider variant='fullWidth' sx={{ opacity: 0.5 }} />
 
                 {/* Content area below the header */}
-                <Box sx={{ flex: 1, overflowY: 'auto', padding: 1 }}>
+                <Box id="childContainer" sx={{ flex: 1, overflowY: 'auto', padding: 1 }}>
                     {children}
                 </Box>
             </Box>

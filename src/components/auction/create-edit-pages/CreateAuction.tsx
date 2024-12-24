@@ -15,7 +15,6 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const CreateAuction = ({ setIsContinue }: any) => {
     const classes = useCreateAuctionStyles();

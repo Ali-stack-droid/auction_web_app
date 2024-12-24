@@ -14,7 +14,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 
-const LocationForm = ({ setIsLot }: any) => {
+const LocationForm = ({ setIsAddLot }: any) => {
     const classes = useCreateAuctionStyles();
 
     const formik = useFormik({
@@ -252,7 +252,7 @@ const LocationForm = ({ setIsLot }: any) => {
                         <Button
                             className={classes.cancelButton}
                             variant="outlined"
-                            onClick={() => setIsLot(true)}
+                            onClick={() => setIsAddLot(true)}
                         >
                             Add a Lot
                         </Button>
