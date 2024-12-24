@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box, Typography, Button, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, Typography, Button, MenuItem, FormControlLabel, Checkbox, IconButton } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import CustomTextField from '../../custom-components/CustomTextField';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
+import ControlPointRoundedIcon from '@mui/icons-material/ControlPointRounded';
 
 const AddLot = () => {
     const classes = useCreateAuctionStyles();
@@ -154,7 +155,7 @@ const AddLot = () => {
                             />
                         </Box>
 
-                        <Box flex={1}>
+                        <Box flex={1} mx={2}>
                             <Typography className={classes.label}>
                                 End Amount
                             </Typography>
@@ -167,8 +168,7 @@ const AddLot = () => {
                                 helperText={formik.touched.endAmount && formik.errors.endAmount}
                             />
                         </Box>
-
-                        <Box flex={1}>
+                        {/* <Box flex={1}>
                             <Typography className={classes.label}>
                                 Bid Range Amount
                             </Typography>
@@ -180,6 +180,25 @@ const AddLot = () => {
                                 error={formik.touched.bidRangeAmount && Boolean(formik.errors.bidRangeAmount)}
                                 helperText={formik.touched.bidRangeAmount && formik.errors.bidRangeAmount}
                             />
+                        </Box> */}
+
+                        <Box flex={1}>
+                            <Typography className={classes.label}>
+                                Bid Range Amount
+                            </Typography>
+                            <Box className={classes.inputWithButton}>
+                                <CustomTextField
+                                    name="bidRangeAmount"
+                                    placeholder="Bid Range Amount"
+                                    value={formik.values.bidRangeAmount}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.bidRangeAmount && Boolean(formik.errors.bidRangeAmount)}
+                                    helperText={formik.touched.bidRangeAmount && formik.errors.bidRangeAmount}
+                                />
+                                <IconButton sx={{ margin: "0 0 10px 10px" }}>
+                                    <ControlPointRoundedIcon className={classes.addIcon} />
+                                </IconButton>
+                            </Box>
                         </Box>
                     </Box>
 

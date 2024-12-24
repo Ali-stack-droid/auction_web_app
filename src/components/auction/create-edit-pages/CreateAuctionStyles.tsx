@@ -68,5 +68,15 @@ export const useCreateAuctionStyles = makeStyles({
         fontWeight: "600",
         color: theme.palette.primary.main5,
         paddingBottom: "20px"
+    },
+    addIcon: {
+        color: theme.palette.primary.main,
+        fontSize: "40px",
+        fontWeight: 0
+    },
+    inputWithButton: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
     }
 });
