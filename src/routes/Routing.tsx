@@ -9,6 +9,7 @@ import LotDetailPage from '../components/auction/detail-pages/LotDetailPage';
 import AuctionDetailPage from '../components/auction/detail-pages/AuctionDetailPage';
 import CreateAuction from '../components/auction/create-edit-pages/CreateAuction';
 import CreatePage from '../components/auction/create-edit-pages/CreatePage';
+import LiveStreamingDetailPage from '../components/auction/detail-pages/LiveStreamingDetailPage';
 // import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
@@ -94,6 +95,15 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <AuctionDetailPage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/live-streaming/details"
+                            element={
+                                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                    <LiveStreamingDetailPage />
+                                    <h1>Sorry! This page is under development.</h1>
                                 </ProtectedRoute>
                             }
                         />

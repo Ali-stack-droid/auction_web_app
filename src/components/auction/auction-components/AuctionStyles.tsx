@@ -84,6 +84,24 @@ export const useAuctionCardStyles = makeStyles({
         height: "37.47px",
         fontSize: "13px",
         textTransform: "none"
+    },
+    unSoldButtonLive: {
+        backgroundColor: "#C91818",
+        position: 'absolute',
+        top: "10px",
+        left: "10px",
+        pointerEvents: 'none', // Prevent interaction while keeping styles
+        opacity: 0.9, // Maintain original appearance
+        width: "200px",
+        height: "37.47px",
+        fontSize: "13px",
+        textTransform: "none"
+    },
+    joinButton: {
+        textTransform: "none",
+        fontSize: "13px",
+        width: "95px",
+        height: "37.47px",
     }
 });
 

@@ -24,7 +24,7 @@ const AuctionHeader = ({
     };
 
     const handleAddClick = () => {
-        if (headerType === "auction") {
+        if (headerType === "auction" || headerType === "live") {
             navigate('/auction/create')
         } else {
             navigate('/auction/lots/create')
@@ -34,56 +34,65 @@ const AuctionHeader = ({
     return (
         <Box className={classes.root}>
             <Typography className={classes.title}>
-                {isCurrent
-                    ? `Current ${headerType === 'lots' ? 'Lots' : 'Auctions'}`
-                    : `Past ${headerType === 'lots' ? 'Lots' : 'Auctions'}`}
+                {headerType === 'live' ? "Live Streaming Auctions"
+                    : isCurrent
+                        ? `Current ${headerType === 'lots' ? 'Lots' : 'Auctions'}`
+                        : `Past ${headerType === 'lots' ? 'Lots' : 'Auctions'}`}
             </Typography>
             <Box className={classes.buttonContainer}>
+
                 {isCurrent && (
-                    <Button variant="outlined" className={classes.addAuctionButton} onClick={handleAddClick}>
+                    <Button variant={headerType === "live" ? "contained" : "outlined"}
+                        className={headerType === "live" ? classes.addAuctionButtonLive : classes.addAuctionButton} onClick={handleAddClick}
+                    >
                         Add {headerType === 'lots' ? 'Lot' : 'Auction'}
                     </Button>
                 )}
-                <Box className={classes.toggleContainer}>
-                    <ToggleButtonGroup
-                        value={isCurrent ? 'current' : 'past'}
-                        exclusive
-                        onChange={onToggle}
-                        sx={{ maxHeight: '30px' }}
-                    >
-                        <ToggleButton
-                            value="current"
-                            className={`${classes.toggleButton} ${isCurrent ? 'current' : 'past'}`}
+
+                {headerType !== "live" &&
+                    <React.Fragment>
+                        <Box className={classes.toggleContainer}>
+                            <ToggleButtonGroup
+                                value={isCurrent ? 'current' : 'past'}
+                                exclusive
+                                onChange={onToggle}
+                                sx={{ maxHeight: '30px' }}
+                            >
+                                <ToggleButton
+                                    value="current"
+                                    className={`${classes.toggleButton} ${isCurrent ? 'current' : 'past'}`}
+                                >
+                                    Current {headerType === 'lots' ? 'Lots' : 'Auctions'}
+                                </ToggleButton>
+                                <ToggleButton
+                                    value="past"
+                                    className={`${classes.toggleButton} ${!isCurrent ? 'current' : 'past'}`}
+                                >
+                                    Past {headerType === 'lots' ? 'Lots' : 'Auctions'}
+                                </ToggleButton>
+                            </ToggleButtonGroup>
+                        </Box>
+                        <Button
+                            variant="contained"
+                            className={classes.filterButton}
+                            onClick={handleMenuOpen}
+                            startIcon={<FilterAltIcon />}
                         >
-                            Current {headerType === 'lots' ? 'Lots' : 'Auctions'}
-                        </ToggleButton>
-                        <ToggleButton
-                            value="past"
-                            className={`${classes.toggleButton} ${!isCurrent ? 'current' : 'past'}`}
-                        >
-                            Past {headerType === 'lots' ? 'Lots' : 'Auctions'}
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                </Box>
-                <Button
-                    variant="contained"
-                    className={classes.filterButton}
-                    onClick={handleMenuOpen}
-                    startIcon={<FilterAltIcon />}
-                >
-                    Filter
-                </Button>
-                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                    {['New York, USA', 'United Kingdom, London', 'Pakistan, Islamabad'].map((location) => (
-                        <MenuItem
-                            key={location}
-                            onClick={() => handleFilterChange(location)}
-                            className={`${classes.menuItem} ${selectedLocation === location ? 'selected' : ''}`}
-                        >
-                            {location}
-                        </MenuItem>
-                    ))}
-                </Menu>
+                            Filter
+                        </Button>
+                        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                            {['New York, USA', 'United Kingdom, London', 'Pakistan, Islamabad'].map((location) => (
+                                <MenuItem
+                                    key={location}
+                                    onClick={() => handleFilterChange(location)}
+                                    className={`${classes.menuItem} ${selectedLocation === location ? 'selected' : ''}`}
+                                >
+                                    {location}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </React.Fragment>
+                }
             </Box>
         </Box>
     );

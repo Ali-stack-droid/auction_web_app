@@ -24,6 +24,14 @@ const useAuctionHeaderStyles = makeStyles((theme: any) => ({
         height: '40px',
         width: '160px',
     },
+    addAuctionButtonLive: {
+        textTransform: 'none',
+        color: theme.palette.primary.main3,
+        fontSize: "16px",
+        borderColor: theme.palette.primary.main,
+        height: '40px',
+        width: '160px',
+    },
     toggleContainer: {
         display: 'flex',
         alignItems: 'center',

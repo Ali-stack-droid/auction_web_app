@@ -13,6 +13,13 @@ const useDetailStyles = makeStyles(() => ({
         padding: "12px",
         borderRadius: "20px",
     },
+    liveCard: {
+        position: 'relative',
+        padding: "12px",
+        borderRadius: "20px",
+        // height: "70%",
+        width: "85s%",
+    },
     media: {
         borderRadius: "20px",
     },
