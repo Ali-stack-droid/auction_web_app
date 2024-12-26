@@ -28,17 +28,18 @@ const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filtered
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 5 }}>
-            <Box className={bottomClass.paginationWrapper}>
-                <Stack spacing={0}>
-                    <Pagination
-                        count={totalPages} // Set the total pages dynamically
-                        page={page + 1} // Adjust for 1-based index
-                        onChange={handleChangePage}
-                        variant="outlined"
-                        shape="rounded"
-                    />
-                </Stack>
-            </Box>
+            {isPagination &&
+                <Box className={bottomClass.paginationWrapper}>
+                    <Stack spacing={0}>
+                        <Pagination
+                            count={totalPages} // Set the total pages dynamically
+                            page={page + 1} // Adjust for 1-based index
+                            onChange={handleChangePage}
+                            variant="outlined"
+                            shape="rounded"
+                        />
+                    </Stack>
+                </Box>}
 
             <Box className={classes.toggleContainer}>
                 <ToggleButtonGroup
