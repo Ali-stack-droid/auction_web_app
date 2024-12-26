@@ -1,9 +1,14 @@
-import { Box, ToggleButtonGroup, ToggleButton, Pagination, Stack } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { Box, ToggleButtonGroup, ToggleButton, Pagination, Stack } from '@mui/material';
 import useAuctionHeaderStyles from './AuctionHeaderStyles';
 import usePaymentTrackingStyles from '../../payment-tracking/PaymentTrackingStyles';
 
-const PaginationButton = ({ filteredData, setFilteredData }: any) => {
+interface PaginationButtonProps {
+    filteredData: any[];
+    setFilteredData: (data: any[]) => void;
+}
+
+const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filteredData, setFilteredData }) => {
     const classes = useAuctionHeaderStyles();
     const bottomClass = usePaymentTrackingStyles();
 
@@ -12,15 +17,17 @@ const PaginationButton = ({ filteredData, setFilteredData }: any) => {
     const [page, setPage] = useState<number>(0);
 
     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    useEffect(() => {
+        setFilteredData(filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
+    }, [page])
 
     const handleChangePage = (_event: React.ChangeEvent<unknown>, newPage: number) => {
         setPage(newPage - 1); // Adjust for 0-based index
     };
 
-    setFilteredData(filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
-    return (
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", marginTop: 5 }}>
 
+    return (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 5 }}>
             <Box className={bottomClass.paginationWrapper}>
                 <Stack spacing={0}>
                     <Pagination
@@ -33,8 +40,7 @@ const PaginationButton = ({ filteredData, setFilteredData }: any) => {
                 </Stack>
             </Box>
 
-
-            <Box className={classes.toggleContainer} >
+            <Box className={classes.toggleContainer}>
                 <ToggleButtonGroup
                     value={isPagination ? 'pagination' : 'single'}
                     exclusive
@@ -55,8 +61,8 @@ const PaginationButton = ({ filteredData, setFilteredData }: any) => {
                     </ToggleButton>
                 </ToggleButtonGroup>
             </Box>
-        </Box>)
-}
+        </Box>
+    );
+});
 
-export default PaginationButton
-
+export default PaginationButton;
