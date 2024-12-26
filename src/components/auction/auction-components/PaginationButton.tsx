@@ -28,7 +28,7 @@ const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filtered
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 5 }}>
-            {isPagination &&
+            {isPagination ?
                 <Box className={bottomClass.paginationWrapper}>
                     <Stack spacing={0}>
                         <Pagination
@@ -39,7 +39,7 @@ const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filtered
                             shape="rounded"
                         />
                     </Stack>
-                </Box>}
+                </Box> : <Box></Box>}
 
             <Box className={classes.toggleContainer}>
                 <ToggleButtonGroup
@@ -50,13 +50,13 @@ const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filtered
                 >
                     <ToggleButton
                         value="single"
-                        className={`${classes.toggleButton} ${isPagination ? 'pagination' : 'single'}`}
+                        className={`${classes.toggleButton} ${isPagination ? 'current' : 'past'}`}
                     >
                         Single Page
                     </ToggleButton>
                     <ToggleButton
                         value="pagination"
-                        className={`${classes.toggleButton} ${!isPagination ? 'pagination' : 'single'}`}
+                        className={`${classes.toggleButton} ${!isPagination ? 'current' : 'past'}`}
                     >
                         Pagination
                     </ToggleButton>
