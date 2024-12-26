@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { CardMedia, Typography, Button, Box, List, ListItem, Card, Avatar } from '@mui/material';
+import { CardMedia, Typography, Button, Box, List, ListItem, Card, Avatar, Pagination } from '@mui/material';
 import useLiveStreamDetailStyles from './LiveStreamingDetailStyles';
 import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import AuctionCard from '../auction-components/AuctionCard';
 import { liveStreamData } from '../../live-streaming/liveStreamData';
+import auctionsData from "../lotsData";
+import PaginationButton from '../auction-components/PaginationButton';
+
 
 const LiveStreamingDetailPage: React.FC = () => {
     const classes = useLiveStreamDetailStyles();
@@ -55,6 +58,30 @@ const LiveStreamingDetailPage: React.FC = () => {
                     </List>
                 </Box>
             </Box>
+            {true &&
+                <Box maxWidth={'79vw'} overflow={'auto'} pt={3}>
+                    <Box className={classes.titleWrapper}>
+                        <Typography className={classes.title}>
+                            Auction Lots :
+                        </Typography>
+                        <Box className={classes.countBadge}>20</Box>
+                    </Box>
+                    <Box className={classes.cardContainer}>
+                        {auctionsData && auctionsData.map((auction) => (
+                            <Box>
+                                <AuctionCard
+                                    key={auction.id}
+                                    headerType={'lots'}
+                                    cardData={auction}
+                                    handleEdit={() => { }}
+                                    handleDelete={() => { }}
+                                />
+                            </Box>
+                        ))}
+                    </Box>
+                    <PaginationButton filteredData={auctionsData} setFilteredData={() => { }} />
+                </Box>
+            }
         </Box>
     );
 };
