@@ -10,6 +10,7 @@ import AuctionCard from './auction-components/AuctionCard';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import auctionData from './auctionData';
 import AuctionHeader from './auction-components/AuctionHeader';
+import PaginationButton from './auction-components/PaginationButton';
 
 const Auction = () => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
@@ -95,6 +96,8 @@ const Auction = () => {
                     </Grid>
                 </Container>
             </Fade>
+
+            <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
 
             {/* Confirmation Modal */}
             <CustomDialogue

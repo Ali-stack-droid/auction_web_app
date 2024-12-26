@@ -10,6 +10,7 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import AuctionCard from './auction-components/AuctionCard';
 import lots from './lotsData';
+import PaginationButton from './auction-components/PaginationButton';
 
 // Define the type interface for LotsData
 interface Lot {
@@ -110,6 +111,8 @@ const Lots = () => {
                     </Grid>
                 </Container>
             </Fade>
+
+            <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
 
             {/* Confirmation Modal */}
             <CustomDialogue

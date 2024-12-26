@@ -10,6 +10,7 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionCard from '../auction/auction-components/AuctionCard';
 import AuctionHeader from '../auction/auction-components/AuctionHeader';
 import { liveStreamData } from './liveStreamData';
+import PaginationButton from '../auction/auction-components/PaginationButton';
 
 
 const LiveStreaming = () => {
@@ -92,6 +93,8 @@ const LiveStreaming = () => {
                     </Grid>
                 </Container>
             </Fade>
+
+            <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
 
             {/* Confirmation Modal */}
             <CustomDialogue

@@ -48,12 +48,12 @@ const useAuctionHeaderStyles = makeStyles((theme: any) => ({
         border: 'none',
         borderRadius: '5px !important',
         width: "120px",
-        '&.current': {
+        '&.pagination': {
             fontSize: '11px',
             backgroundColor: `${theme.palette.primary.main} !important`,
             color: 'white !important',
         },
-        '&.past': {
+        '&.single': {
             fontSize: '10px',
             backgroundColor: 'inherit',
             color: `${theme.palette.primary.main5} !important`,
