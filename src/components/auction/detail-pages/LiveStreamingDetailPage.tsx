@@ -1,141 +1,60 @@
-import { useEffect, useState } from "react";
-import { Box, Button, Typography, Card, CardMedia, Grid } from "@mui/material";
-import useDetailStyles from "./DetailPageStyles";
-import { getQueryParam } from "../../../helper/GetQueryParam";
-import theme from "../../../theme";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
-import { useNavigate } from "react-router-dom";
-import CustomDialogue from "../../custom-components/CustomDialogue";
-import BiddingTable from "./BiddingTable";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import AuctionCard from "../auction-components/AuctionCard";
-import liveStreamData from "../../live-streaming/liveStreamData";
+import React, { useEffect, useState } from 'react';
+import { CardMedia, Typography, Button, Box, List, ListItem, Card, Avatar } from '@mui/material';
+import useLiveStreamDetailStyles from './LiveStreamingDetailStyles';
+import { useNavigate } from 'react-router-dom';
+import { getQueryParam } from '../../../helper/GetQueryParam';
+import AuctionCard from '../auction-components/AuctionCard';
+import { liveStreamData } from '../../live-streaming/liveStreamData';
 
-const LiveStreamingDetailPage = () => {
-    const classes = useDetailStyles();
-    const [liveStreamDetails, setLiveStreamDetails]: any = useState({})
+const LiveStreamingDetailPage: React.FC = () => {
+    const classes = useLiveStreamDetailStyles();
+
+    const liveBidders = ["Bidder Name 1", "Bidder Name 2", "Bidder Name 3", "Bidder Name 4", "Bidder Name 5", "Bidder Name 6"];
+    const [liveStream, setLiveStream]: any = useState(liveStreamData.find((stream: any) => stream.id + "" === getQueryParam('liveId')))
     const [confirmDelete, setConfirmDelete] = useState(false)
-    const [deleteAuctionId, setDeleteAuctionId] = useState(0)
-    const [showMoreTerms, setShowMoreTerms] = useState(false);
-    const [showMorePaymentTerms, setShowMorePaymentTerms] = useState(false);
-
-    const biddingTableData = [{ id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }]
+    const [deleteStreamId, setDeleteStreamId] = useState(0)
 
     useEffect(() => {
         if (liveStreamData) {
-            setLiveStreamDetails(liveStreamData.find((auction: any) => auction.id + "" === getQueryParam('liveId')))
+            const stream = liveStreamData.find((stream: any) => stream.id + "" === getQueryParam('liveId'));
+            setLiveStream(stream)
         }
     }, [liveStreamData])
 
-
     const navigate = useNavigate()
-
-    // Handle Edit
-    const handleEdit = (id: string) => {
-        navigate(`edit/${id}`); // Navigate to the edit route with auction ID
-    };
-
-    // Open confirmation modal
-    const handleDeleteAuction = (id: number) => {
-        setDeleteAuctionId(id);
-        setConfirmDelete(true);
-    };
-
-    // Close modal
-    const handleCloseModal = () => {
-        setConfirmDelete(false);
-        setDeleteAuctionId(0);
-    };
-
-    // Confirm deletion
-    const handleConfirmDelete = () => {
-        navigate('/auction/lots')
-        handleCloseModal();
-    };
-
-    const handleSeeMoreClick = (type: string) => {
-        if (type === "terms") {
-            setShowMoreTerms(!showMoreTerms);
-        } else {
-            setShowMorePaymentTerms(!showMorePaymentTerms)
-        }
-    };
 
     return (
         <Box p={2}>
             <Box>
-                <Typography className={classes.title} pb={2}>
+                <Typography className={classes.title} pb={1}>
                     Live Streaming Auction
                 </Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: "space-between", alignItems: "center", }} >
-                {/* Left Section */}
-                <Box flex={1}>
-                    <Card className={classes.liveCard} elevation={2}>
-                        {/* Main Image */}
-                        <CardMedia
-                            component="img"
-                            image={liveStreamDetails.image}
-                            alt="Live Stream"
-                            className={classes.media}
-                            height={300}
-                        />
-                    </Card>
-                    <Box paddingTop={3}>
-                        <Typography className={classes.dateTime} color={theme.palette.primary.main2} gutterBottom>
-                            Auction Date and Time for Live Streaming
-                        </Typography>
-
-                        <Box className={classes.row}>
-                            <Box className={classes.iconText}>
-                                <CalendarMonthIcon fontSize="small" color="primary" />
-                                <Typography className={classes.text}>{liveStreamDetails.details?.date}</Typography>
-                            </Box>
-                            <Box className={classes.iconText}>
-                                <WatchLaterRoundedIcon fontSize="small" color="primary" />
-                                <Typography className={classes.text} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                    {liveStreamDetails.details?.time}
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-
-                    <Box paddingTop={3}>
-                        <Typography className={classes.dateTime} color={theme.palette.primary.main2} gutterBottom>
-                            Auction Preview Date and Time
-                        </Typography>
-                        <Box className={classes.row}>
-                            <Box className={classes.iconText}>
-                                <CalendarMonthIcon fontSize="small" color="primary" />
-                                <Typography className={classes.text}>{liveStreamDetails.details?.date}</Typography>
-                            </Box>
-                            <Box className={classes.iconText}>
-                                <WatchLaterRoundedIcon fontSize="small" color="primary" />
-                                <Typography className={classes.text} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                    {liveStreamDetails.details?.time}
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </Box>
+            <Box className={classes.container}>
+                <Box flex={1} className={classes.mediaSection}>
+                    <AuctionCard
+                        width={"100%"}
+                        headerType={"live"}
+                        cardData={liveStream}
+                        handleEdit={() => { }}
+                        handleDelete={() => { }}
+                    />
                 </Box>
-
-                {/* Right Section */}
-                <Box flex={0.5}>
-                    <Box>
-                        <Typography className={classes.rightTitle}>
-                            {liveStreamDetails.name}
-                        </Typography>
-                    </Box>
+                <Box className={classes.rightSection}>
+                    <Typography variant="h6" className={classes.liveBiddersHeader}>Live Bidders</Typography>
+                    <List className={classes.liveBiddersList} >
+                        {liveBidders.map((bidder, index) => (
+                            <ListItem key={index} className={classes.liveBidderItem}>
+                                <Avatar />
+                                <Box className={classes.bidderBox}>
+                                    <Typography className={classes.bidderName}>{bidder}</Typography>
+                                    <Typography className={classes.bidderMessage}>Lorem ipsum dolor sit amet sim.</Typography>
+                                </Box>
+                            </ListItem>
+                        ))}
+                    </List>
                 </Box>
             </Box>
-
-            {/* Confirmation Modal */}
-            <CustomDialogue
-                confirmDelete={confirmDelete}
-                handleCloseModal={handleCloseModal}
-                handleConfirmDelete={handleConfirmDelete}
-            />
         </Box>
     );
 };

@@ -7,9 +7,9 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CustomDialogue from '../custom-components/CustomDialogue';
-import liveStreamData from './liveStreamData';
 import AuctionCard from '../auction/auction-components/AuctionCard';
 import AuctionHeader from '../auction/auction-components/AuctionHeader';
+import { liveStreamData } from './liveStreamData';
 
 
 const LiveStreaming = () => {

@@ -103,7 +103,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <LiveStreamingDetailPage />
-                                    <h1>Sorry! This page is under development.</h1>
+                                    {/* <h1>Sorry! This page is under development.</h1> */}
                                 </ProtectedRoute>
                             }
                         />

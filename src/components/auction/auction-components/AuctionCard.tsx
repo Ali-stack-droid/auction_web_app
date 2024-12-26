@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuctionCardStyles } from './AuctionStyles';
 import LotDetails from './details-components/LotDetails';
 import AuctionDetails from './details-components/AuctionDetails';
+import LiveStreamingDetails from './details-components/LiveStreamingDetails';
+import { getQueryParam } from '../../../helper/GetQueryParam';
+import React from 'react';
 
 const AuctionCard = ({
     headerType,
@@ -23,8 +26,18 @@ const AuctionCard = ({
         }
     };
 
+    const handleJoin = (id: number) => {
+        console.log("Join live stream: ", id)
+    }
+
+    const handleNextLot = (id: number) => {
+        console.log("Join live stream: ", id)
+    }
+
+    const isLiveDetail = headerType === "live" && getQueryParam('liveId');
+
     return (
-        <Card className={classes.card} elevation={2}>
+        <Card className={headerType === "live" ? classes.liveCard : classes.card} elevation={2}>
             {/* Auction Image */}
             <Box sx={{
                 position: 'relative', // Ensure the button is positioned relative to the Box
@@ -32,20 +45,54 @@ const AuctionCard = ({
                 <CardMedia
                     onClick={handleCardMediaClick}
                     component="img"
-                    height="200"
+                    height={isLiveDetail ? "350" : "200"}
                     image={cardData.image}
                     alt={headerType === "live" ? "Live Streaming Image" : headerType === "Auction" ? "Auction" : "Lot" + " Image"}
-                    className={classes.media}
+                    className={isLiveDetail ? classes.liveMedia : classes.media}
                 />
                 {
-                    headerType === "lots" || headerType === "live" &&
-                    <Button
-                        variant="contained"
-                        size="small"
-                        className={headerType === "live" ? classes.unSoldButtonLive : `${classes.soldButton} ${!cardData.sold ? classes.unSoldButton : ''}`}
-                    >
-                        {headerType === "live" ? "Live Streaming Auction" : cardData.sold ? "Sold" : "Unsold"}
-                    </Button>
+                    isLiveDetail ?
+                        <Box>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                className={classes.button1}
+                            >
+                                Live Stream
+                            </Button>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                className={classes.button2}
+                            >
+                                End Stream
+                            </Button>
+                            <Box sx={{ position: "absolute", gap: 2, top: 10, right: 10, display: "flex", alignItems: "center" }}>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    className={classes.button3}
+                                >
+                                    John Anderson Smith
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    className={classes.button3}
+                                >
+                                    Highest Bid : $10,000
+                                </Button>
+                            </Box>
+                        </Box>
+                        : headerType === "lots" || headerType === "live" &&
+
+                        <Button
+                            variant="contained"
+                            size="small"
+                            className={headerType === "live" ? classes.unSoldButtonLive : `${classes.soldButton} ${!cardData.sold ? classes.unSoldButton : ''}`}
+                        >
+                            {headerType === "live" ? "Live Streaming Auction" : cardData.sold ? "Sold" : "Unsold"}
+                        </Button>
                 }
 
             </Box>
@@ -54,55 +101,82 @@ const AuctionCard = ({
                 <Box className={classes.content}>
                     {/* Title */}
                     <Tooltip title={cardData.name}>
-                        <Typography className={classes.title} gutterBottom>
-                            {cardData.name.length > 43 ? `${cardData.name.substring(0, 33)}...` : cardData.name}
-                        </Typography>
+                        {isLiveDetail ?
+                            <Typography className={classes.title} gutterBottom>
+                                {cardData.fullName.length > 100 ? `${cardData.fullName.substring(0, 33)}...` : cardData.fullName}
+                            </Typography>
+                            :
+                            <Typography className={classes.title} gutterBottom>
+                                {cardData.name.length > 43 ? `${cardData.name.substring(0, 33)}...` : cardData.name}
+                            </Typography>
+                        }
                     </Tooltip>
 
                     {/* View Catalog Button */}
-                    {headerType === "auction" || headerType === "live" ?
-                        <Button onClick={() => navigate('/auction/lots')} variant="contained" size="small" className={classes.catalogButton}>
-                            View Catalog
+                    {isLiveDetail ?
+                        <Button onClick={() => navigate('/auction/lots')} variant={"outlined"} size="small" className={classes.nextButton}>
+                            Show Next Lot
                         </Button>
                         :
-                        <Box>
-                            <Typography className={classes.smallTitle} gutterBottom>
-                                Highest Bid
-                            </Typography>
-                            <Button variant="contained" size="small" className={classes.catalogButton}
-                                sx={{
-                                    pointerEvents: 'none', // Prevent interaction while keeping styles
-                                    opacity: 1, // Maintain original appearance
-                                }}
-                            >
-                                {cardData.highestBid}
+                        headerType === "auction" || headerType === "live" ?
+                            <Button onClick={() => navigate('/auction/lots')} variant={"contained"} size="small" className={classes.catalogButton}>
+                                View Catalog
                             </Button>
-                        </Box>
+                            :
+                            <Box>
+                                <Typography className={classes.smallTitle} gutterBottom>
+                                    Highest Bid
+                                </Typography>
+                                <Button variant="contained" size="small" className={classes.catalogButton}
+                                    sx={{
+                                        pointerEvents: 'none', // Prevent interaction while keeping styles
+                                        opacity: 1, // Maintain original appearance
+                                    }}
+                                >
+                                    {cardData.highestBid}
+                                </Button>
+                            </Box>
                     }
                 </Box>
+                {isLiveDetail &&
+                    <Typography className={classes.description} gutterBottom>
+                        {cardData.description.length > 300 ? `${cardData.description.substring(0, 33)}...` : cardData.description}
+                    </Typography>
+                }
+
 
                 {/* Location, Date, and Lots */}
-                {headerType === "auction" || headerType === "live" ?
-                    <AuctionDetails auctionDetails={cardData.details} />
-                    : <LotDetails lotData={cardData} />
+                {isLiveDetail ?
+                    <LiveStreamingDetails streamData={cardData.details} />
+                    : headerType === "auction" || headerType === "live" ?
+                        <AuctionDetails auctionDetails={cardData.details} />
+                        : <LotDetails lotData={cardData} />
                 }
 
                 {/* Action Buttons */}
                 <Box className={classes.actionButtons}>
-                    <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(cardData.id)}>
-                        Edit
-                    </Button>
-                    <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDelete(cardData.id)}>
-                        Delete
-                    </Button>
-                    {headerType === "live" &&
-                        <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleDelete(cardData.id)}>
-                            Join
-                        </Button>
+                    {!isLiveDetail &&
+                        <React.Fragment>
+                            <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(cardData.id)}>
+                                Edit
+                            </Button>
+                            <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDelete(cardData.id)}>
+                                Delete
+                            </Button>
+                        </React.Fragment>
+                    }
+                    {isLiveDetail ?
+                        <Button className={classes.selectButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(cardData.id)}>
+                            Select Next Lot
+                        </Button> : headerType === "live" ?
+                            <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleJoin(cardData.id)}>
+                                Join
+                            </Button>
+                            : null
                     }
                 </Box>
             </Box>
-        </Card>
+        </Card >
     );
 };
 

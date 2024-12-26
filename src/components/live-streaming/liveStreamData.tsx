@@ -1,7 +1,9 @@
-export const auctionData = [
+export const liveStreamData = [
     {
         id: 1,
         name: "Monthly / Weekly Auction",
+        fullName: 'Monthly / Weekly Auction Held At New York , USA.',
+        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quasi debitis facilis repudiandae ab possimus eveniet. Sit, aperiam iusto quaerat ipsa unde nesciunt, repudiandae sed, libero velit odio eius totam! Deserunt?',
         image: `${process.env.PUBLIC_URL}/assets/svgs/live1.svg`,
         details: {
             location: "New York, USA",
@@ -12,6 +14,8 @@ export const auctionData = [
     {
         id: 2,
         name: "Monthly / Weekly Auction",
+        fullName: 'Monthly / Weekly Auction Held At London , United Kingdom.',
+        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quasi debitis facilis repudiandae ab possimus eveniet. Sit, aperiam iusto quaerat ipsa unde nesciunt, repudiandae sed, libero velit odio eius totam! Deserunt?',
         image: `${process.env.PUBLIC_URL}/assets/svgs/live2.svg`,
         details: {
             location: "London, UK",
@@ -21,7 +25,9 @@ export const auctionData = [
     },
     {
         id: 3,
-        name: "Monthly / Weekly Auction",
+        name: "Monthly / Weekly Auction ",
+        fullName: 'Monthly / Weekly Auction Held At India, Delhi.',
+        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quasi debitis facilis repudiandae ab possimus eveniet. Sit, aperiam iusto quaerat ipsa unde nesciunt, repudiandae sed, libero velit odio eius totam! Deserunt?',
         image: `${process.env.PUBLIC_URL}/assets/svgs/live3.svg`,
         details: {
             location: "India, Delhi",
@@ -32,6 +38,8 @@ export const auctionData = [
     {
         id: 4,
         name: "Monthly / Weekly Auction",
+        fullName: 'Monthly / Weekly Auction Held At New York , USA.',
+        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quasi debitis facilis repudiandae ab possimus eveniet. Sit, aperiam iusto quaerat ipsa unde nesciunt, repudiandae sed, libero velit odio eius totam! Deserunt?',
         image: `${process.env.PUBLIC_URL}/assets/svgs/live1.svg`,
         details: {
             location: "New York, USA",
@@ -42,6 +50,8 @@ export const auctionData = [
     {
         id: 5,
         name: "Monthly / Weekly Auction",
+        fullName: 'Monthly / Weekly Auction Held At London , United Kingdom.',
+        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quasi debitis facilis repudiandae ab possimus eveniet. Sit, aperiam iusto quaerat ipsa unde nesciunt, repudiandae sed, libero velit odio eius totam! Deserunt?',
         image: `${process.env.PUBLIC_URL}/assets/svgs/live2.svg`,
         details: {
             location: "London, UK",
@@ -52,6 +62,8 @@ export const auctionData = [
     {
         id: 6,
         name: "Monthly / Weekly Auction",
+        fullName: 'Monthly / Weekly Auction Held At India, Delhi.',
+        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quasi debitis facilis repudiandae ab possimus eveniet. Sit, aperiam iusto quaerat ipsa unde nesciunt, repudiandae sed, libero velit odio eius totam! Deserunt?',
         image: `${process.env.PUBLIC_URL}/assets/svgs/live3.svg`,
         details: {
             location: "India, Delhi",
@@ -61,4 +73,3 @@ export const auctionData = [
     },
 ];
 
-export default auctionData;

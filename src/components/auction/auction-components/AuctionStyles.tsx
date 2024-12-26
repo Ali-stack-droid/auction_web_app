@@ -8,6 +8,17 @@ export const useAuctionCardStyles = makeStyles({
         padding: "15px",
         borderRadius: "15px",
     },
+    liveCard: {
+        maxWidth: "100%",
+        minHeight: "370px",
+        padding: "15px",
+        borderRadius: "15px",
+    },
+    description: {
+        color: theme.palette.primary.main2,
+        fontSize: "12px",
+        width: "100%"
+    },
     media: {
         cursor: "pointer",
         transition: 'transform 0.3s, box-shadow 0.3s',
@@ -15,6 +26,10 @@ export const useAuctionCardStyles = makeStyles({
             transform: 'scale(1.02)',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
         },
+        borderRadius: "15px",
+    },
+    liveMedia: {
+        cursor: "pointer",
         borderRadius: "15px",
     },
     contentWrapper: {
@@ -42,6 +57,21 @@ export const useAuctionCardStyles = makeStyles({
         marginLeft: 15,
         fontSize: 12,
         padding: 0,
+    },
+    nextButton: {
+        height: "37.47px",
+        width: "150px",
+        textTransform: 'none',
+        border: `1px solid ${theme.palette.primary.main}`,
+        color: "black",
+        fontSize: 12,
+        padding: 0,
+    },
+    selectButton: {
+        textTransform: "none",
+        fontSize: "13px",
+        width: "150px",
+        height: "37.47px",
     },
     actionButtons: {
         display: 'flex',
@@ -97,6 +127,37 @@ export const useAuctionCardStyles = makeStyles({
         fontSize: "13px",
         textTransform: "none"
     },
+    button1: {
+        backgroundColor: "#C91818",
+        position: 'absolute',
+        top: "10px",
+        left: "10px",
+        opacity: 0.9, // Maintain original appearance
+        width: "200px",
+        height: "37.47px",
+        fontSize: "13px",
+        textTransform: "none"
+    },
+    button2: {
+        backgroundColor: "#C91818",
+        position: 'absolute',
+        bottom: "10px",
+        left: "37%", // Horizontally center it
+        opacity: 0.9, // Maintain original appearance
+        width: "200px",
+        height: "37.47px",
+        fontSize: "13px",
+        textTransform: "none"
+    },
+    button3: {
+        backgroundColor: theme.palette.primary.main,
+        pointerEvents: 'none', // Prevent interaction while keeping styles
+        opacity: 0.9, // Maintain original appearance
+        width: "170px",
+        height: "37.47px",
+        fontSize: "12px",
+        textTransform: "none"
+    },
     joinButton: {
         textTransform: "none",
         fontSize: "13px",
@@ -105,11 +166,22 @@ export const useAuctionCardStyles = makeStyles({
     }
 });
 
+// Utility to get query parameter value
+const getQueryParam = (key: string) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(key);
+};
+
 export const useAuctionDetailStyles = makeStyles({
     container: {
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: "column",
         gap: 10,
+    },
+    containerLive: {
+        display: 'flex',
+        flexDirection: "row",
+        gap: 20,
     },
     lotContainer: {
         display: 'flex',
@@ -134,5 +206,9 @@ export const useAuctionDetailStyles = makeStyles({
     text: {
         fontSize: "14px",
         color: theme.palette.primary.main2,
+    },
+    textLive: {
+        fontSize: "16px",
+        color: theme.palette.primary.main10,
     }
 });
