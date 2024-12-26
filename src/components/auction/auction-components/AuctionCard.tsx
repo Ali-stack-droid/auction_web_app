@@ -84,7 +84,7 @@ const AuctionCard = ({
                                 </Button>
                             </Box>
                         </Box>
-                        : headerType === "lots" || headerType === "live" &&
+                        : (headerType === "lots" || headerType === "live") &&
 
                         <Button
                             variant="contained"
