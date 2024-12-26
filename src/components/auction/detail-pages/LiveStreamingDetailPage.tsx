@@ -68,9 +68,11 @@ const LiveStreamingDetailPage: React.FC = () => {
                     </Box>
                     <Box className={classes.cardContainer}>
                         {auctionsData && auctionsData.map((auction) => (
-                            <Box>
+                            <Box
+                                key={auction.id}
+                                sx={{ flexShrink: 0 }} // Set the card width
+                            >
                                 <AuctionCard
-                                    key={auction.id}
                                     headerType={'lots'}
                                     cardData={auction}
                                     handleEdit={() => { }}
@@ -82,7 +84,7 @@ const LiveStreamingDetailPage: React.FC = () => {
                     <PaginationButton filteredData={auctionsData} setFilteredData={() => { }} />
                 </Box>
             }
-        </Box>
+        </Box >
     );
 };
 
