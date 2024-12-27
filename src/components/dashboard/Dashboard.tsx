@@ -70,13 +70,11 @@ const Dashboard = () => {
                                 <Typography className={classes.cardDate}>
                                     {item.date}
                                 </Typography>
-                                <Box className={classes.cardChart}>
-                                    <ResponsiveContainer width="100%" height={100}>
-                                        <BarChart data={chartData}>
-                                            <Bar dataKey="sales" fill={theme.palette.primary.main} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </Box>
+                                <ResponsiveContainer width="50%" height={100} style={{ gap: 3 }}>
+                                    <BarChart data={chartData}>
+                                        <Bar dataKey="sales" fill={theme.palette.primary.main} />
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </Box>
                         </CardContent>
                     </Card>
