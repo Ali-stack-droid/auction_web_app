@@ -12,11 +12,17 @@ import {
     ListItemIcon,
     Menu,
     MenuItem,
+    Dialog,
+    DialogTitle,
+    CircularProgress,
+    InputAdornment,
 } from '@mui/material';
 import {
     Search as SearchIcon,
     Notifications as NotificationsIcon,
     Help as HelpIcon,
+    Visibility,
+    VisibilityOff,
 } from '@mui/icons-material';
 import EnhancedEncryptionRoundedIcon from '@mui/icons-material/EnhancedEncryptionRounded';
 import CustomTextField from '../../custom-components/CustomTextField';
@@ -27,6 +33,9 @@ import {
 } from '@mui/icons-material';
 import CustomNotifications from '../../custom-components/CustomNotifications';
 import { useNavigate } from 'react-router-dom';
+import CustomButton from '../../custom-components/CustomButton';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const Header = () => {
     const theme: any = useTheme();
@@ -36,6 +45,40 @@ const Header = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [notificationMenuAnchor, setNotificationMenuAnchor] = useState(null);
     const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
+
+    // change password states:
+    const [changePassword, setChangePassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Formik setup
+    const formik = useFormik({
+        initialValues: {
+            password: '',
+            confirmPassword: '',
+        },
+        validationSchema: Yup.object({
+            password: Yup.string()
+                .min(8, 'Password should be at least 8 characters')
+                .matches(/[A-Z]/, 'Password must include at least one uppercase letter')
+                .matches(/[a-z]/, 'Password must include at least one lowercase letter')
+                .matches(/\d/, 'Password must include at least one number')
+                .matches(/[@$!%*?&]/, 'Password must include at least one special character')
+                .required('Password is required'),
+            confirmPassword: Yup.string()
+                .oneOf([Yup.ref('password')], 'Passwords must match')
+                .required('Confirm password is required'),
+        }),
+        onSubmit: (values) => {
+            setIsSubmitting(true);
+            setChangePassword(true);
+            setTimeout(() => {
+                navigate('/login'); // Navigate back to login after resetting password
+                setIsSubmitting(false);
+            }, 2000);
+        },
+    });
+
 
     const handleNotificationClick = (event: any) => {
         setNotificationMenuAnchor(event.currentTarget);
@@ -64,6 +107,15 @@ const Header = () => {
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
+    };
+
+    const handleChangePassword = () => {
+        setChangePassword(true)
+        handleProfileClose();
+    }
+
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
     };
 
     return (
@@ -136,7 +188,7 @@ const Header = () => {
                             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                         >
-                            <MenuItem onClick={handleProfileClose} >
+                            <MenuItem onClick={handleChangePassword} >
                                 <ListItemIcon>
                                     <EnhancedEncryptionRoundedIcon />
                                 </ListItemIcon>
@@ -152,6 +204,104 @@ const Header = () => {
                     </Box>
                 </Box>
             </Toolbar >
+            <Dialog open={changePassword} onClose={() => setChangePassword(false)} maxWidth="sm"
+                PaperProps={{ sx: { borderRadius: "20px" } }}
+            >
+                <Box className={classes.dialogue}>
+                    <Box className={classes.dialogueContent}>
+                        <Box className={classes.dialogueTitle}>
+                            <Typography sx={{ fontSize: "20px", fontWeight: "bold", textAlign: 'center' }}>
+                                Change Password
+                            </Typography>
+                            <Typography sx={{ fontSize: "14px", textAlign: 'center' }}>
+                                Password must contain atleast 1 letter, 1 number and 1 symbol minimum length is 8 characters.
+                            </Typography>
+
+                        </Box>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Box className={classes.textFields}>
+
+                                <Box className={classes.textFieldWrapper}>
+                                    <Typography className={classes.label}>Change Password:</Typography>
+                                    <CustomTextField
+                                        fullWidth
+                                        type={showPassword ? 'text' : 'password'}
+                                        margin="dense"
+                                        variant="outlined"
+                                        required
+                                        name="password"
+                                        value={formik.values.password}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.password && Boolean(formik.errors.password)}
+                                        helperText={formik.touched.password && formik.errors.password}
+                                        placeholder="**********"
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={togglePasswordVisibility}
+                                                            edge="end"
+                                                            sx={{ color: 'primary.main' }}
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            },
+                                        }}
+                                    />
+                                </Box>
+
+                                <Box className={classes.textFieldWrapper}>
+                                    <Typography className={classes.label}>Confirm Password:</Typography>
+                                    <CustomTextField
+                                        fullWidth
+                                        type={showPassword ? 'text' : 'password'}
+                                        margin="dense"
+                                        variant="outlined"
+                                        required
+                                        name="confirmPassword"
+                                        value={formik.values.confirmPassword}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                                        helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                                        placeholder="**********"
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={togglePasswordVisibility}
+                                                            edge="end"
+                                                            sx={{ color: 'primary.main' }}
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            },
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
+
+                            <Box className={classes.dialogueButton}>
+                                <CustomButton
+                                    fullWidth
+                                    type="submit"
+                                    variant="contained"
+                                    className={classes.buttonWrapper}
+                                >
+                                    {isSubmitting ? <CircularProgress sx={{ color: theme.palette.primary.main3 }} /> : 'Save Changes'}
+                                </CustomButton>
+                            </Box>
+                        </form>
+                    </Box>
+                </Box>
+            </Dialog>
         </Box >
     );
 };
