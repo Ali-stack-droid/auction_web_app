@@ -75,7 +75,7 @@ const LiveStreamingDetailPage: React.FC = () => {
                                 <AuctionCard
                                     headerType={'lots'}
                                     cardData={auction}
-                                    handleEdit={() => { }}
+                                    handleEdit={() => navigate(`/auction/lots/edit/${auction.id}`)}
                                     handleDelete={() => { }}
                                 />
                             </Box>

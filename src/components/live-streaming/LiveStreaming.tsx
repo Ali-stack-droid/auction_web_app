@@ -45,7 +45,7 @@ const LiveStreaming = () => {
 
     // Handle Edit
     const handleEdit = (id: string) => {
-        navigate(`edit/${id}`); // Navigate to the edit route with auction ID
+        navigate(`/auction/edit/${id}`); // Navigate to the edit route with auction ID
     };
 
     // Handle Delete

@@ -5,7 +5,9 @@ import LotDetails from './details-components/LotDetails';
 import AuctionDetails from './details-components/AuctionDetails';
 import LiveStreamingDetails from './details-components/LiveStreamingDetails';
 import { getQueryParam } from '../../../helper/GetQueryParam';
-import React from 'react';
+import React, { useState } from 'react';
+import CustomDialogue from '../../custom-components/CustomDialogue';
+import ViewModal from '../../payment-tracking/ViewModal';
 
 const AuctionCard = ({
     headerType,
@@ -15,6 +17,10 @@ const AuctionCard = ({
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
+    const [select, setSelect] = useState(false)
+    const [moveDialogue, setMoveDialogue] = useState(false)
+    const [moveLotId, setMoveLotId] = useState(0)
+
 
     const handleCardMediaClick = () => {
         if (headerType === "live") {
@@ -27,11 +33,16 @@ const AuctionCard = ({
     };
 
     const handleJoin = (id: number) => {
-        console.log("Join live stream: ", id)
+        navigate(`/live-streaming/details?liveId=${id}`);
     }
 
     const handleNextLot = (id: number) => {
         console.log("Join live stream: ", id)
+    }
+
+    const handleMove = (id: number) => {
+        setMoveDialogue(true);
+        setMoveLotId(id);
     }
 
     const isLiveDetail = headerType === "live" && getQueryParam('liveId');
@@ -166,16 +177,24 @@ const AuctionCard = ({
                         </React.Fragment>
                     }
                     {isLiveDetail ?
-                        <Button className={classes.selectButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(cardData.id)}>
+                        <Button className={classes.selectButton} variant="contained" size="small" color="primary" onClick={() => setSelect(true)}>
                             Select Next Lot
-                        </Button> : headerType === "live" ?
+                        </Button>
+                        : headerType === "live" ?
                             <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleJoin(cardData.id)}>
                                 Join
                             </Button>
-                            : null
+                            : headerType === "lots" ?
+                                <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleMove(cardData.id)}>
+                                    Move
+                                </Button>
+                                : null
                     }
                 </Box>
             </Box>
+
+            <ViewModal open={moveDialogue} onClose={() => setMoveDialogue(false)} data={moveLotId} type={"move"} />
+
         </Card >
     );
 };

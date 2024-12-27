@@ -4,7 +4,7 @@ import LocationForm from './LocationForm';
 import AddLot from './AddLot';
 import { Box } from '@mui/material';
 
-const CreatePage = () => {
+const CreatePage = ({ type }: any) => {
     const [isContinue, setIsContinue] = useState(false);
     const [isAddLot, setIsAddLot] = useState(false);
 
@@ -19,7 +19,7 @@ const CreatePage = () => {
 
     return (
         <Box sx={{ padding: 2 }}>
-            {isContinue && isAddLot ? (
+            {type === "lots" || (isContinue && isAddLot) ? (
                 <AddLot />
             ) : isContinue && !isAddLot ? (
                 <LocationForm setIsAddLot={setIsAddLot} />

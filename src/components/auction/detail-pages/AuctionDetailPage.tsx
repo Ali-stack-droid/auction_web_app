@@ -33,9 +33,12 @@ const AuctionDetailPage = () => {
 
     // Handle Edit
     const handleEdit = (id: string) => {
-        navigate(`edit/${id}`); // Navigate to the edit route with auction ID
+        navigate(`/auction/edit/${id}`);
     };
 
+    const handleEditLots = (id: string) => {
+        navigate(`/auction/lots/edit/${id}`);
+    }
     // Open confirmation modal
     const handleDeleteAuction = (id: number) => {
         setDeleteAuctionId(id);
@@ -261,7 +264,7 @@ const AuctionDetailPage = () => {
                                 key={auction.id}
                                 headerType={'lots'}
                                 cardData={auction}
-                                handleEdit={handleEdit}
+                                handleEdit={handleEditLots}
                                 handleDelete={handleDeleteAuction}
                             />
                         </Box>

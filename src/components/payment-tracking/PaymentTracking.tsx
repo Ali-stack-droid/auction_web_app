@@ -119,7 +119,7 @@ const PaymentTracking = () => {
                 </Stack>
             </Box>
 
-            <ViewModal open={viewDetails} onClose={() => setViewDetails(false)} data={selectedInvoice} />
+            <ViewModal open={viewDetails} onClose={() => setViewDetails(false)} data={selectedInvoice} type={"details"} />
         </Box>
     );
 };

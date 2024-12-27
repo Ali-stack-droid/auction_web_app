@@ -11,6 +11,37 @@ const useWinnerModalStyle = makeStyles({
         padding: 0,
         height: "450px"
     },
+    text: {
+        fontSize: "20px",
+        color: "#333333"
+
+    },
+    yes: {
+        backgroundColor: theme.palette.primary.main,
+        width: "170px",
+        height: "37.47px",
+        fontSize: "16px",
+        textTransform: "none"
+    },
+    no: {
+        backgroundColor: theme.palette.primary.main3,
+        width: "170px",
+        height: "37.47px",
+        fontSize: "16px",
+        textTransform: "none",
+        color: theme.palette.primary.main10,
+        border: `1px solid ${theme.palette.primary.main10}`
+    },
+    moveModal: {
+        display: 'flex',
+        flexDirection: 'column',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: 5,
+        height: "120px",
+        width: "70%"
+    },
     closeButtonWrapper: {
         display: "flex",
         justifyContent: "end",
