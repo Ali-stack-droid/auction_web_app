@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import useSideBarStyles from './SideBarStyles';
 
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
@@ -12,7 +12,7 @@ import CustomNavLink from '../../custom-components/CustomNavLink';
 const SideBar = () => {
     const classes = useSideBarStyles();
     const navigate = useNavigate();
-
+    const theme: any = useTheme();
 
     const navItems = [
         { label: 'Dashboard', path: '/dashboard', icon: <GridViewRoundedIcon /> },
@@ -23,6 +23,8 @@ const SideBar = () => {
     ];
 
     const location = useLocation();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const isSelected = (path: string) => {
 
         if (path === "/auction" || path === "/live") {
@@ -32,9 +34,17 @@ const SideBar = () => {
     }
 
     return (
-        <Box className={classes.sideBarContainer}>
+        <Box className={isMobile ? classes.mobileSideBar : classes.sideBarContainer}>
             {/* Logo */}
-            <h1 className={classes.logo}>LOGO</h1>
+
+            <Box className={classes.logo}>
+                <img
+                    src={`${process.env.PUBLIC_URL}/assets/svgs/logo.svg`}
+                    alt="Parker's Auction"
+                    style={{ width: '80%', }}
+                />
+            </Box>
+
             <Box className={classes.menu}>
                 MENU
             </Box>
@@ -49,7 +59,7 @@ const SideBar = () => {
                 >
                     <Box className={classes.navContent}>
                         {item.icon}
-                        <Typography className={classes.navText}>{item.label}</Typography>
+                        {!isMobile && <Typography className={classes.navText}>{item.label}</Typography>}
                     </Box>
                 </CustomNavLink>
             ))}

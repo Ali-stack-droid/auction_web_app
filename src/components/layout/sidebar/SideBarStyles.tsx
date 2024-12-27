@@ -13,10 +13,24 @@ const useSideBarStyles = makeStyles({
         borderRight: `1px solid ${theme.palette.primary.main6}`,
         padding: '0 12px'
     },
+    mobileSideBar: {
+        position: 'sticky',
+        left: 0,
+        maxWidth: '45px',
+        minWidth: '45px',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'start',
+        borderRight: `1px solid ${theme.palette.primary.main6}`,
+        padding: '0 12px',
+    },
     logo: {
-        fontWeight: '700',
-        marginBottom: '24px',
-        padding: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: "100%",
+        padding: "20px 0",
     },
     menu: {
         width: '100%',
