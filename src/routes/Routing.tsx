@@ -10,6 +10,7 @@ import AuctionDetailPage from '../components/auction/detail-pages/AuctionDetailP
 import CreateAuction from '../components/auction/create-edit-pages/CreateAuction';
 import CreatePage from '../components/auction/create-edit-pages/CreatePage';
 import LiveStreamingDetailPage from '../components/auction/detail-pages/LiveStreamingDetailPage';
+import { ToastContainer } from 'react-toastify';
 // import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
@@ -18,7 +19,6 @@ const Dashboard = React.lazy(() => import('../components/dashboard/Dashboard'));
 // const Auction = React.lazy(() => import('../components/auction/Auction'));
 const LiveStreaming = React.lazy(() => import('../components/live-streaming/LiveStreaming'));
 const PaymentTracking = React.lazy(() => import('../components/payment-tracking/PaymentTracking'));
-
 // ProtectedRoute Component
 const ProtectedRoute = ({ isAuthenticated, children }: any) => {
     if (!isAuthenticated) {
@@ -142,6 +142,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                         <Route path="/logout" element={<TempComponent setIsAuthenticated={setIsAuthenticated} />} />
                     </Routes>
                 </Suspense>
+                <ToastContainer />
             </Box>
         </Box>
     );

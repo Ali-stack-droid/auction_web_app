@@ -9,6 +9,8 @@ import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
 import theme from '../../../theme';
 import { SignInUser } from '../../Services/Methods';
+import { ErrorMessage } from '../../../utils/ToastMessages';
+
 
 const LoginForm = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
@@ -28,31 +30,40 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
                 .email('Invalid email address')
                 .required('Email is required'),
             password: Yup.string()
-                .min(8, 'Password should be at least 8 characters')
+                .min(3, 'Password should be at least 8 characters')
                 .required('Password is required'),
         }),
         onSubmit: (values) => {
-            setIsSubmitting(true)
-            setTimeout(() => {
-                setOpenModal(true)
-                localStorage.setItem('token', 'qwerty')
-                setTimeout(() => {
-                    navigate('/')
-                    // loginUser(values)
-                    setIsAuthenticated(true)
-                }, 3000);
-                setIsSubmitting(false)
-            }, 2000);
+            loginUser(values)
         },
     });
 
     const loginUser = async (payload: LogInPayload) => {
+        setIsSubmitting(true)
         try {
             // check status and show error if any
             const response = await SignInUser(payload)
-            console.log("login api response =", JSON.stringify(response, null, 2));
+
+            setIsSubmitting(false)
+            if (response?.status == 200) {
+                setOpenModal(true)
+
+                setTimeout(() => {
+                    setOpenModal(false)
+                    navigate('/')
+                    localStorage.setItem('token', 'qwerty')
+                    setIsAuthenticated(true)
+                }, 2000);
+            }
         } catch (error: any) {
-            console.log(error);
+            setIsSubmitting(false)
+            if (error.response?.status == 404) {
+                ErrorMessage("User not found check email or password")
+            } else {
+                ErrorMessage("An error occurred")
+            }
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
