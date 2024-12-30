@@ -8,7 +8,7 @@ import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ControlPointRoundedIcon from '@mui/icons-material/ControlPointRounded';
 
-const AddLot = () => {
+const AddLot = ({ updateLotsData }: any) => {
     const classes = useCreateAuctionStyles();
 
     const formik = useFormik({
@@ -47,6 +47,7 @@ const AddLot = () => {
             auctionImage: Yup.mixed().required('Auction Image is required'),
         }),
         onSubmit: (values) => {
+            updateLotsData(values);
             console.log('Form Data:', values);
         },
     });

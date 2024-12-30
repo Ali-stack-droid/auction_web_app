@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
     Box,
     Paper,
@@ -16,9 +16,11 @@ import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 
-const CreateAuction = ({ setIsContinue }: any) => {
+const CreateAuction = ({ setIsContinue, updateAuctionData }: any) => {
     const classes = useCreateAuctionStyles();
     const [formData, setFormData] = useState({});
+    const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+
     const formik = useFormik({
         initialValues: {
             auctionId: '',
@@ -56,10 +58,17 @@ const CreateAuction = ({ setIsContinue }: any) => {
             auctionPreviewEndTime: Yup.string().required('Preview End Time is required'),
         }),
         onSubmit: (values) => {
-            setFormData(values);
             console.log('Form Data:', values);
+            // setFormData(values);
+            // setIsContinue(true)
+            // updateAuctionData(formData);
         },
     });
+
+    const handleFormSubmit = () => {
+        console.log("formik: ", formik.values);
+        updateAuctionData(formik.values)
+    }
     return (
         <Box>
             <Typography className={classes.title}>Create New Auction</Typography>
@@ -122,7 +131,17 @@ const CreateAuction = ({ setIsContinue }: any) => {
                         <Typography className={classes.label}>
                             Upload Auction Image
                         </Typography>
-                        <ImageUploader />
+                        <ImageUploader
+                        // onChange={(event) => {
+                        //     const file = event.target.files[0];
+                        //     formik.setFieldValue("auctionImage", file);
+                        // }}
+                        />
+                        {formik.touched.auctionImage && formik.errors.auctionImage && (
+                            <Typography color="error" variant="body2">
+                                {formik.errors.auctionImage}
+                            </Typography>
+                        )}
                     </Box>
                     <Box mt={3}>
                         <Typography className={classes.label}>
@@ -176,6 +195,7 @@ const CreateAuction = ({ setIsContinue }: any) => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                                 helperText={formik.touched.startDate && formik.errors.startDate}
+                                inputProps={{ min: today }} // Disable past dates
                             />
                         </Box>
                         <Box flex={1}>
@@ -190,6 +210,7 @@ const CreateAuction = ({ setIsContinue }: any) => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.endDate && Boolean(formik.errors.endDate)}
                                 helperText={formik.touched.endDate && formik.errors.endDate}
+                                inputProps={{ min: today }} // Disable past dates
                             />
                         </Box>
                         <Box flex={1}>
@@ -205,6 +226,7 @@ const CreateAuction = ({ setIsContinue }: any) => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.checkoutDate && Boolean(formik.errors.checkoutDate)}
                                 helperText={formik.touched.checkoutDate && formik.errors.checkoutDate}
+                                inputProps={{ min: today }} // Disable past dates
                             />
                         </Box>
                     </Box>
@@ -272,6 +294,7 @@ const CreateAuction = ({ setIsContinue }: any) => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.auctionPreviewStartDate && Boolean(formik.errors.auctionPreviewStartDate)}
                                 helperText={formik.touched.auctionPreviewStartDate && formik.errors.auctionPreviewStartDate}
+                                inputProps={{ min: today }} // Disable past dates
                             />
                         </Box>
                         <Box flex={1}>
@@ -286,6 +309,7 @@ const CreateAuction = ({ setIsContinue }: any) => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.auctionPreviewEndDate && Boolean(formik.errors.auctionPreviewEndDate)}
                                 helperText={formik.touched.auctionPreviewEndDate && formik.errors.auctionPreviewEndDate}
+                                inputProps={{ min: today }} // Disable past dates
                             />
                         </Box>
                         <Box flex={1}>
@@ -331,10 +355,10 @@ const CreateAuction = ({ setIsContinue }: any) => {
                     </Button>
                     <Button
                         className={classes.continueButton}
-                        // type="submit"
+                        type="submit"
                         variant="contained"
                         color="primary"
-                        onClick={() => setIsContinue(true)}
+                        onClick={handleFormSubmit}
                     >
                         Continue
                     </Button>

@@ -14,7 +14,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 
-const LocationForm = ({ setIsAddLot }: any) => {
+const LocationForm = ({ setIsAddLot, updateLocationData }: any) => {
     const classes = useCreateAuctionStyles();
 
     const formik = useFormik({
@@ -40,6 +40,7 @@ const LocationForm = ({ setIsAddLot }: any) => {
             termsAndConditions: Yup.string().max(500).required('Terms and Conditions are required'),
         }),
         onSubmit: (values) => {
+            updateLocationData(values)
             console.log('Form Data:', values);
         },
     });
