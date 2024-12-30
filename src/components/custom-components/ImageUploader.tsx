@@ -4,11 +4,11 @@ import { Box, Typography, Button, Paper } from '@mui/material';
 import theme from '../../theme';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 
-const ImageUploader = () => {
-    const [file, setFile]: any = useState(null);
-    const [fileSize, setFileSize] = useState(null);
+const ImageUploader = ({ file, setFile }: any) => {
+
     const [borderColor, setBorderColor] = useState(theme.palette.primary.main4); // Default border color
 
+    const [fileSize, setFileSize] = useState(null);
     const onDrop = (acceptedFiles: any) => {
 
         if (acceptedFiles.length > 0) {

@@ -15,11 +15,14 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
+import { createAuction } from '../../Services/Methods';
 
 const CreateAuction = ({ setIsContinue, updateAuctionData }: any) => {
     const classes = useCreateAuctionStyles();
     const [formData, setFormData] = useState({});
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+    const [file, setFile]: any = useState(null);
 
     const formik = useFormik({
         initialValues: {
@@ -65,10 +68,25 @@ const CreateAuction = ({ setIsContinue, updateAuctionData }: any) => {
         },
     });
 
+    const formatTimeToAMPM = (time: any) => {
+        const [hour, minute] = time.split(":");
+        const suffix = +hour >= 12 ? "PM" : "AM";
+        const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
+        return `${formattedHour}:${minute} ${suffix}`;
+    };
+
+    const convertDate = (dateString: any) => {
+        const date = new Date(dateString); // Convert string to Date object
+        const month = date.getMonth() + 1; // Months are zero-indexed
+        const day = date.getDate();
+        const year = date.getFullYear();
+        return `${month}/${day}/${year} 12:00:00 AM`;
+    };
+
     const handleFormSubmit = () => {
-        console.log("formik: ", formik.values);
-        updateAuctionData(formik.values)
+        updateAuctionData(formik.values);
     }
+
     return (
         <Box>
             <Typography className={classes.title}>Create New Auction</Typography>
@@ -132,6 +150,8 @@ const CreateAuction = ({ setIsContinue, updateAuctionData }: any) => {
                             Upload Auction Image
                         </Typography>
                         <ImageUploader
+                            file={file}
+                            setFile={setFile}
                         // onChange={(event) => {
                         //     const file = event.target.files[0];
                         //     formik.setFieldValue("auctionImage", file);

@@ -22,13 +22,53 @@ const CreatePage = ({ type }: any) => {
         }
     }, [isContinue, isAddLot]);
 
-    useEffect(() => {
-        console.log('auction data: ', auctionData)
-    }, [auctionData])
+    // useEffect(() => {
+    //     console.log('auction data: ', auctionData)
+    // }, [auctionData])
 
 
-    const createAuction = async (payload: LogInPayload) => {
-    }
+    // const createAuction = async (payload: LogInPayload) => {
+    //     updateAuctionData(formik.values);
+    //     const data = formik.values
+    //     const auctionParams = {
+    //         Name: data.auctionName,
+    //         Type: data.auctionType,
+    //         Image: "https://example.com/image.jpg",
+    //         Description: data.description,
+    //         Notes: "Test Notes",
+    //         LiveStreaming: data.liveStreaming,
+    //         StartDate: formateDate(data.startDate),
+    //         EndDate: formateDate(data.endDate),
+    //         StartTime: formatTime(data.startTime),
+    //         EndTime: formatTime(data.endTime),
+    //         PrevStartDate: formateDate(data.auctionPreviewStartDate),
+    //         PrevEndDate: formateDate(data.auctionPreviewEndDate),
+    //         PrevStartTime: formatTime(data.auctionPreviewStartTime),
+    //         PrevEndTime: formatTime(data.auctionPreviewEndTime),
+    //         Country: "United States",
+    //         State: "California",
+    //         ZipCode: "90001",
+    //         City: "Los Angeles",
+    //         Address: "123 Demo Street",
+    //         ShippingMethod: true,
+    //         PaymentTerms: "Net 30",
+    //         TermsConditions: "All sales are final.",
+    //         CreatedAt: formateDate(data.auctionPreviewStartDate),
+    //         UpdatedAt: formateDate(data.auctionPreviewStartDate),
+    //     };
+
+    //     const formData = new FormData();
+    //     formData.append("payload", JSON.stringify(auctionParams));
+    //     if (file) {
+    //         formData.append("file", file);
+    //     }
+
+    //     createAuction(formData).then(response => {
+    //         alert('Auction created: ' + response.data);
+    //     }).catch(error => {
+    //         alert('Error creating auction: ' + error.response?.data || error.message);
+    //     });
+    // }
 
     return (
         <Box sx={{ padding: 2 }}>

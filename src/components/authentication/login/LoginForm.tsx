@@ -56,7 +56,6 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
                 }, 2000);
             }
         } catch (error: any) {
-            setIsSubmitting(false)
             if (error.response?.status == 404) {
                 ErrorMessage("User not found check email or password")
             } else {
