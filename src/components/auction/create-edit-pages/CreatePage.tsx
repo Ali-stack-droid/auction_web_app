@@ -9,13 +9,19 @@ import { toast, ToastContainer } from 'react-toastify';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
 
 const CreatePage = ({ type }: any) => {
+
+    // data states
+    const [auctionData, setAuctionData]: any = useState({});
+    const [locationData, setLocationData]: any = useState({});
+    const [lotsData, setLotsData]: any = useState([]);
+
+    // utils
+    const [formData, setFormData] = useState({});
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [currentAuction, setCurrentAuction] = useState({})
     const [isContinue, setIsContinue] = useState(false);
     const [isAddLot, setIsAddLot] = useState(false);
     const [file, setFile]: any = useState(null);
-    const [auctionData, setAuctionData]: any = useState({});
-    const [locationData, setLocationData]: any = useState({});
-    const [formData, setFormData] = useState({});
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const toastProps = {
         position: "top-right",
@@ -78,8 +84,12 @@ const CreatePage = ({ type }: any) => {
         }
 
         createAuction(formData).then((response) => {
-            SuccessMessage('Auction created successfully!');
+
+            console.log("response: ", response.data.Id)
+            setCurrentAuction(response.data);
             setIsSubmitted(false)
+            SuccessMessage('Auction created successfully!');
+
         }).catch(error => {
             ErrorMessage('Error creating auction!');
             alert('Error creating auction: ' + error.response?.data || error.message);
@@ -92,9 +102,8 @@ const CreatePage = ({ type }: any) => {
                 <AddLot
                     file={file}
                     setFile={setFile}
-                    updateLotsData={(data: any) =>
-                        setAuctionData((prev: any) => ({ ...prev, lots: [...prev.lots, data] }))
-                    }
+                    currentAuction={currentAuction}
+                    setLotsData={setLotsData}
                 />
             ) : isContinue && !isAddLot ? (
                 <LocationForm

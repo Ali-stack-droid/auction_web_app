@@ -8,7 +8,7 @@ import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ControlPointRoundedIcon from '@mui/icons-material/ControlPointRounded';
 
-const AddLot = ({ updateLotsData, file, setFile }: any) => {
+const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
     const classes = useCreateAuctionStyles();
 
     const formik = useFormik({
@@ -47,7 +47,9 @@ const AddLot = ({ updateLotsData, file, setFile }: any) => {
             auctionImage: Yup.mixed().required('Auction Image is required'),
         }),
         onSubmit: (values) => {
-            updateLotsData(values);
+            // currentAuction
+            alert("200")
+            setLotsData(values);
             console.log('Form Data:', values);
         },
     });
@@ -147,6 +149,7 @@ const AddLot = ({ updateLotsData, file, setFile }: any) => {
                                 Start Amount
                             </Typography>
                             <CustomTextField
+                                type='number'
                                 name="startAmount"
                                 placeholder="Start Amount"
                                 value={formik.values.startAmount}
@@ -161,6 +164,7 @@ const AddLot = ({ updateLotsData, file, setFile }: any) => {
                                 End Amount
                             </Typography>
                             <CustomTextField
+                                type='number'
                                 name="endAmount"
                                 placeholder="End Amount"
                                 value={formik.values.endAmount}
@@ -169,19 +173,6 @@ const AddLot = ({ updateLotsData, file, setFile }: any) => {
                                 helperText={formik.touched.endAmount && formik.errors.endAmount}
                             />
                         </Box>
-                        {/* <Box flex={1}>
-                            <Typography className={classes.label}>
-                                Bid Range Amount
-                            </Typography>
-                            <CustomTextField
-                                name="bidRangeAmount"
-                                placeholder="Bid Range Amount"
-                                value={formik.values.bidRangeAmount}
-                                onChange={formik.handleChange}
-                                error={formik.touched.bidRangeAmount && Boolean(formik.errors.bidRangeAmount)}
-                                helperText={formik.touched.bidRangeAmount && formik.errors.bidRangeAmount}
-                            />
-                        </Box> */}
 
                         <Box flex={1}>
                             <Typography className={classes.label}>
@@ -189,6 +180,7 @@ const AddLot = ({ updateLotsData, file, setFile }: any) => {
                             </Typography>
                             <Box className={classes.inputWithButton}>
                                 <CustomTextField
+                                    type='number'
                                     name="bidRangeAmount"
                                     placeholder="Bid Range Amount"
                                     value={formik.values.bidRangeAmount}
@@ -310,6 +302,7 @@ const AddLot = ({ updateLotsData, file, setFile }: any) => {
                             type="submit"
                             variant="contained"
                             color="primary"
+                            onClick={() => { alert(""); formik.handleSubmit() }}
                         >
                             Save
                         </Button>

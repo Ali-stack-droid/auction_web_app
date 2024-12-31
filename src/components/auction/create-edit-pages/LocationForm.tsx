@@ -22,7 +22,8 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
     const classes = useCreateAuctionStyles();
 
     const [confirmSubmission, setConfirmSubmission] = useState(false)
-    const [formData, setFormData] = useState({})
+    const [formData, setFormData]: any = useState({})
+    const [lot, setLot] = useState(false);
 
     const navigate = useNavigate();
 
@@ -51,7 +52,12 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
         onSubmit: (values) => {
             if (!isSubmitted) {
                 setFormData(values)
-                setConfirmSubmission(true);
+                if (lot) {
+                    handleConfirmSubmission()
+                } else {
+                    setConfirmSubmission(true);
+
+                }
             }
         }
     });
@@ -59,7 +65,14 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
     const handleConfirmSubmission = () => {
         setLocationData(formData)
         setIsSubmitted(true)
-        navigate('/auction')
+
+        if (lot) { setIsAddLot(true); }
+        else { navigate('/auction') }
+    }
+
+    const handleAddLot = () => {
+        setLot(true);
+        formik.handleSubmit();
     }
 
     return (
@@ -270,7 +283,7 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
                         <Button
                             className={classes.cancelButton}
                             variant="outlined"
-                            onClick={() => setIsAddLot(true)}
+                            onClick={() => handleAddLot()}
                         >
                             Add a Lot
                         </Button>
