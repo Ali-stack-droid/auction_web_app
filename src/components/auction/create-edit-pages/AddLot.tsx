@@ -76,33 +76,34 @@ const AddLot = ({ currentAuction }: any) => {
                 .required('Bids Range is required'),
         }),
         onSubmit: (values) => {
-            const formattedLots = values.bidsRange.map((range, index) => ({
+            setLots([...lots, values])
+
+            const formattedLots = [...lots, values].map((lot, index) => ({
                 Id: index + 1,
-                OrderNo: values.orderNumber,
-                LotNo: values.lotNumber,
+                OrderNo: lot.orderNumber,
+                LotNo: lot.lotNumber,
                 Image: "example.jpg",
-                Category: values.category,
-                SubCategory: values.subCategory,
-                ShortDescription: values.lead,
-                LongDescription: values.description,
-                BidStartAmount: values.bidsRange[0]?.startAmount,
-                StartDate: formatDate(values.startDate),
-                EndDate: formatDate(values.endDate),
-                StartTime: formatTime(values.startTime),
-                EndTime: formatTime(values.endTime),
+                Category: lot.category,
+                SubCategory: lot.subCategory,
+                ShortDescription: lot.lead,
+                LongDescription: lot.description,
+                BidStartAmount: lot.bidsRange[0]?.startAmount,
+                StartDate: formatDate(lot.startDate),
+                EndDate: formatDate(lot.endDate),
+                StartTime: formatTime(lot.startTime),
+                EndTime: formatTime(lot.endTime),
                 BuyerPremium: 15,
                 Currency: 'USD',
-                CreatedAt: formatDate(values.startDate),
-                UpdatedAt: formatDate(values.startDate),
+                CreatedAt: formatDate(lot.startDate),
+                UpdatedAt: formatDate(lot.startDate),
                 AuctionId: currentAuction?.Id,
-                BidsRange: values.bidsRange.map((bid) => ({
+                BidsRange: lot.bidsRange.map((bid: any) => ({
                     StartAmount: bid.startAmount,
                     EndAmount: bid.endAmount,
                     BidRange: bid.bidRangeAmount,
                     LotId: index + 1,
                 })),
             }));
-
             createNewLot(formattedLots[0]);
         },
     });
