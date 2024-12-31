@@ -278,8 +278,12 @@ const AddLot = ({ updateLotsData, file, setFile }: any) => {
                         <Typography className={classes.label}>
                             Upload Auction Image
                         </Typography>
-                        <ImageUploader file={file} setFile={setFile} />
-                    </Box>
+                        <ImageUploader
+                            file={file}
+                            setFile={(uploadedFile: any) => {
+                                setFile(uploadedFile); // Update local state
+                                formik.setFieldValue('auctionImage', uploadedFile); // Update Formik state
+                            }} />                    </Box>
 
                     <Box mt={3}>
                         <Typography className={classes.label}>

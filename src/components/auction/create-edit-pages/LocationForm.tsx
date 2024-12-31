@@ -7,15 +7,24 @@ import {
     Radio,
     RadioGroup,
     FormControlLabel,
+    CircularProgress,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import CustomTextField from '../../custom-components/CustomTextField';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
+import theme from '../../../theme';
+import CustomDialogue from '../../custom-components/CustomDialogue';
+import { useNavigate } from 'react-router-dom';
 
-const LocationForm = ({ setIsAddLot, updateLocationData }: any) => {
+const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitted }: any) => {
     const classes = useCreateAuctionStyles();
+
+    const [confirmSubmission, setConfirmSubmission] = useState(false)
+    const [formData, setFormData] = useState({})
+
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
@@ -40,10 +49,18 @@ const LocationForm = ({ setIsAddLot, updateLocationData }: any) => {
             termsAndConditions: Yup.string().max(500).required('Terms and Conditions are required'),
         }),
         onSubmit: (values) => {
-            updateLocationData(values)
-            console.log('Form Data:', values);
-        },
+            if (!isSubmitted) {
+                setFormData(values)
+                setConfirmSubmission(true);
+            }
+        }
     });
+
+    const handleConfirmSubmission = () => {
+        setLocationData(formData)
+        setIsSubmitted(true)
+        navigate('/auction')
+    }
 
     return (
         <Box>
@@ -270,11 +287,19 @@ const LocationForm = ({ setIsAddLot, updateLocationData }: any) => {
                             variant="contained"
                             color="primary"
                         >
-                            Submit
+                            {isSubmitted ? <CircularProgress size={25} sx={{ color: theme.palette.primary.main3 }} /> : 'Submit'}
                         </Button>
                     </Box>
                 </Box>
             </form>
+
+            {/* Confirmation Modal */}
+            <CustomDialogue
+                type={"create"}
+                openDialogue={confirmSubmission}
+                handleCloseModal={() => setConfirmSubmission(false)}
+                handleConfirmDelete={handleConfirmSubmission}
+            />
         </Box>
     );
 };

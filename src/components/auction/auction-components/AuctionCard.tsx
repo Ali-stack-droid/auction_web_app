@@ -6,7 +6,6 @@ import AuctionDetails from './details-components/AuctionDetails';
 import LiveStreamingDetails from './details-components/LiveStreamingDetails';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import React, { useState } from 'react';
-import CustomDialogue from '../../custom-components/CustomDialogue';
 import ViewModal from '../../payment-tracking/ViewModal';
 
 const AuctionCard = ({

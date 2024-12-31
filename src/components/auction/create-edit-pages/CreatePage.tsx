@@ -5,17 +5,27 @@ import AddLot from './AddLot';
 import { Box } from '@mui/material';
 import { formatDate, formatTime } from '../../../utils/Format';
 import { createAuction } from '../../Services/Methods';
+import { toast, ToastContainer } from 'react-toastify';
+import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
 
 const CreatePage = ({ type }: any) => {
     const [isContinue, setIsContinue] = useState(false);
     const [isAddLot, setIsAddLot] = useState(false);
     const [file, setFile]: any = useState(null);
+    const [auctionData, setAuctionData]: any = useState({});
+    const [locationData, setLocationData]: any = useState({});
+    const [formData, setFormData] = useState({});
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const [auctionData, setAuctionData] = useState({
-        createAuction: {}, // Data from CreateAuction form
-        location: {},      // Data from LocationForm
-        lots: []           // Data from AddLot form (array if multiple lots)
-    });
+    const toastProps = {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+    }
 
     useEffect(() => {
         if (isContinue || isAddLot) {
@@ -27,52 +37,51 @@ const CreatePage = ({ type }: any) => {
     }, [isContinue, isAddLot]);
 
     useEffect(() => {
-        if (isContinue && isAddLot) {
-            alert("submit");
-            createNewAuction(auctionData);
+        if (isSubmitted && auctionData && locationData) {
+            const updatedData = {
+                Name: auctionData.auctionName,
+                Type: auctionData.auctionType,
+                Image: "https://example.com/image.jpg",
+                Description: auctionData.description,
+                Notes: "Test Notes",
+                LiveStreaming: auctionData.liveStreaming,
+                StartDate: formatDate(auctionData.startDate),
+                EndDate: formatDate(auctionData.endDate),
+                StartTime: formatTime(auctionData.startTime),
+                EndTime: formatTime(auctionData.endTime),
+                PrevStartDate: formatDate(auctionData.auctionPreviewStartDate),
+                PrevEndDate: formatDate(auctionData.auctionPreviewEndDate),
+                PrevStartTime: formatTime(auctionData.auctionPreviewStartTime),
+                PrevEndTime: formatTime(auctionData.auctionPreviewEndTime),
+                Country: locationData.country,
+                State: locationData.state,
+                ZipCode: locationData.zipCode,
+                City: locationData.city,
+                Address: locationData.address,
+                ShippingMethod: true,
+                PaymentTerms: locationData.paymentTerms,
+                TermsConditions: locationData.termsAndConditions,
+                CreatedAt: formatDate(auctionData.auctionPreviewStartDate),
+                UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
+            };
+            setFormData(updatedData);
+            createNewAuction(updatedData)
         }
-    }, [auctionData])
+    }, [isSubmitted])
 
 
     const createNewAuction = async (payload: any) => {
-        const auction = payload.createAuction;
-        const location = payload.location;
-        const auctionParams = {
-            Name: auction.auctionName,
-            Type: auction.auctionType,
-            Image: "https://example.com/image.jpg",
-            Description: auction.description,
-            Notes: "Test Notes",
-            LiveStreaming: auction.liveStreaming,
-            StartDate: formatDate(auction.startDate),
-            EndDate: formatDate(auction.endDate),
-            StartTime: formatTime(auction.startTime),
-            EndTime: formatTime(auction.endTime),
-            PrevStartDate: formatDate(auction.auctionPreviewStartDate),
-            PrevEndDate: formatDate(auction.auctionPreviewEndDate),
-            PrevStartTime: formatTime(auction.auctionPreviewStartTime),
-            PrevEndTime: formatTime(auction.auctionPreviewEndTime),
-            Country: location.country,
-            State: location.state,
-            ZipCode: location.zipCode,
-            City: location.city,
-            Address: location.address,
-            ShippingMethod: true,
-            PaymentTerms: location.paymentTerms,
-            TermsConditions: location.termsAndConditions,
-            CreatedAt: formatDate(auction.auctionPreviewStartDate),
-            UpdatedAt: formatDate(auction.auctionPreviewStartDate),
-        };
-
         const formData = new FormData();
-        formData.append("payload", JSON.stringify(auctionParams));
+        formData.append("payload", JSON.stringify(payload));
         if (file) {
             formData.append("file", file);
         }
 
         createAuction(formData).then((response) => {
-            alert('Auction created: ' + response.data);
+            SuccessMessage('Auction created successfully!');
+            setIsSubmitted(false)
         }).catch(error => {
+            ErrorMessage('Error creating auction!');
             alert('Error creating auction: ' + error.response?.data || error.message);
         });
     }
@@ -90,20 +99,19 @@ const CreatePage = ({ type }: any) => {
             ) : isContinue && !isAddLot ? (
                 <LocationForm
                     setIsAddLot={setIsAddLot}
-                    updateLocationData={(data: any) =>
-                        setAuctionData((prev) => ({ ...prev, location: data }))
-                    }
+                    setLocationData={setLocationData}
+                    isSubmitted={isSubmitted}
+                    setIsSubmitted={setIsSubmitted}
                 />
             ) : (
                 <CreateAuction
                     file={file}
                     setFile={setFile}
                     setIsContinue={setIsContinue}
-                    updateAuctionData={(data: any) =>
-                        setAuctionData((prev) => ({ ...prev, createAuction: data }))
-                    }
+                    setAuctionData={setAuctionData}
                 />
             )}
+            {/* <ToastContainer /> */}
         </Box>
     );
 };

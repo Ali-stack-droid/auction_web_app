@@ -27,7 +27,6 @@ const ForgotPassword = () => {
         onSubmit: (values) => {
             setIsSubmitting(true);
             setTimeout(() => {
-                console.log('Password reset email sent to:', values.email);
                 setIsSubmitting(false);
                 navigate('/reset-password');
             }, 2000);

@@ -17,9 +17,8 @@ import ImageUploader from '../../custom-components/ImageUploader';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import { createAuction } from '../../Services/Methods';
 
-const CreateAuction = ({ setIsContinue, updateAuctionData, file, setFile }: any) => {
+const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) => {
     const classes = useCreateAuctionStyles();
-    const [formData, setFormData] = useState({});
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
 
 
@@ -60,17 +59,11 @@ const CreateAuction = ({ setIsContinue, updateAuctionData, file, setFile }: any)
             auctionPreviewEndTime: Yup.string().required('Preview End Time is required'),
         }),
         onSubmit: (values) => {
-            console.log('Form Data:', values);
-            // setFormData(values);
-            // setIsContinue(true)
-            // updateAuctionData(formData);
+            // console.log('Form Data:', values);
+            setAuctionData(values);
+            setIsContinue(true)
         },
     });
-
-    const handleFormSubmit = () => {
-        updateAuctionData(formik.values);
-        setIsContinue(true)
-    }
 
     return (
         <Box>
@@ -136,12 +129,10 @@ const CreateAuction = ({ setIsContinue, updateAuctionData, file, setFile }: any)
                         </Typography>
                         <ImageUploader
                             file={file}
-                            setFile={setFile}
-                        // onChange={(event) => {
-                        //     const file = event.target.files[0];
-                        //     formik.setFieldValue("auctionImage", file);
-                        // }}
-                        />
+                            setFile={(uploadedFile: any) => {
+                                setFile(uploadedFile); // Update local state
+                                formik.setFieldValue('auctionImage', uploadedFile); // Update Formik state
+                            }} />
                         {formik.touched.auctionImage && formik.errors.auctionImage && (
                             <Typography color="error" variant="body2">
                                 {formik.errors.auctionImage}
@@ -363,7 +354,6 @@ const CreateAuction = ({ setIsContinue, updateAuctionData, file, setFile }: any)
                         type="submit"
                         variant="contained"
                         color="primary"
-                        onClick={handleFormSubmit}
                     >
                         Continue
                     </Button>

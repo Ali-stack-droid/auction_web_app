@@ -1,8 +1,10 @@
 export const formatTime = (time: any) => {
-    const [hour, minute] = time.split(":");
-    const suffix = +hour >= 12 ? "PM" : "AM";
-    const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
-    return `${formattedHour}:${minute} ${suffix}`;
+    if (time) {
+        const [hour, minute] = time.split(":");
+        const suffix = +hour >= 12 ? "PM" : "AM";
+        const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
+        return `${formattedHour}:${minute} ${suffix}`;
+    }
 };
 
 export const formatDate = (dateString: any) => {

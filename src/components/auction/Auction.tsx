@@ -101,7 +101,8 @@ const Auction = () => {
 
             {/* Confirmation Modal */}
             <CustomDialogue
-                confirmDelete={confirmDelete}
+                type={"delete"}
+                openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmDelete={handleConfirmDelete}
             />
