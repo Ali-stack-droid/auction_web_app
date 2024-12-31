@@ -13,7 +13,6 @@ const CreatePage = ({ type }: any) => {
     // data states
     const [auctionData, setAuctionData]: any = useState({});
     const [locationData, setLocationData]: any = useState({});
-    const [lotsData, setLotsData]: any = useState([]);
 
     // utils
     const [formData, setFormData] = useState({});
@@ -44,7 +43,6 @@ const CreatePage = ({ type }: any) => {
 
     useEffect(() => {
         if (isSubmitted && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
-            alert('target achieved: ' + JSON.stringify(locationData))
             const updatedData = {
                 Name: auctionData.auctionName,
                 Type: auctionData.auctionType,
@@ -92,7 +90,6 @@ const CreatePage = ({ type }: any) => {
 
         }).catch(error => {
             ErrorMessage('Error creating auction!');
-            alert('Error creating auction: ' + error.response?.data || error.message);
         });
     }
 
@@ -100,10 +97,7 @@ const CreatePage = ({ type }: any) => {
         <Box sx={{ padding: 2 }}>
             {type === "lots" || (isContinue && isAddLot) ? (
                 <AddLot
-                    file={file}
-                    setFile={setFile}
                     currentAuction={currentAuction}
-                    setLotsData={setLotsData}
                 />
             ) : isContinue && !isAddLot ? (
                 <LocationForm

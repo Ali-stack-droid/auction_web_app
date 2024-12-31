@@ -23,7 +23,6 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
 
     const [confirmSubmission, setConfirmSubmission] = useState(false)
     const [formData, setFormData]: any = useState({})
-    const [lot, setLot] = useState(false);
 
     const navigate = useNavigate();
 
@@ -57,20 +56,22 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
         }
     });
 
-    const handleConfirmSubmission = () => {
+    const handleConfirmSubmission = (isAddingLot = false) => {
         if (Object.keys(formik.errors).length == 0) {
             setLocationData(formik.values)
         } else {
             setLocationData(formData)
         }
         setIsSubmitted(true)
-        if (lot) { setIsAddLot(true); }
-        else { navigate('/auction') }
+        if (isAddingLot) {
+            setIsAddLot(true);
+        } else {
+            navigate('/auction');
+        }
     }
 
     const handleAddLot = () => {
-        setLot(true);
-        handleConfirmSubmission()
+        handleConfirmSubmission(true);
     }
 
     return (

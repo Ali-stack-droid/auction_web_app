@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, MenuItem, FormControlLabel, Checkbox, IconButton } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -7,9 +7,15 @@ import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLin
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ControlPointRoundedIcon from '@mui/icons-material/ControlPointRounded';
+import { createLot } from '../../Services/Methods';
+import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
+import { formatDate, formatTime } from '../../../utils/Format';
 
-const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
+const AddLot = ({ currentAuction }: any) => {
     const classes = useCreateAuctionStyles();
+    const [file, setFile] = useState(null)
+    // const [formData, setFormData] = useState({});
+    const [lots, setLots]: any = useState([])
 
     const formik = useFormik({
         initialValues: {
@@ -47,11 +53,83 @@ const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
             auctionImage: Yup.mixed().required('Auction Image is required'),
         }),
         onSubmit: (values) => {
-            // currentAuction
-            setLotsData(values);
-            console.log('Form Data:', values);
-        },
+
+
+            // setFormData(values);
+            setLots((prevLots: any) => [...prevLots, values]);
+
+            const updatedLots: any = [...lots, values]
+
+            const formattedLots = updatedLots.map((lot: any, index: number) => ({
+                Id: index + 1,
+                OrderNo: values.orderNumber,
+                LotNo: lot.lotNumber,
+                Image: "example.jpg", // Add the Image field (static value or dynamic based on your needs)
+                Category: lot.category,
+                SubCategory: lot.subCategory,
+                ShortDescription: lot.lead,
+                LongDescription: lot.description,
+                BidStartAmount: lot.startAmount,
+                StartDate: formatDate(lot.startDate), // Ensure this returns the correct date format
+                EndDate: formatDate(lot.endDate), // Ensure this returns the correct date format
+                StartTime: formatTime(lot.startTime), // Ensure this returns the correct time format
+                EndTime: formatTime(lot.endTime), // Ensure this returns the correct time format
+                BuyerPremium: 15, // Static value, adjust if needed
+                Currency: 'USD', // Static value, adjust if needed
+                CreatedAt: formatDate(lot.startDate), // Use current timestamp for CreatedAt
+                UpdatedAt: formatDate(lot.startDate), // Use current timestamp for UpdatedAt
+                AuctionId: currentAuction?.Id, // Use the current auction ID
+                BidsRange: [
+                    {
+                        StartAmount: 0,
+                        EndAmount: 1000,
+                        BidRange: 10,
+                        LotId: index + 1 // Make sure this references the correct lot
+                    },
+                    {
+                        StartAmount: 1001,
+                        EndAmount: 5000,
+                        BidRange: 50,
+                        LotId: index + 1 // Make sure this references the correct lot
+                    },
+                    {
+                        StartAmount: 5001,
+                        EndAmount: 10000,
+                        BidRange: 100,
+                        LotId: index + 1 // Make sure this references the correct lot
+                    }
+                ]
+            }));
+
+            createNewLot(formattedLots[0]);
+        }
     });
+
+    const createNewLot = async (payload: any) => {
+        const formData = new FormData();
+        formData.append("payload", JSON.stringify(payload));
+        if (file) {
+            formData.append("file", file);
+            setFile(null);
+        }
+
+        createLot(formData)
+            .then((response) => {
+                // setCurrentLot(response.data); // Replace with your lot-specific state setter
+                // setIsSubmitted(false); // Update submission status
+                SuccessMessage('Lot created successfully!');
+            })
+            .catch((error) => {
+                ErrorMessage('Error creating lot!');
+            });
+    };
+
+    const addAnotherLot = () => {
+        const updatedLots: any = lots;
+        setLots(updatedLots)
+
+    };
+
 
     return (
         <Box>
@@ -62,7 +140,7 @@ const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
                     <Typography className={classes.location}>Lots:</Typography>
                 </Box>
                 <Button variant={"contained"}
-                // className={headerType === "live" ? classes.addAuctionButtonLive : classes.addAuctionButton} onClick={handleAddClick}
+                    onClick={addAnotherLot}
                 >
                     Add Another Lot
                 </Button>
