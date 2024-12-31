@@ -6,16 +6,18 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
-import ControlPointRoundedIcon from '@mui/icons-material/ControlPointRounded';
 import { createLot } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { formatDate, formatTime } from '../../../utils/Format';
+import BidsRange from '../auction-components/BidsRange';
 
 const AddLot = ({ currentAuction }: any) => {
     const classes = useCreateAuctionStyles();
     const [file, setFile] = useState(null)
-    // const [formData, setFormData] = useState({});
     const [lots, setLots]: any = useState([])
+    const [bidsRange, setBidsRange] = useState([
+        { startAmount: '', endAmount: '', bidRangeAmount: '' },
+    ]);
 
     const formik = useFormik({
         initialValues: {
@@ -24,9 +26,9 @@ const AddLot = ({ currentAuction }: any) => {
             category: '',
             subCategory: '',
             lead: '',
-            startAmount: '',
-            endAmount: '',
-            bidRangeAmount: '',
+            // startAmount: '',
+            // endAmount: '',
+            // bidRangeAmount: '',
             description: '',
             startDate: '',
             startTime: '',
@@ -34,6 +36,7 @@ const AddLot = ({ currentAuction }: any) => {
             endTime: '',
             internalNotes: '',
             auctionImage: '',
+            bidsRange: [{ startAmount: '', endAmount: '', bidRangeAmount: '' }] // Initial bidsRange
         },
         validationSchema: Yup.object({
             orderNumber: Yup.string().required('Order Number is required'),
@@ -41,9 +44,9 @@ const AddLot = ({ currentAuction }: any) => {
             category: Yup.string().required('Category is required'),
             subCategory: Yup.string().required('Sub-Category is required'),
             lead: Yup.string().required('Lead is required'),
-            startAmount: Yup.number().required('Start Amount is required'),
-            endAmount: Yup.number().required('End Amount is required'),
-            bidRangeAmount: Yup.number().required('Bid Range Amount is required'),
+            // startAmount: Yup.number().required('Start Amount is required'),
+            // endAmount: Yup.number().required('End Amount is required'),
+            // bidRangeAmount: Yup.number().required('Bid Range Amount is required'),
             description: Yup.string().max(500).required('Description is required'),
             startDate: Yup.date().required('Start Date is required'),
             startTime: Yup.string().required('Start Time is required'),
@@ -51,59 +54,59 @@ const AddLot = ({ currentAuction }: any) => {
             endTime: Yup.string().required('End Time is required'),
             internalNotes: Yup.string(),
             auctionImage: Yup.mixed().required('Auction Image is required'),
+            bidsRange: Yup.array()
+                .of(
+                    Yup.object().shape({
+                        startAmount: Yup.number()
+                            .required('Start Amount is required')
+                            .typeError('Start Amount must be a number'),
+                        endAmount: Yup.number()
+                            .required('End Amount is required')
+                            .typeError('End Amount must be a number')
+                            .moreThan(
+                                Yup.ref('startAmount'),
+                                'End Amount must be greater than Start Amount'
+                            ),
+                        bidRangeAmount: Yup.number()
+                            .required('Bid Range Amount is required')
+                            .typeError('Bid Range Amount must be a number'),
+                    })
+                )
+                .min(1, 'At least one bid range is required')
+                .required('Bids Range is required'),
         }),
         onSubmit: (values) => {
-
-
-            // setFormData(values);
-            setLots((prevLots: any) => [...prevLots, values]);
-
-            const updatedLots: any = [...lots, values]
-
-            const formattedLots = updatedLots.map((lot: any, index: number) => ({
+            const formattedLots = values.bidsRange.map((range, index) => ({
                 Id: index + 1,
                 OrderNo: values.orderNumber,
-                LotNo: lot.lotNumber,
-                Image: "example.jpg", // Add the Image field (static value or dynamic based on your needs)
-                Category: lot.category,
-                SubCategory: lot.subCategory,
-                ShortDescription: lot.lead,
-                LongDescription: lot.description,
-                BidStartAmount: lot.startAmount,
-                StartDate: formatDate(lot.startDate), // Ensure this returns the correct date format
-                EndDate: formatDate(lot.endDate), // Ensure this returns the correct date format
-                StartTime: formatTime(lot.startTime), // Ensure this returns the correct time format
-                EndTime: formatTime(lot.endTime), // Ensure this returns the correct time format
-                BuyerPremium: 15, // Static value, adjust if needed
-                Currency: 'USD', // Static value, adjust if needed
-                CreatedAt: formatDate(lot.startDate), // Use current timestamp for CreatedAt
-                UpdatedAt: formatDate(lot.startDate), // Use current timestamp for UpdatedAt
-                AuctionId: currentAuction?.Id, // Use the current auction ID
-                BidsRange: [
-                    {
-                        StartAmount: 0,
-                        EndAmount: 1000,
-                        BidRange: 10,
-                        LotId: index + 1 // Make sure this references the correct lot
-                    },
-                    {
-                        StartAmount: 1001,
-                        EndAmount: 5000,
-                        BidRange: 50,
-                        LotId: index + 1 // Make sure this references the correct lot
-                    },
-                    {
-                        StartAmount: 5001,
-                        EndAmount: 10000,
-                        BidRange: 100,
-                        LotId: index + 1 // Make sure this references the correct lot
-                    }
-                ]
+                LotNo: values.lotNumber,
+                Image: "example.jpg",
+                Category: values.category,
+                SubCategory: values.subCategory,
+                ShortDescription: values.lead,
+                LongDescription: values.description,
+                BidStartAmount: values.bidsRange[0]?.startAmount,
+                StartDate: formatDate(values.startDate),
+                EndDate: formatDate(values.endDate),
+                StartTime: formatTime(values.startTime),
+                EndTime: formatTime(values.endTime),
+                BuyerPremium: 15,
+                Currency: 'USD',
+                CreatedAt: formatDate(values.startDate),
+                UpdatedAt: formatDate(values.startDate),
+                AuctionId: currentAuction?.Id,
+                BidsRange: values.bidsRange.map((bid) => ({
+                    StartAmount: bid.startAmount,
+                    EndAmount: bid.endAmount,
+                    BidRange: bid.bidRangeAmount,
+                    LotId: index + 1,
+                })),
             }));
 
             createNewLot(formattedLots[0]);
-        }
+        },
     });
+
 
     const createNewLot = async (payload: any) => {
         const formData = new FormData();
@@ -115,8 +118,6 @@ const AddLot = ({ currentAuction }: any) => {
 
         createLot(formData)
             .then((response) => {
-                // setCurrentLot(response.data); // Replace with your lot-specific state setter
-                // setIsSubmitted(false); // Update submission status
                 SuccessMessage('Lot created successfully!');
             })
             .catch((error) => {
@@ -230,57 +231,7 @@ const AddLot = ({ currentAuction }: any) => {
 
                     <Typography className={classes.info} my={1}>Bid Increment</Typography>
 
-                    <Box display="flex" gap={2} mb={2} justifyContent={'space-between'}>
-                        <Box flex={1}>
-                            <Typography className={classes.label}>
-                                Start Amount
-                            </Typography>
-                            <CustomTextField
-                                type='number'
-                                name="startAmount"
-                                placeholder="Start Amount"
-                                value={formik.values.startAmount}
-                                onChange={formik.handleChange}
-                                error={formik.touched.startAmount && Boolean(formik.errors.startAmount)}
-                                helperText={formik.touched.startAmount && formik.errors.startAmount}
-                            />
-                        </Box>
-
-                        <Box flex={1} mx={2}>
-                            <Typography className={classes.label}>
-                                End Amount
-                            </Typography>
-                            <CustomTextField
-                                type='number'
-                                name="endAmount"
-                                placeholder="End Amount"
-                                value={formik.values.endAmount}
-                                onChange={formik.handleChange}
-                                error={formik.touched.endAmount && Boolean(formik.errors.endAmount)}
-                                helperText={formik.touched.endAmount && formik.errors.endAmount}
-                            />
-                        </Box>
-
-                        <Box flex={1}>
-                            <Typography className={classes.label}>
-                                Bid Range Amount
-                            </Typography>
-                            <Box className={classes.inputWithButton}>
-                                <CustomTextField
-                                    type='number'
-                                    name="bidRangeAmount"
-                                    placeholder="Bid Range Amount"
-                                    value={formik.values.bidRangeAmount}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.bidRangeAmount && Boolean(formik.errors.bidRangeAmount)}
-                                    helperText={formik.touched.bidRangeAmount && formik.errors.bidRangeAmount}
-                                />
-                                <IconButton sx={{ margin: "0 0 10px 10px" }}>
-                                    <ControlPointRoundedIcon className={classes.addIcon} />
-                                </IconButton>
-                            </Box>
-                        </Box>
-                    </Box>
+                    <BidsRange formik={formik} />
 
                     <Box flex={1} mb={2}>
                         <Typography className={classes.label}>
@@ -395,6 +346,7 @@ const AddLot = ({ currentAuction }: any) => {
                             type="submit"
                             variant="contained"
                             color="primary"
+                            onClick={() => console.log('errors: ', formik.errors)}
                         >
                             Save
                         </Button>
