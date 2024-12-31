@@ -8,7 +8,7 @@ import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ControlPointRoundedIcon from '@mui/icons-material/ControlPointRounded';
 
-const AddLot = ({ updateLotsData }: any) => {
+const AddLot = ({ updateLotsData, file, setFile }: any) => {
     const classes = useCreateAuctionStyles();
 
     const formik = useFormik({
@@ -278,7 +278,7 @@ const AddLot = ({ updateLotsData }: any) => {
                         <Typography className={classes.label}>
                             Upload Auction Image
                         </Typography>
-                        <ImageUploader />
+                        <ImageUploader file={file} setFile={setFile} />
                     </Box>
 
                     <Box mt={3}>

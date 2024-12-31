@@ -3,10 +3,14 @@ import CreateAuction from './CreateAuction';
 import LocationForm from './LocationForm';
 import AddLot from './AddLot';
 import { Box } from '@mui/material';
+import { formatDate, formatTime } from '../../../utils/Format';
+import { createAuction } from '../../Services/Methods';
 
 const CreatePage = ({ type }: any) => {
     const [isContinue, setIsContinue] = useState(false);
     const [isAddLot, setIsAddLot] = useState(false);
+    const [file, setFile]: any = useState(null);
+
     const [auctionData, setAuctionData] = useState({
         createAuction: {}, // Data from CreateAuction form
         location: {},      // Data from LocationForm
@@ -22,58 +26,63 @@ const CreatePage = ({ type }: any) => {
         }
     }, [isContinue, isAddLot]);
 
-    // useEffect(() => {
-    //     console.log('auction data: ', auctionData)
-    // }, [auctionData])
+    useEffect(() => {
+        if (isContinue && isAddLot) {
+            alert("submit");
+            createNewAuction(auctionData);
+        }
+    }, [auctionData])
 
 
-    // const createAuction = async (payload: LogInPayload) => {
-    //     updateAuctionData(formik.values);
-    //     const data = formik.values
-    //     const auctionParams = {
-    //         Name: data.auctionName,
-    //         Type: data.auctionType,
-    //         Image: "https://example.com/image.jpg",
-    //         Description: data.description,
-    //         Notes: "Test Notes",
-    //         LiveStreaming: data.liveStreaming,
-    //         StartDate: formateDate(data.startDate),
-    //         EndDate: formateDate(data.endDate),
-    //         StartTime: formatTime(data.startTime),
-    //         EndTime: formatTime(data.endTime),
-    //         PrevStartDate: formateDate(data.auctionPreviewStartDate),
-    //         PrevEndDate: formateDate(data.auctionPreviewEndDate),
-    //         PrevStartTime: formatTime(data.auctionPreviewStartTime),
-    //         PrevEndTime: formatTime(data.auctionPreviewEndTime),
-    //         Country: "United States",
-    //         State: "California",
-    //         ZipCode: "90001",
-    //         City: "Los Angeles",
-    //         Address: "123 Demo Street",
-    //         ShippingMethod: true,
-    //         PaymentTerms: "Net 30",
-    //         TermsConditions: "All sales are final.",
-    //         CreatedAt: formateDate(data.auctionPreviewStartDate),
-    //         UpdatedAt: formateDate(data.auctionPreviewStartDate),
-    //     };
+    const createNewAuction = async (payload: any) => {
+        const auction = payload.createAuction;
+        const location = payload.location;
+        const auctionParams = {
+            Name: auction.auctionName,
+            Type: auction.auctionType,
+            Image: "https://example.com/image.jpg",
+            Description: auction.description,
+            Notes: "Test Notes",
+            LiveStreaming: auction.liveStreaming,
+            StartDate: formatDate(auction.startDate),
+            EndDate: formatDate(auction.endDate),
+            StartTime: formatTime(auction.startTime),
+            EndTime: formatTime(auction.endTime),
+            PrevStartDate: formatDate(auction.auctionPreviewStartDate),
+            PrevEndDate: formatDate(auction.auctionPreviewEndDate),
+            PrevStartTime: formatTime(auction.auctionPreviewStartTime),
+            PrevEndTime: formatTime(auction.auctionPreviewEndTime),
+            Country: location.country,
+            State: location.state,
+            ZipCode: location.zipCode,
+            City: location.city,
+            Address: location.address,
+            ShippingMethod: true,
+            PaymentTerms: location.paymentTerms,
+            TermsConditions: location.termsAndConditions,
+            CreatedAt: formatDate(auction.auctionPreviewStartDate),
+            UpdatedAt: formatDate(auction.auctionPreviewStartDate),
+        };
 
-    //     const formData = new FormData();
-    //     formData.append("payload", JSON.stringify(auctionParams));
-    //     if (file) {
-    //         formData.append("file", file);
-    //     }
+        const formData = new FormData();
+        formData.append("payload", JSON.stringify(auctionParams));
+        if (file) {
+            formData.append("file", file);
+        }
 
-    //     createAuction(formData).then(response => {
-    //         alert('Auction created: ' + response.data);
-    //     }).catch(error => {
-    //         alert('Error creating auction: ' + error.response?.data || error.message);
-    //     });
-    // }
+        createAuction(formData).then((response) => {
+            alert('Auction created: ' + response.data);
+        }).catch(error => {
+            alert('Error creating auction: ' + error.response?.data || error.message);
+        });
+    }
 
     return (
         <Box sx={{ padding: 2 }}>
             {type === "lots" || (isContinue && isAddLot) ? (
                 <AddLot
+                    file={file}
+                    setFile={setFile}
                     updateLotsData={(data: any) =>
                         setAuctionData((prev: any) => ({ ...prev, lots: [...prev.lots, data] }))
                     }
@@ -87,6 +96,8 @@ const CreatePage = ({ type }: any) => {
                 />
             ) : (
                 <CreateAuction
+                    file={file}
+                    setFile={setFile}
                     setIsContinue={setIsContinue}
                     updateAuctionData={(data: any) =>
                         setAuctionData((prev) => ({ ...prev, createAuction: data }))
