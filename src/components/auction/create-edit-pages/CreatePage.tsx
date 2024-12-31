@@ -43,7 +43,8 @@ const CreatePage = ({ type }: any) => {
     }, [isContinue, isAddLot]);
 
     useEffect(() => {
-        if (isSubmitted && auctionData && locationData) {
+        if (isSubmitted && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
+            alert('target achieved: ' + JSON.stringify(locationData))
             const updatedData = {
                 Name: auctionData.auctionName,
                 Type: auctionData.auctionType,
@@ -81,11 +82,10 @@ const CreatePage = ({ type }: any) => {
         formData.append("payload", JSON.stringify(payload));
         if (file) {
             formData.append("file", file);
+            setFile(null)
         }
 
         createAuction(formData).then((response) => {
-
-            console.log("response: ", response.data.Id)
             setCurrentAuction(response.data);
             setIsSubmitted(false)
             SuccessMessage('Auction created successfully!');

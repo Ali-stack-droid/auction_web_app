@@ -52,27 +52,25 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
         onSubmit: (values) => {
             if (!isSubmitted) {
                 setFormData(values)
-                if (lot) {
-                    handleConfirmSubmission()
-                } else {
-                    setConfirmSubmission(true);
-
-                }
+                setConfirmSubmission(true);
             }
         }
     });
 
     const handleConfirmSubmission = () => {
-        setLocationData(formData)
+        if (Object.keys(formik.errors).length == 0) {
+            setLocationData(formik.values)
+        } else {
+            setLocationData(formData)
+        }
         setIsSubmitted(true)
-
         if (lot) { setIsAddLot(true); }
         else { navigate('/auction') }
     }
 
     const handleAddLot = () => {
         setLot(true);
-        formik.handleSubmit();
+        handleConfirmSubmission()
     }
 
     return (

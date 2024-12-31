@@ -48,7 +48,6 @@ const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
         }),
         onSubmit: (values) => {
             // currentAuction
-            alert("200")
             setLotsData(values);
             console.log('Form Data:', values);
         },
@@ -56,8 +55,18 @@ const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
 
     return (
         <Box>
+
             <Typography className={classes.title}>Create New Auction</Typography>
-            <Typography className={classes.location}>Lots:</Typography>
+            <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingBottom: 3 }}>
+                <Box >
+                    <Typography className={classes.location}>Lots:</Typography>
+                </Box>
+                <Button variant={"contained"}
+                // className={headerType === "live" ? classes.addAuctionButtonLive : classes.addAuctionButton} onClick={handleAddClick}
+                >
+                    Add Another Lot
+                </Button>
+            </Box>
 
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{ padding: 3, marginBottom: 3, border: '1px solid #E2E8F0', borderRadius: "20px" }}>
@@ -275,7 +284,13 @@ const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
                             setFile={(uploadedFile: any) => {
                                 setFile(uploadedFile); // Update local state
                                 formik.setFieldValue('auctionImage', uploadedFile); // Update Formik state
-                            }} />                    </Box>
+                            }} />
+                        {formik.touched.auctionImage && formik.errors.auctionImage && (
+                            <Typography color="error" variant="body2">
+                                {formik.errors.auctionImage}
+                            </Typography>
+                        )}
+                    </Box>
 
                     <Box mt={3}>
                         <Typography className={classes.label}>
@@ -302,7 +317,6 @@ const AddLot = ({ setLotsData, file, setFile, currentAuction }: any) => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            onClick={() => { alert(""); formik.handleSubmit() }}
                         >
                             Save
                         </Button>
