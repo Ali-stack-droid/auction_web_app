@@ -16,6 +16,12 @@ const CustomModal = ({ open, onClose, modalType }: any) => {
             desc: "Your password has been updated successfully!",
             svg: `${process.env.PUBLIC_URL}/assets/svgs/check.svg`,
         },
+        {
+            type: "savelot",
+            title: "Save Your Lot!",
+            desc: "Please save your current lot first.",
+            // svg: `${process.env.PUBLIC_URL}/assets/svgs/check.svg`,
+        },
     ];
 
     // Find the content for the current modalType
@@ -29,7 +35,8 @@ const CustomModal = ({ open, onClose, modalType }: any) => {
                 <HighlightOffIcon />
             </IconButton>
             <DialogContent sx={{ my: 2 }}>
-                <Box display="flex" justifyContent="center" alignItems="center">
+
+                {content.svg && <Box display="flex" justifyContent="center" alignItems="center">
                     <Box
                         component="img"
                         src={content.svg}
@@ -40,7 +47,7 @@ const CustomModal = ({ open, onClose, modalType }: any) => {
                             transition: 'width 0.2s ease-in-out', // Smooth resize
                         }}
                     />
-                </Box>
+                </Box>}
 
                 <Typography variant="h4" textAlign="center" mt={2} color="primary">
                     {content.title}

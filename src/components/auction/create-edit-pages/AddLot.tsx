@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, MenuItem, FormControlLabel, Checkbox, IconButton } from '@mui/material';
+import { Box, Typography, Button, MenuItem, FormControlLabel, Checkbox, IconButton, Modal } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import CustomTextField from '../../custom-components/CustomTextField';
@@ -11,12 +11,16 @@ import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { formatDate, formatTime } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
 import CustomDialogue from '../../custom-components/CustomDialogue';
+import LotsTable from '../auction-components/LotsTable';
+import { useNavigate } from 'react-router-dom';
 
 const AddLot = ({ currentAuction }: any) => {
     const classes = useCreateAuctionStyles();
     const [file, setFile] = useState(null)
     const [lots, setLots]: any = useState([])
     const [confirmModal, setConfirmModal] = useState(false);
+
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
@@ -69,38 +73,40 @@ const AddLot = ({ currentAuction }: any) => {
                 .required('Bids Range is required'),
         }),
         onSubmit: (values) => {
-            setLots([...lots, values])
 
-            const formattedLots = [...lots, values].map((lot, index) => ({
-                Id: index + 1,
-                OrderNo: lot.orderNumber,
-                LotNo: lot.lotNumber,
+            const newLot = {
+                Id: lots.length + 1,
+                OrderNo: values.orderNumber,
+                LotNo: values.lotNumber,
                 Image: "example.jpg",
-                Category: lot.category,
-                SubCategory: lot.subCategory,
-                ShortDescription: lot.lead,
-                LongDescription: lot.description,
-                BidStartAmount: lot.bidsRange[0]?.startAmount,
-                StartDate: formatDate(lot.startDate),
-                EndDate: formatDate(lot.endDate),
-                StartTime: formatTime(lot.startTime),
-                EndTime: formatTime(lot.endTime),
+                Category: values.category,
+                SubCategory: values.subCategory,
+                ShortDescription: values.lead,
+                LongDescription: values.description,
+                BidStartAmount: values.bidsRange[0]?.startAmount,
+                StartDate: formatDate(values.startDate),
+                EndDate: formatDate(values.endDate),
+                StartTime: formatTime(values.startTime),
+                EndTime: formatTime(values.endTime),
                 BuyerPremium: 15,
                 Currency: 'USD',
-                CreatedAt: formatDate(lot.startDate),
-                UpdatedAt: formatDate(lot.startDate),
+                CreatedAt: formatDate(values.startDate),
+                UpdatedAt: formatDate(values.startDate),
                 AuctionId: currentAuction?.Id,
-                BidsRange: lot.bidsRange.map((bid: any) => ({
+                BidsRange: values.bidsRange.map((bid: any) => ({
                     StartAmount: bid.startAmount,
                     EndAmount: bid.endAmount,
                     BidRange: bid.bidRangeAmount,
-                    LotId: index + 1,
+                    LotId: lots.length + 1,
                 })),
-            }));
-            createNewLot(formattedLots[0]);
+            };
+
+            const formattedLots = [...lots, newLot];
+            setLots(formattedLots)
+            createNewLot(newLot);
+            formik.resetForm();
         },
     });
-
 
     const createNewLot = async (payload: any) => {
         const formData = new FormData();
@@ -119,17 +125,16 @@ const AddLot = ({ currentAuction }: any) => {
             });
     };
 
-    const addAnotherLot = () => {
-        const updatedLots: any = lots;
-        if (Object.keys(formik.errors).length > 0) {
-            setConfirmModal(true);
-        }
-    };
-
     const handleConfirmAddLot = () => {
-
+        formik.resetForm();
+        setConfirmModal(false);
+        setFile(null)
     }
 
+    const handleCancel = () => {
+        formik.resetForm();
+        navigate('/auction');
+    }
 
     return (
         <Box>
@@ -139,14 +144,14 @@ const AddLot = ({ currentAuction }: any) => {
                 <Box >
                     <Typography className={classes.location}>Lots:</Typography>
                 </Box>
-                <Button variant={"contained"}
-                    onClick={addAnotherLot}
-                >
+                <Button variant={"contained"} onClick={() => setConfirmModal(true)}>
                     Add Another Lot
                 </Button>
             </Box>
 
-            {JSON.stringify(lots)}
+            <Box pb={2}>
+                <LotsTable lots={lots} setLots={setLots} />
+            </Box>
 
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{ padding: 3, marginBottom: 3, border: '1px solid #E2E8F0', borderRadius: "20px" }}>
@@ -338,7 +343,7 @@ const AddLot = ({ currentAuction }: any) => {
                         <Button
                             className={classes.cancelButton}
                             variant="outlined"
-                            onClick={() => formik.resetForm()}
+                            onClick={handleCancel}
                         >
                             Cancel
                         </Button>
@@ -363,6 +368,9 @@ const AddLot = ({ currentAuction }: any) => {
                 handleCloseModal={() => setConfirmModal(false)}
                 handleConfirmDelete={handleConfirmAddLot}
             />
+
+            {/* <CustomModal open={openModal} modalType={'savelot'} onClose={() => setOpenModal(false)} /> */}
+
         </Box>
     );
 };
