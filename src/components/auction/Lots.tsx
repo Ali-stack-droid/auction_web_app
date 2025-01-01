@@ -17,6 +17,7 @@ import { getLotsByAuctionId } from '../Services/Methods';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import NoRecordFound from '../../utils/NoRecordFound';
+import { getQueryParam } from '../../helper/GetQueryParam';
 
 
 const Lots = () => {
@@ -27,7 +28,7 @@ const Lots = () => {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteLotId, setDeleteLotId] = useState<string | null>(null);
     const [isFetchingData, setIsFetchingData] = useState(false);
-    const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
+    // const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
 
     useEffect(() => {
         if (!isFetchingData) {
@@ -41,9 +42,11 @@ const Lots = () => {
             // const response = isCurrentLot
             //     ? await getCurrentAuctions()
             //     : await getPastAuctions();
+
+            const selectedAuction = getQueryParam('aucId')
             const response = await getLotsByAuctionId(selectedAuction);
 
-            console.log("data: ", response.data);
+            // console.log("data: ", response.data);
             if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,

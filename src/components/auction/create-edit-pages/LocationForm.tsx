@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Typography,
@@ -23,6 +23,7 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
 
     const [confirmSubmission, setConfirmSubmission] = useState(false)
     const [formData, setFormData]: any = useState({})
+    const [submissionAttempt, setSubmissionAttempt]: any = useState({})
 
     const navigate = useNavigate();
 
@@ -55,6 +56,17 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
             }
         }
     });
+
+    useEffect(() => {
+        if (formik.errors && Object.keys(formik.errors).length > 0) {
+            const firstErrorField = Object.keys(formik.errors)[0];
+            const errorElement: any = document.querySelector(`[name="${firstErrorField}"]`);
+            if (errorElement) {
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                errorElement.focus();
+            }
+        }
+    }, [formik.errors, submissionAttempt]);
 
     const handleConfirmSubmission = (isAddingLot = false) => {
         if (Object.keys(formik.errors).length == 0) {

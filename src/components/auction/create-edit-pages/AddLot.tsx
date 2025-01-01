@@ -14,14 +14,20 @@ import CustomDialogue from '../../custom-components/CustomDialogue';
 import LotsTable from '../auction-components/LotsTable';
 import { useNavigate } from 'react-router-dom';
 
-const AddLot = ({ currentAuction }: any) => {
-    const classes = useCreateAuctionStyles();
+// redux imports
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { getQueryParam } from '../../../helper/GetQueryParam';
+
+const AddLot = () => {
     const [file, setFile] = useState(null)
     const [lots, setLots]: any = useState([])
     const [confirmModal, setConfirmModal] = useState(false);
+    const [submissionAttempt, setSubmissionAttempt] = useState(false);
 
+    const classes = useCreateAuctionStyles();
+    const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
     const navigate = useNavigate();
-
     const formik = useFormik({
         initialValues: {
             orderNumber: '',
@@ -92,7 +98,7 @@ const AddLot = ({ currentAuction }: any) => {
                 Currency: 'USD',
                 CreatedAt: formatDate(values.startDate),
                 UpdatedAt: formatDate(values.startDate),
-                AuctionId: currentAuction?.Id,
+                AuctionId: getQueryParam('aucId'),
                 BidsRange: values.bidsRange.map((bid: any) => ({
                     StartAmount: bid.startAmount,
                     EndAmount: bid.endAmount,
@@ -107,6 +113,18 @@ const AddLot = ({ currentAuction }: any) => {
             formik.resetForm();
         },
     });
+
+
+    useEffect(() => {
+        if (formik.errors && Object.keys(formik.errors).length > 0) {
+            const firstErrorField = Object.keys(formik.errors)[0];
+            const errorElement: any = document.querySelector(`[name="${firstErrorField}"]`);
+            if (errorElement) {
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                errorElement.focus();
+            }
+        }
+    }, [formik.errors, submissionAttempt]);
 
     const createNewLot = async (payload: any) => {
         const formData = new FormData();
@@ -354,7 +372,7 @@ const AddLot = ({ currentAuction }: any) => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            onClick={() => console.log('errors: ', formik.errors)}
+                            onClick={() => setSubmissionAttempt(!submissionAttempt)}
                         >
                             Save
                         </Button>

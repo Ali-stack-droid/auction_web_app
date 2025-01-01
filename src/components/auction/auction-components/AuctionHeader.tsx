@@ -3,6 +3,7 @@ import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, Menu, MenuIte
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import useAuctionHeaderStyles from './AuctionHeaderStyles';
 import { useNavigate } from 'react-router-dom';
+import { getQueryParam } from '../../../helper/GetQueryParam';
 
 const AuctionHeader = ({
     headerType = 'auction', // Default to 'auction'
@@ -27,7 +28,8 @@ const AuctionHeader = ({
         if (headerType === "auction" || headerType === "live") {
             navigate('/auction/create')
         } else {
-            navigate('/auction/lots/create')
+            const selectedAuction = getQueryParam('aucId');
+            navigate(`/auction/lots/create?aucId=${selectedAuction}`)
         }
     }
 

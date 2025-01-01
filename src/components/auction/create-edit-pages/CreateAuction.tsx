@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Box,
     Paper,
@@ -21,6 +21,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
     const classes = useCreateAuctionStyles();
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
 
+    const [submissionAttempt, setSubmissionAttempt] = useState(false)
 
     const formik = useFormik({
         initialValues: {
@@ -64,6 +65,17 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
             setIsContinue(true)
         },
     });
+
+    useEffect(() => {
+        if (formik.errors && Object.keys(formik.errors).length > 0) {
+            const firstErrorField = Object.keys(formik.errors)[0];
+            const errorElement: any = document.querySelector(`[name="${firstErrorField}"]`);
+            if (errorElement) {
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                errorElement.focus();
+            }
+        }
+    }, [formik.errors, submissionAttempt]);
 
     return (
         <Box>
@@ -354,6 +366,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                         type="submit"
                         variant="contained"
                         color="primary"
+                        onClick={() => setSubmissionAttempt(!submissionAttempt)}
                     >
                         Continue
                     </Button>

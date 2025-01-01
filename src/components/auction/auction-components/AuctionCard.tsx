@@ -49,8 +49,8 @@ const AuctionCard = ({
     const isLiveDetail = headerType === "live" && getQueryParam('liveId');
 
     const handleViewCatalog = (id: number) => {
-        dispatch(setSelectedAuction(id));
-        navigate('/auction/lots')
+        // dispatch(setSelectedAuction(id));
+        navigate(`/auction/lots?aucId=${id}`)
     }
 
     return (
@@ -131,7 +131,11 @@ const AuctionCard = ({
 
                     {/* View Catalog Button */}
                     {isLiveDetail ?
-                        <Button onClick={() => navigate('/auction/lots')} variant={"outlined"} size="small" className={classes.nextButton}>
+                        <Button
+                            onClick={() => navigate(`/auction/lots?aucId=${cardData.id}`)}
+                            variant={"outlined"}
+                            size="small"
+                            className={classes.nextButton}>
                             Show Next Lot
                         </Button>
                         :

@@ -96,9 +96,7 @@ const CreatePage = ({ type }: any) => {
     return (
         <Box sx={{ padding: 2 }}>
             {type === "lots" || (isContinue && isAddLot) ? (
-                <AddLot
-                    currentAuction={currentAuction}
-                />
+                <AddLot />
             ) : isContinue && !isAddLot ? (
                 <LocationForm
                     setIsAddLot={setIsAddLot}
