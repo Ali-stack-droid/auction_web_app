@@ -33,7 +33,7 @@ const LotsTable: React.FC<LotsTableProps> = ({ lots, setLots }) => {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Id</TableCell>
+                        <TableCell>Lot Id</TableCell>
                         <TableCell>Lot No</TableCell>
                         <TableCell>Start Date</TableCell>
                         <TableCell>End Date</TableCell>

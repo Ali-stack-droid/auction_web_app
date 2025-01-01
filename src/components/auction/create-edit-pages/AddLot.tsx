@@ -149,9 +149,11 @@ const AddLot = ({ currentAuction }: any) => {
                 </Button>
             </Box>
 
-            <Box pb={2}>
-                <LotsTable lots={lots} setLots={setLots} />
-            </Box>
+            {lots?.length > 0 &&
+                <Box pb={2}>
+                    <LotsTable lots={lots} setLots={setLots} />
+                </Box>
+            }
 
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{ padding: 3, marginBottom: 3, border: '1px solid #E2E8F0', borderRadius: "20px" }}>
@@ -371,7 +373,7 @@ const AddLot = ({ currentAuction }: any) => {
 
             {/* <CustomModal open={openModal} modalType={'savelot'} onClose={() => setOpenModal(false)} /> */}
 
-        </Box>
+        </Box >
     );
 };
 

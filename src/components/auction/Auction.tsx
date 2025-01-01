@@ -9,7 +9,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import AuctionCard from './auction-components/AuctionCard';
 import CustomDialogue from '../custom-components/CustomDialogue';
-import auctionData from './auctionData';
 import AuctionHeader from './auction-components/AuctionHeader';
 import PaginationButton from './auction-components/PaginationButton';
 import { getCurrentAuctions, getPastAuctions } from '../Services/Methods';
@@ -18,7 +17,7 @@ import NoRecordFound from '../../utils/NoRecordFound';
 const Auction = () => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
-    const [filteredData, setFilteredData] = useState(auctionData); // Filtered data state
+    const [filteredData, setFilteredData]: any = useState(); // Filtered data state
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
@@ -37,13 +36,12 @@ const Auction = () => {
                 ? await getCurrentAuctions()
                 : await getPastAuctions();
 
-            console.log("data: ", response.data);
-            if (response.data.length) {
+            // console.log("data: ", response.data);
+            if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
                     name: item.Name,
                     image: item.Image,
-                    type: "current", // Assuming "current" for all events; modify as needed
                     details: {
                         location: `${item.City}, ${item.Country}`,
                         dateRange: `${item.StartDate} to ${item.EndDate}`,
@@ -120,7 +118,7 @@ const Auction = () => {
                 setSelectedLocation={setSelectedLocation}
             />
 
-            {!isFetchingData && filteredData.length ?
+            {!isFetchingData && filteredData?.length ?
                 <Box>
                     {/* Auction Cards */}
                     <Fade in={fadeIn} timeout={200}>

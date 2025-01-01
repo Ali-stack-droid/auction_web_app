@@ -7,6 +7,8 @@ import LiveStreamingDetails from './card-details-components/LiveStreamingDetails
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import React, { useState } from 'react';
 import ViewModal from '../../payment-tracking/ViewModal';
+import { useDispatch } from 'react-redux';
+import { setSelectedAuction } from '../../../redux/appSlice';
 
 const AuctionCard = ({
     headerType,
@@ -19,7 +21,7 @@ const AuctionCard = ({
     const [select, setSelect] = useState(false)
     const [moveDialogue, setMoveDialogue] = useState(false)
     const [moveLotId, setMoveLotId] = useState(0)
-
+    const dispatch = useDispatch();
 
     const handleCardMediaClick = () => {
         if (headerType === "live") {
@@ -45,6 +47,11 @@ const AuctionCard = ({
     }
 
     const isLiveDetail = headerType === "live" && getQueryParam('liveId');
+
+    const handleViewCatalog = (id: number) => {
+        dispatch(setSelectedAuction(id));
+        navigate('/auction/lots')
+    }
 
     return (
         <Card className={headerType === "live" ? classes.liveCard : classes.card} elevation={2}>
@@ -129,7 +136,7 @@ const AuctionCard = ({
                         </Button>
                         :
                         headerType === "auction" || headerType === "live" ?
-                            <Button onClick={() => navigate('/auction/lots')} variant={"contained"} size="small" className={classes.catalogButton}>
+                            <Button onClick={() => handleViewCatalog(cardData.id)} variant={"contained"} size="small" className={classes.catalogButton}>
                                 View Catalog
                             </Button>
                             :
@@ -143,7 +150,7 @@ const AuctionCard = ({
                                         opacity: 1, // Maintain original appearance
                                     }}
                                 >
-                                    {cardData.highestBid}
+                                    $&nbsp;{cardData.highestBid}
                                 </Button>
                             </Box>
                     }

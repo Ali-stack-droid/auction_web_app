@@ -4,38 +4,98 @@ import {
     Fade,
     Container,
     Grid,
+    CircularProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import AuctionCard from './auction-components/AuctionCard';
-import lots from './lotsData';
 import PaginationButton from './auction-components/PaginationButton';
+import { getLotsByAuctionId } from '../Services/Methods';
 
-// Define the type interface for LotsData
-interface Lot {
-    id: number;
-    lotNumber: string;
-    name: string;
-    description: string;
-    countDown: string;
-    location: string;
-    image: string;
-    type: string;
-}
+// redux imports
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import NoRecordFound from '../../utils/NoRecordFound';
+
 
 const Lots = () => {
     const [isCurrentLot, setIsCurrentLot] = useState(true); // Toggle between Current and Past Lots
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
-    const [lotsData, setLotsData] = useState<Lot[]>(lots); // Original data state
-    const [filteredData, setFilteredData] = useState<Lot[]>([]); // Filtered data state
+    const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteLotId, setDeleteLotId] = useState<string | null>(null);
+    const [isFetchingData, setIsFetchingData] = useState(false);
+    const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
 
     useEffect(() => {
-        setFilteredData(lots)
-    }, [lots])
+        if (!isFetchingData) {
+            setIsFetchingData(true)
+            fetchLotsData();
+        }
+    }, [isCurrentLot])
+
+    const fetchLotsData = async () => {
+        try {
+            // const response = isCurrentLot
+            //     ? await getCurrentAuctions()
+            //     : await getPastAuctions();
+            const response = await getLotsByAuctionId(selectedAuction);
+
+            console.log("data: ", response.data);
+            if (response.data && response.data.length > 0) {
+                const updatedData = response.data.map((item: any) => ({
+                    id: item.Id,
+                    lotNumber: item.LotNo,
+                    name: item.ShortDescription,
+                    description: item.LongDescription,
+                    countDown: "N/A",
+                    location: "N/A",
+                    image: item.Image,
+                    type: "current",
+                    highestBid: item.BidStartAmount,
+                    sold: item.IsSold,
+                    details: {
+                        description: item.LongDescription,
+                        date: `${item.StartDate} to ${item.EndDate}`,
+                        time: `${item.StartTime} to ${item.EndTime}`,
+                        orderNumber: item.OrderNo,
+                        lot: item.LotNo,
+                        category: item.Category,
+                        subCategory: item.SubCategory,
+                        winner: {
+                            email: "N/A", // Replace with actual data if available
+                            phone: "N/A", // Replace with actual data if available
+                            location: "N/A", // Replace with actual data if available
+                        },
+                    },
+                }));
+
+                setFilteredData(updatedData);
+            } else {
+                setFilteredData([]);
+            }
+            setIsFetchingData(false)
+
+        } catch (error) {
+            console.error('Error fetching auction data:', error);
+            setIsFetchingData(false)
+        }
+    };
+
+    // Filtered Data based on `type` and `location`
+    useEffect(() => {
+        // const newFilteredData = lotsData.filter((lot) => {
+        //     const matchesLocation = selectedLocation ? lot.location === selectedLocation : true;
+        //     return matchesLocation;
+        // });
+        setFadeIn(false); // Trigger fade-out
+        setTimeout(() => {
+            setFadeIn(true); // Trigger fade-in after filtering
+            setFilteredData(filteredData);
+        }, 200);
+    }, [isCurrentLot, selectedLocation]);
 
     // Open confirmation modal
     const handleDeleteLot = (id: string) => {
@@ -66,23 +126,9 @@ const Lots = () => {
 
     // Handle Delete
     const handleDelete = (id: string) => {
-        const updatedData = filteredData.filter((lot) => lot.id !== parseInt(id)); // Remove lot by ID
+        const updatedData = filteredData.filter((lot: any) => lot.id !== parseInt(id)); // Remove lot by ID
         setFilteredData(updatedData); // Update state with filtered data
     };
-
-    // Filtered Data based on `type` and `location`
-    useEffect(() => {
-        const newFilteredData = lotsData.filter((lot) => {
-            const matchesType = lot.type === (isCurrentLot ? "current" : "past");
-            const matchesLocation = selectedLocation ? lot.location === selectedLocation : true;
-            return matchesType && matchesLocation;
-        });
-        setFadeIn(false); // Trigger fade-out
-        setTimeout(() => {
-            setFadeIn(true); // Trigger fade-in after filtering
-            setFilteredData(newFilteredData);
-        }, 200);
-    }, [isCurrentLot, selectedLocation, lotsData]);
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -93,27 +139,43 @@ const Lots = () => {
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
             />
-
-            {/* Lot Cards */}
-            <Fade in={fadeIn} timeout={200}>
-                <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
-                    <Grid container spacing={3}>
-                        {filteredData.map((lot) => (
-                            <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
-                                <AuctionCard
-                                    headerType={"lots"}
-                                    cardData={lot}
-                                    handleEdit={handleEdit}
-                                    handleDelete={() => handleDeleteLot(lot.id.toString())}
-                                />
+            {!isFetchingData && filteredData?.length ?
+                <Box>
+                    {/* Lot Cards */}
+                    <Fade in={fadeIn} timeout={200}>
+                        <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                            <Grid container spacing={3}>
+                                {filteredData && filteredData.map((lot: any) => (
+                                    <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
+                                        <AuctionCard
+                                            headerType={"lots"}
+                                            cardData={lot}
+                                            handleEdit={handleEdit}
+                                            handleDelete={() => handleDeleteLot(lot.id.toString())}
+                                        />
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
-                    </Grid>
-                </Container>
-            </Fade>
+                        </Container>
+                    </Fade>
 
-            <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
-
+                    <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
+                </Box>
+                : isFetchingData ?
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '70vh',
+                            width: '100%',
+                        }}
+                    >
+                        <CircularProgress size={70} disableShrink />
+                    </Box>
+                    :
+                    <NoRecordFound />
+            }
             {/* Confirmation Modal */}
             <CustomDialogue
                 type={"delete"}

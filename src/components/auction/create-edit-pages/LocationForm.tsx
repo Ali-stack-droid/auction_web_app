@@ -309,7 +309,7 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
             <CustomDialogue
                 type={"create"}
                 title={"Confirm Submission!"}
-                message={"Are you sure to create new lot without saving current lotauction without adding lots?"}
+                message={"Are you sure you want to create current auction without adding lots?"}
                 openDialogue={confirmSubmission}
                 handleCloseModal={() => setConfirmSubmission(false)}
                 handleConfirmDelete={handleConfirmSubmission}
