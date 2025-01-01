@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Typography, Card, CardMedia, Grid } from "@mui/material";
-import useDetailStyles from "./DetailPageStyles";
+import useDetailStyles from "./detail-pages-components/DetailPageStyles";
 import auctionsData from "../lotsData";
 import { getQueryParam } from "../../../helper/GetQueryParam";
 import theme from "../../../theme";
@@ -8,9 +8,9 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import { useNavigate } from "react-router-dom";
 import CustomDialogue from "../../custom-components/CustomDialogue";
-import BiddingTable from "./BiddingTable";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AuctionCard from "../auction-components/AuctionCard";
+import BiddingTable from "./detail-pages-components/BiddingTable";
 
 const AuctionDetailPage = () => {
     const classes = useDetailStyles();

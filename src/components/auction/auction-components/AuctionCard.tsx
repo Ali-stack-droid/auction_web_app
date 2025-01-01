@@ -1,9 +1,9 @@
 import { Card, CardMedia, Typography, Button, Tooltip, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuctionCardStyles } from './AuctionStyles';
-import LotDetails from './details-components/LotDetails';
-import AuctionDetails from './details-components/AuctionDetails';
-import LiveStreamingDetails from './details-components/LiveStreamingDetails';
+import LotDetails from './card-details-components/LotDetails';
+import AuctionDetails from './card-details-components/AuctionDetails';
+import LiveStreamingDetails from './card-details-components/LiveStreamingDetails';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import React, { useState } from 'react';
 import ViewModal from '../../payment-tracking/ViewModal';

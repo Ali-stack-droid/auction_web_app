@@ -7,7 +7,6 @@ import Auction from '../components/auction/Auction';
 import Lots from '../components/auction/Lots';
 import LotDetailPage from '../components/auction/detail-pages/LotDetailPage';
 import AuctionDetailPage from '../components/auction/detail-pages/AuctionDetailPage';
-import CreateAuction from '../components/auction/create-edit-pages/CreateAuction';
 import CreatePage from '../components/auction/create-edit-pages/CreatePage';
 import LiveStreamingDetailPage from '../components/auction/detail-pages/LiveStreamingDetailPage';
 import { ToastContainer } from 'react-toastify';

@@ -2,7 +2,6 @@ import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, Pagi
 import { useState } from "react";
 import usePaymentTrackingStyles from "./PaymentTrackingStyles";
 import { tableData } from "./paymentData";
-import WinnerModal from "../auction/detail-pages/WinnerModal";
 import ViewModal from "./ViewModal";
 
 const PaymentTracking = () => {

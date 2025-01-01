@@ -1,6 +1,6 @@
 
 import { makeStyles } from '@mui/styles';
-import theme from '../../../theme';
+import theme from '../../../../theme';
 
 const useDetailStyles = makeStyles(() => ({
     title: {

@@ -1,6 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import PlaceIcon from '@mui/icons-material/Place';
-import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import ViewInArRoundedIcon from '@mui/icons-material/ViewInArRounded';
 import { useAuctionDetailStyles } from '../AuctionStyles';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';

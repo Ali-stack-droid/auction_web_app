@@ -9,7 +9,7 @@ import {
     Avatar,
     Tooltip,
 } from "@mui/material";
-import useDetailStyles from "./DetailPageStyles";
+import useDetailStyles from "./detail-pages-components/DetailPageStyles";
 import lotsData from "../lotsData";
 import { getQueryParam } from "../../../helper/GetQueryParam";
 import theme from "../../../theme";
@@ -17,7 +17,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import { useNavigate } from "react-router-dom";
 import CustomDialogue from "../../custom-components/CustomDialogue";
-import WinnerModal from "./WinnerModal";
+import WinnerModal from "./detail-pages-components/WinnerModal";
 
 const LotDetailPage = () => {
     const classes = useDetailStyles();

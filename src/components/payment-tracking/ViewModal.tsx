@@ -1,10 +1,6 @@
-import React from 'react';
-import { Dialog, DialogContent, IconButton, Typography, Box, Button, DialogActions } from '@mui/material';
+import { Dialog, DialogContent, IconButton, Typography, Box, Button } from '@mui/material';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
-import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import useWinnerModalStyle from '../auction/detail-pages/WinnerModalStyles';
+import useWinnerModalStyle from '../auction/detail-pages/detail-pages-components/WinnerModalStyles';
 
 const ViewModal = ({ open, onClose, data, type }: any) => {
     const classes = useWinnerModalStyle();

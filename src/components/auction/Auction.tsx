@@ -4,6 +4,7 @@ import {
     Fade,
     Container,
     Grid,
+    CircularProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AuctionCard from './auction-components/AuctionCard';
@@ -11,6 +12,8 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import auctionData from './auctionData';
 import AuctionHeader from './auction-components/AuctionHeader';
 import PaginationButton from './auction-components/PaginationButton';
+import { getCurrentAuctions, getPastAuctions } from '../Services/Methods';
+import NoRecordFound from '../../utils/NoRecordFound';
 
 const Auction = () => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
@@ -19,6 +22,45 @@ const Auction = () => {
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
+    const [isFetchingData, setIsFetchingData] = useState(false);
+
+    useEffect(() => {
+        if (!isFetchingData) {
+            setIsFetchingData(true)
+            fetchAuctionData();
+        }
+    }, [isCurrentAuction])
+
+    const fetchAuctionData = async () => {
+        try {
+            const response = isCurrentAuction
+                ? await getCurrentAuctions()
+                : await getPastAuctions();
+
+            console.log("data: ", response.data);
+            if (response.data.length) {
+                const updatedData = response.data.map((item: any) => ({
+                    id: item.Id,
+                    name: item.Name,
+                    image: item.Image,
+                    type: "current", // Assuming "current" for all events; modify as needed
+                    details: {
+                        location: `${item.City}, ${item.Country}`,
+                        dateRange: `${item.StartDate} to ${item.EndDate}`,
+                        lotsAvailable: null // Replace with actual data if available
+                    }
+                }));
+                setFilteredData(updatedData);
+            } else {
+                setFilteredData([]);
+            }
+            setIsFetchingData(false)
+
+        } catch (error) {
+            console.error('Error fetching auction data:', error);
+            setIsFetchingData(false)
+        }
+    };
 
     // Open confirmation modal
     const handleDeleteAuction = (id: string) => {
@@ -56,17 +98,16 @@ const Auction = () => {
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
-        const newFilteredData = auctionData.filter((auction: any) => {
-            const matchesType = auction.type === (isCurrentAuction ? "current" : "past");
-            const matchesLocation = selectedLocation ? auction.location === selectedLocation : true;
-            return matchesType && matchesLocation;
-        });
+        // const newFilteredData = auctionData.filter((auction: any) => {
+        //     const matchesLocation = selectedLocation ? auction.location === selectedLocation : true;
+        //     return matchesLocation;
+        // });
         setFadeIn(false); // Trigger fade-out
         setTimeout(() => {
             setFadeIn(true); // Trigger fade-in after filtering
-            setFilteredData(newFilteredData);
+            // setFilteredData(newFilteredData);
         }, 200);
-    }, [isCurrentAuction, selectedLocation]);
+    }, [selectedLocation]);
 
 
     return (
@@ -79,25 +120,43 @@ const Auction = () => {
                 setSelectedLocation={setSelectedLocation}
             />
 
-            {/* Auction Cards */}
-            <Fade in={fadeIn} timeout={200}>
-                <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
-                    <Grid container spacing={3}>
-                        {filteredData.map((auction: any) => (
-                            <Grid item xs={12} sm={6} md={4} xl={3} key={auction.id}>
-                                <AuctionCard
-                                    headerType={"auction"}
-                                    cardData={auction}
-                                    handleEdit={handleEdit}
-                                    handleDelete={() => handleDeleteAuction(auction.id)}
-                                />
+            {!isFetchingData && filteredData.length ?
+                <Box>
+                    {/* Auction Cards */}
+                    <Fade in={fadeIn} timeout={200}>
+                        <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                            <Grid container spacing={3}>
+                                {filteredData.map((auction: any) => (
+                                    <Grid item xs={12} sm={6} md={4} xl={3} key={auction.id}>
+                                        <AuctionCard
+                                            headerType={"auction"}
+                                            cardData={auction}
+                                            handleEdit={handleEdit}
+                                            handleDelete={() => handleDeleteAuction(auction.id)}
+                                        />
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
-                    </Grid>
-                </Container>
-            </Fade>
+                        </Container>
+                    </Fade>
 
-            <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
+                    <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
+                </Box>
+                : isFetchingData ?
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '70vh',
+                            width: '100%',
+                        }}
+                    >
+                        <CircularProgress size={70} disableShrink />
+                    </Box>
+                    :
+                    <NoRecordFound />
+            }
 
             {/* Confirmation Modal */}
             <CustomDialogue
@@ -109,7 +168,7 @@ const Auction = () => {
                 handleConfirmDelete={handleConfirmDelete}
             />
 
-        </Box>
+        </Box >
     );
 };
 

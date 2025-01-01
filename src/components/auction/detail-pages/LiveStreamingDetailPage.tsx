@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { CardMedia, Typography, Button, Box, List, ListItem, Card, Avatar, Pagination } from '@mui/material';
-import useLiveStreamDetailStyles from './LiveStreamingDetailStyles';
+import { Typography, Button, Box, List, ListItem, Card, Avatar, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import AuctionCard from '../auction-components/AuctionCard';
 import { liveStreamData } from '../../live-streaming/liveStreamData';
 import auctionsData from "../lotsData";
 import PaginationButton from '../auction-components/PaginationButton';
+import useLiveStreamDetailStyles from './detail-pages-components/LiveStreamingDetailStyles';
 
 
 const LiveStreamingDetailPage: React.FC = () => {

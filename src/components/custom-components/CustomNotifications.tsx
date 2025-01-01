@@ -17,21 +17,21 @@ import {
 const notifications = [
     {
         id: 1,
-        icon: '/static/images/avatar/1.jpg',
+        icon: `${process.env.PUBLIC_URL}/assets/svgs/congratulation.svg`,
         text: 'New Comment',
         desc: 'Someone commented on your post.',
         isRead: false,
     },
     {
         id: 2,
-        icon: '/static/images/avatar/2.jpg',
+        icon: `${process.env.PUBLIC_URL}/assets/svgs/congratulation.svg`,
         text: 'New Follower',
         desc: 'You have a new follower.',
         isRead: true,
     },
     {
         id: 3,
-        icon: '/static/images/avatar/3.jpg',
+        icon: `${process.env.PUBLIC_URL}/assets/svgs/congratulation.svg`,
         text: 'System Update',
         desc: 'A new system update is available.',
         isRead: false,
