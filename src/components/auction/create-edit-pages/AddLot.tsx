@@ -121,7 +121,7 @@ const AddLot = ({ currentAuction }: any) => {
 
     const addAnotherLot = () => {
         const updatedLots: any = lots;
-        if (formik.errors) {
+        if (Object.keys(formik.errors).length > 0) {
             setConfirmModal(true);
         }
     };
@@ -358,7 +358,7 @@ const AddLot = ({ currentAuction }: any) => {
             <CustomDialogue
                 type={"create"}
                 title={"Confirm Add New Lot"}
-                message={"Are you sure to create new lot without creating current lot?"}
+                message={"Are you sure to create new lot without saving current lot?"}
                 openDialogue={confirmModal}
                 handleCloseModal={() => setConfirmModal(false)}
                 handleConfirmDelete={handleConfirmAddLot}
