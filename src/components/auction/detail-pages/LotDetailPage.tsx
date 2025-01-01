@@ -18,20 +18,44 @@ import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import { useNavigate } from "react-router-dom";
 import CustomDialogue from "../../custom-components/CustomDialogue";
 import WinnerModal from "./detail-pages-components/WinnerModal";
+import { getLotDetails } from "../../Services/Methods";
+import { ErrorMessage, SuccessMessage } from "../../../utils/ToastMessages";
 
 const LotDetailPage = () => {
     const classes = useDetailStyles();
-    const [lotDetails, setLotDeatils]: any = useState({})
+    const [lotDetails, setLotDetails]: any = useState({})
     const [confirmDelete, setConfirmDelete] = useState(false)
     const [deleteLotId, setDeleteLotId] = useState(0)
     const [winnerModal, setWinnerModal] = useState(false)
+    const [isFetchingData, setIsFetchingData] = useState(false)
 
     useEffect(() => {
+        // if (!isFetchingData) {
+        //     setIsFetchingData(true);
+        //     fetchLotDetails()
+        // }
         if (lotsData) {
-            setLotDeatils(lotsData.find((lot: any) => lot.id + "" === getQueryParam('lotId')))
+            setLotDetails(lotsData.find((lot: any) => lot.id + "" === getQueryParam('lotId')))
         }
     }, [lotsData])
 
+    const fetchLotDetails = async () => {
+        try {
+            const response = await getLotDetails(getQueryParam('lotId')); // Call the API with the provided ID
+
+            if (response.status === 200) {
+                console.log('Lot Details:', response.data); // Handle the fetched lot details
+                // You can set the data to state if required
+
+                const details: any = response.data;
+                // setLotDetails(details);
+            } else {
+                // ErrorMessage('Error fetching lot details.')
+            }
+        } catch (error) {
+            console.error('Error fetching lot details:', error);
+        }
+    };
 
     const navigate = useNavigate()
 
