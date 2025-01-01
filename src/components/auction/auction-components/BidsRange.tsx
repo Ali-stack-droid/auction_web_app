@@ -23,7 +23,6 @@ const BidsRange = ({ formik }: any) => {
         const updatedRanges = formik.values.bidsRange.map((range: any, i: any) =>
             i === index ? { ...range, [field]: value } : range
         );
-        console.log("updatedRanges: ", updatedRanges)
         formik.setFieldValue('bidsRange', updatedRanges);
     };
 

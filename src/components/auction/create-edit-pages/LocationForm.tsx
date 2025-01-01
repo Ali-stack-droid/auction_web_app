@@ -308,6 +308,8 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
             {/* Confirmation Modal */}
             <CustomDialogue
                 type={"create"}
+                title={"Confirm Deletion"}
+                message={"Are you sure you want to delete this auction? This action cannot be undone."}
                 openDialogue={confirmSubmission}
                 handleCloseModal={() => setConfirmSubmission(false)}
                 handleConfirmDelete={handleConfirmSubmission}

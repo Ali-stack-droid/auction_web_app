@@ -10,14 +10,13 @@ import { createLot } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { formatDate, formatTime } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
+import CustomDialogue from '../../custom-components/CustomDialogue';
 
 const AddLot = ({ currentAuction }: any) => {
     const classes = useCreateAuctionStyles();
     const [file, setFile] = useState(null)
     const [lots, setLots]: any = useState([])
-    const [bidsRange, setBidsRange] = useState([
-        { startAmount: '', endAmount: '', bidRangeAmount: '' },
-    ]);
+    const [confirmModal, setConfirmModal] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -26,9 +25,6 @@ const AddLot = ({ currentAuction }: any) => {
             category: '',
             subCategory: '',
             lead: '',
-            // startAmount: '',
-            // endAmount: '',
-            // bidRangeAmount: '',
             description: '',
             startDate: '',
             startTime: '',
@@ -44,9 +40,6 @@ const AddLot = ({ currentAuction }: any) => {
             category: Yup.string().required('Category is required'),
             subCategory: Yup.string().required('Sub-Category is required'),
             lead: Yup.string().required('Lead is required'),
-            // startAmount: Yup.number().required('Start Amount is required'),
-            // endAmount: Yup.number().required('End Amount is required'),
-            // bidRangeAmount: Yup.number().required('Bid Range Amount is required'),
             description: Yup.string().max(500).required('Description is required'),
             startDate: Yup.date().required('Start Date is required'),
             startTime: Yup.string().required('Start Time is required'),
@@ -128,9 +121,14 @@ const AddLot = ({ currentAuction }: any) => {
 
     const addAnotherLot = () => {
         const updatedLots: any = lots;
-        setLots(updatedLots)
-
+        if (formik.errors) {
+            setConfirmModal(true);
+        }
     };
+
+    const handleConfirmAddLot = () => {
+
+    }
 
 
     return (
@@ -147,6 +145,8 @@ const AddLot = ({ currentAuction }: any) => {
                     Add Another Lot
                 </Button>
             </Box>
+
+            {JSON.stringify(lots)}
 
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{ padding: 3, marginBottom: 3, border: '1px solid #E2E8F0', borderRadius: "20px" }}>
@@ -354,6 +354,15 @@ const AddLot = ({ currentAuction }: any) => {
                     </Box>
                 </Box>
             </form>
+            {/* Confirmation Modal */}
+            <CustomDialogue
+                type={"create"}
+                title={"Confirm Add New Lot"}
+                message={"Are you sure to create new lot without creating current lot?"}
+                openDialogue={confirmModal}
+                handleCloseModal={() => setConfirmModal(false)}
+                handleConfirmDelete={handleConfirmAddLot}
+            />
         </Box>
     );
 };

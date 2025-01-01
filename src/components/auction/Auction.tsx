@@ -101,6 +101,8 @@ const Auction = () => {
 
             {/* Confirmation Modal */}
             <CustomDialogue
+                title={"Confirm Deletion"}
+                message={"Are you sure you want to delete this auction? This action cannot be undone."}
                 type={"delete"}
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
