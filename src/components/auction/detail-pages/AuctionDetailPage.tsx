@@ -275,8 +275,8 @@ const AuctionDetailPage = () => {
             {/* Confirmation Modal */}
             <CustomDialogue
                 type={"delete"}
-                title={"Confirm Submission"}
-                message={"Do you want to create the auction without adding lots?"}
+                title={"Confirm Deletion"}
+                message={"Are you sure you want to delete this auction? This action cannot be undone."}
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmDelete={handleConfirmDelete}
