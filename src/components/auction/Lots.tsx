@@ -11,13 +11,14 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import AuctionCard from './auction-components/AuctionCard';
 import PaginationButton from './auction-components/PaginationButton';
-import { getLotsByAuctionId } from '../Services/Methods';
+import { deleteLot, getLotsByAuctionId } from '../Services/Methods';
 
 // redux imports
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import NoRecordFound from '../../utils/NoRecordFound';
 import { getQueryParam } from '../../helper/GetQueryParam';
+import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 
 
 const Lots = () => {
@@ -26,7 +27,7 @@ const Lots = () => {
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
-    const [deleteLotId, setDeleteLotId] = useState<string | null>(null);
+    const [deleteLotId, setDeleteLotId] = useState(0);
     const [isFetchingData, setIsFetchingData] = useState(false);
     // const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
 
@@ -58,7 +59,7 @@ const Lots = () => {
                     image: item.Image,
                     type: "current",
                     highestBid: item.BidStartAmount,
-                    sold: item.IsSold,
+                    sold: !item.IsSold,
                     details: {
                         description: item.LongDescription,
                         date: `${item.StartDate} to ${item.EndDate}`,
@@ -101,7 +102,7 @@ const Lots = () => {
     }, [isCurrentLot, selectedLocation]);
 
     // Open confirmation modal
-    const handleDeleteLot = (id: string) => {
+    const handleDeleteLot = (id: number) => {
         setDeleteLotId(id);
         setConfirmDelete(true);
     };
@@ -109,12 +110,12 @@ const Lots = () => {
     // Close modal
     const handleCloseModal = () => {
         setConfirmDelete(false);
-        setDeleteLotId(null);
+        setDeleteLotId(0);
     };
 
     // Confirm deletion
     const handleConfirmDelete = () => {
-        if (deleteLotId) {
+        if (deleteLotId > 0) {
             handleDelete(deleteLotId); // Call the delete handler
         }
         handleCloseModal();
@@ -123,15 +124,28 @@ const Lots = () => {
     const navigate = useNavigate();
 
     // Handle Edit
-    const handleEdit = (id: string) => {
+    const handleEdit = (id: number) => {
         navigate(`edit/${id}`); // Navigate to the edit route with lot ID
     };
 
-    // Handle Delete
-    const handleDelete = (id: string) => {
-        const updatedData = filteredData.filter((lot: any) => lot.id !== parseInt(id)); // Remove lot by ID
-        setFilteredData(updatedData); // Update state with filtered data
+    const handleDelete = async (id: number) => {
+        try {
+            // Call the delete API
+            const response: any = await deleteLot(id);
+            console.log("response: ", response)
+            if (response.status === 200) {
+                SuccessMessage('Lot deleted successfully!')
+                // Update state with filtered data if API call is successful
+                const updatedData = filteredData.filter((lot: any) => lot.id !== id); // Remove lot by ID
+                setFilteredData(updatedData); // Update state with filtered data
+            } else {
+                ErrorMessage('Error deleting lot!')
+            }
+        } catch (error) {
+            console.error('Error deleting auction:', error);
+        }
     };
+
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -154,7 +168,7 @@ const Lots = () => {
                                             headerType={"lots"}
                                             cardData={lot}
                                             handleEdit={handleEdit}
-                                            handleDelete={() => handleDeleteLot(lot.id.toString())}
+                                            handleDelete={() => handleDeleteLot(lot.id)}
                                         />
                                     </Grid>
                                 ))}

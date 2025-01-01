@@ -11,8 +11,9 @@ import AuctionCard from './auction-components/AuctionCard';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import PaginationButton from './auction-components/PaginationButton';
-import { getCurrentAuctions, getPastAuctions } from '../Services/Methods';
+import { deleteAuction, getCurrentAuctions, getPastAuctions } from '../Services/Methods';
 import NoRecordFound from '../../utils/NoRecordFound';
+import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 
 const Auction = () => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
@@ -87,11 +88,24 @@ const Auction = () => {
         navigate(`edit/${id}`); // Navigate to the edit route with auction ID
     };
 
-    // Handle Delete
-    const handleDelete = (id: string) => {
-        const updatedData = filteredData.filter((auction: any) => auction.id !== id); // Remove auction by ID
-        setFilteredData(updatedData); // Update state with filtered data
+    const handleDelete = async (id: string) => {
+        try {
+            // Call the delete API
+            const response: any = await deleteAuction(id);
+            console.log("response: ", response)
+            if (response.status === 200) {
+                SuccessMessage('Auction deleted successfully!')
+                // Update state with filtered data if API call is successful
+                const updatedData = filteredData.filter((auction: any) => auction.id !== id);
+                setFilteredData(updatedData);
+            } else {
+                ErrorMessage('Error deleting auction!')
+            }
+        } catch (error) {
+            console.error('Error deleting auction:', error);
+        }
     };
+
 
 
     // Filtered Data based on `type` and `location`
