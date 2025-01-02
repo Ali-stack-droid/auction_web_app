@@ -27,8 +27,6 @@ const AuctionDetailPage = () => {
 
     const [isFetchingData, setIsFetchingData] = useState(false);
 
-    const biddingTableData = [{ id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }]
-
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true);
@@ -123,11 +121,10 @@ const AuctionDetailPage = () => {
                 setAuctionLots(formattedLots)
             }
 
-            setIsFetchingData(false)
-
         } catch (error) {
             console.error('Error fetching auction data:', error);
-            setIsFetchingData(false)
+        } finally {
+            setIsFetchingData(false);
         }
     };
 
@@ -187,6 +184,7 @@ const AuctionDetailPage = () => {
                                     image={auctionDetails.image}
                                     alt="Auction Image"
                                     className={classes.media}
+                                    height={300}
                                 />
                             </Card>
 
@@ -239,11 +237,6 @@ const AuctionDetailPage = () => {
                                     {/* <Typography className={classes.detailText} >&nbsp;: 5000</Typography> */}
                                 </Box>
                             </Box>
-
-                            {/* 
-                            <Box paddingTop={3}>
-                                <BiddingTable biddingData={biddingTableData} />
-                            </Box> */}
 
                             {auctionDetails.termsConditions?.length &&
                                 <Box paddingTop={1}>

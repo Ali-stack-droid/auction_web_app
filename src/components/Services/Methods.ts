@@ -15,6 +15,8 @@ export const createLot = (payload: any) => postWithFormRequest('/lots/create', p
 export const getCurrentLots = () => getRequest('/lots/currentlots');
 export const getPastLots = () => getRequest('/lots/pastlots');
 export const getLotsByAuctionId = (id: any) => getRequest(`/lots/lotsbyauctionid?id=${id}`);
+export const getLotDetailsById = (id: any) => getRequest(`/lots/lotdetails?id=${id}`);
+export const getWinnerByLotId = (id: any) => getRequest(`/lots/lotwinner?id=${id}`);
 export const deleteLot = (id: any) => getRequest(`/lots/delete?id=${id}`);
 export const getLotDetails = (id: any) => getRequest(`/lots/lotdetails?id=${id}`);
 export const moveLotToAuction = (lotId: any, newAuctionId: any) => putRequest(`/lots/movelot?id=${lotId}&newauctionid=${newAuctionId}`);

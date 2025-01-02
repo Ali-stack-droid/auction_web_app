@@ -1,21 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, IconButton, Typography, Box } from '@mui/material';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import useWinnerModalStyle from './WinnerModalStyles';
+import { getWinnerByLotId } from '../../../Services/Methods';
 
-const WinnerModal = ({ open, onClose }: any) => {
+const WinnerModal = ({ open, onClose, lotId }: any) => {
     const classes = useWinnerModalStyle();
+    const [winner, setWinner]: any = useState({});
+    const [loading, setLoading] = useState(false);
 
-    const winnerDetails = {
-        name: "Ali Cheema",
-        email: "example@gmail.com",
-        phone: "+61(09)7866 3431",
-        location: "#53 Prince Juan Carlos Washington, New York, NY 10012, USA",
-        image: `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
-    };
+    useEffect(() => {
+        const fetchWinner = async () => {
+            setLoading(true);
+            try {
+                const response = await getWinnerByLotId(lotId);
+                const winnerDetails = response.data;
+                const formattedWinner = {
+                    name: winnerDetails.Clients?.Name || "N/A",
+                    email: winnerDetails.Clients?.Email || "N/A",
+                    phone: winnerDetails.Clients?.Phone || "N/A", // Replace with actual phone if available
+                    location: winnerDetails.Clients?.Address || "N/A",
+                    image: winnerDetails.Lots?.Image || `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
+                };
+                setWinner(formattedWinner);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (open && lotId) fetchWinner();
+    }, [open, lotId]);
+
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" >
@@ -31,13 +51,13 @@ const WinnerModal = ({ open, onClose }: any) => {
                 <Box className={classes.imageWrapper}>
                     <Box
                         component="img"
-                        src={winnerDetails.image}
+                        src={winner.image}
                         alt={'Winner Image'}
                         className={classes.image}
                     />
                 </Box>
                 <Typography variant="h6" className={classes.name}>
-                    {winnerDetails.name}
+                    {winner.name}
                 </Typography>
 
                 <Box className={classes.details}>
@@ -45,18 +65,18 @@ const WinnerModal = ({ open, onClose }: any) => {
                         <Box className={classes.row}>
                             <Box display="flex" alignItems="center">
                                 <EmailIcon className={classes.icon} />
-                                <Typography className={classes.infoText}>{winnerDetails.email}</Typography>
+                                <Typography className={classes.infoText}>{winner.email}</Typography>
                             </Box>
                             <Box display="flex" alignItems="center">
                                 <PhoneIcon className={classes.icon} />
-                                <Typography className={classes.infoText}>{winnerDetails.phone}</Typography>
+                                <Typography className={classes.infoText}>{winner.phone}</Typography>
                             </Box>
                         </Box>
 
                         <Box display="flex" alignItems="start">
                             <LocationOnIcon className={classes.icon} />
                             <Typography className={classes.infoText} >
-                                {winnerDetails.location}
+                                {winner.location}
                             </Typography>
                         </Box>
                     </Box>

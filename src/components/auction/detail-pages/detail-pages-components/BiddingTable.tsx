@@ -16,7 +16,7 @@ export default function BiddingTable({ biddingData }: any) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {biddingData.map((row: any, index: number) => (
+                {biddingData && biddingData.map((row: any, index: number) => (
                     <TableRow
                         key={"row-" + index}
                     >
