@@ -29,25 +29,38 @@ const LotDetailPage = () => {
     const [winnerModal, setWinnerModal] = useState(false)
     const [isFetchingData, setIsFetchingData] = useState(false)
 
+    const [mainImage, setMainImage] = useState(
+        lotDetails.image || `${process.env.PUBLIC_URL}/assets/pngs/placeholder.png`
+    );
+
+
+
     useEffect(() => {
         // if (!isFetchingData) {
         //     setIsFetchingData(true);
-        //     fetchLotDetails()
+        //     // fetchLotsData();
+        //     fetchLotDetails();
         // }
         if (lotsData) {
-            setLotDetails(lotsData.find((lot: any) => lot.id + "" === getQueryParam('lotId')))
+            setLotDetails(lotsData.find((lot: any) => lot.id === 1))
+            alert(JSON.stringify(lotsData))
         }
     }, [lotsData])
+
+
 
     const fetchLotDetails = async () => {
         try {
             const response = await getLotDetails(getQueryParam('lotId')); // Call the API with the provided ID
 
             if (response.status === 200) {
-                console.log('Lot Details:', response.data); // Handle the fetched lot details
+                console.log('Lot Details:', response.data);
+                console.log('lotsData:', lotsData);
                 // You can set the data to state if required
 
                 const details: any = response.data;
+                setLotDetails(details);
+
                 // setLotDetails(details);
             } else {
                 // ErrorMessage('Error fetching lot details.')
@@ -100,7 +113,7 @@ const LotDetailPage = () => {
                         {/* Main Image */}
                         <CardMedia
                             component="img"
-                            image={lotDetails.image}
+                            image={lotDetails.image || `${process.env.PUBLIC_URL}/assets/pngs/placeholder.png`}
                             alt="Lot Image"
                             className={classes.media}
                         />
@@ -114,11 +127,11 @@ const LotDetailPage = () => {
 
                         {/* Thumbnails */}
                         <Box className={classes.thmbnailsWrapper}>
-                            {[...Array(3)].map((_, index) => (
+                            {lotDetails.images.map((img: any, index: number) => (
                                 <CardMedia
                                     key={index}
                                     component="img"
-                                    image={lotDetails.image}
+                                    image={img}
                                     alt="Thumbnail"
                                     className={classes.thumbnails}
                                 />
