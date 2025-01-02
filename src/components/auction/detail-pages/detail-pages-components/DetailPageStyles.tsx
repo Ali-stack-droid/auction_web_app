@@ -51,6 +51,7 @@ const useDetailStyles = makeStyles(() => ({
     description: {
         color: theme.palette.primary.main2,
         fontSize: "12px",
+        paddingTop: "4px"
     },
     dateTime: {
         fontSize: "13px",

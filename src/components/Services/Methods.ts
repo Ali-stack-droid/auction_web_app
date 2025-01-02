@@ -8,6 +8,7 @@ export const getCurrentAuctions = () => getRequest('/auctions/currentauctions');
 export const getPastAuctions = () => getRequest('/auctions/pastauctions');
 export const editAuction = (payload: any) => postWithFormRequest('/auctions/update', payload);
 export const deleteAuction = (id: any) => getRequest(`/auctions/delete?id=${id}`);
+export const getAuctionDetailById = (id: any) => getRequest(`/lots/auctiondetailbyid?id=${id}`);
 
 // Create Lots
 export const createLot = (payload: any) => postWithFormRequest('/lots/create', payload);

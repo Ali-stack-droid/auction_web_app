@@ -11,28 +11,125 @@ import CustomDialogue from "../../custom-components/CustomDialogue";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AuctionCard from "../auction-components/AuctionCard";
 import BiddingTable from "./detail-pages-components/BiddingTable";
+import { getAuctionDetailById } from "../../Services/Methods";
 
 const AuctionDetailPage = () => {
     const classes = useDetailStyles();
+
     const [auctionDetails, setAuctionDetails]: any = useState({})
-    const [confirmDelete, setConfirmDelete] = useState(false)
+    const [auctionLots, setAuctionLots] = useState<any[]>([]);
+
     const [deleteAuctionId, setDeleteAuctionId] = useState(0)
+    const [confirmDelete, setConfirmDelete] = useState(false)
+
     const [showMoreTerms, setShowMoreTerms] = useState(false);
     const [showMorePaymentTerms, setShowMorePaymentTerms] = useState(false);
+
     const [isFetchingData, setIsFetchingData] = useState(false);
 
     const biddingTableData = [{ id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }, { id: 1, startAmount: 10000, endAmount: 10000, bidRangeAmount: 10000 }]
 
     useEffect(() => {
         if (!isFetchingData) {
-            // setIsFetchingData(true);
-            // fetchAuctionDetails()
+            setIsFetchingData(true);
+            fetchAuctionDetails()
         }
-        if (auctionsData) {
-            setAuctionDetails(auctionsData.find((auction: any) => auction.id + "" === getQueryParam('aucId')))
-        }
-    }, [auctionsData])
+    }, [])
 
+
+    const fetchAuctionDetails = async () => {
+        try {
+            const response = await getAuctionDetailById(getQueryParam("aucId"));
+            const auction = response.data.Auction;
+            const lots = response.data.Lots;
+
+            if (auction) {
+                const formattedAuctionDetails = {
+                    id: auction.Id,
+                    name: auction.Name,
+                    image: auction.Image,
+                    type: auction.IsPast ? "past" : "current",
+                    details: {
+                        location: `${auction.City}, ${auction.Country}`,
+                        dateRange: `${auction.StartDate} to ${auction.EndDate}`,
+                        lotsAvailable: `${auction.TotalLots} Lots Available`
+                    },
+
+                    dateRange: `${auction.StartDate} to ${auction.EndDate}`,
+                    timeRange: `${auction.StartTime} to ${auction.EndTime}`,
+                    previewDateRange: `${auction.PrevStartDate} to ${auction.PrevEndDate}`,
+                    previewTimeRange: `${auction.PrevStartTime} to ${auction.PrevEndTime}`,
+
+                    description: auction.Description,
+                    notes: auction.Notes,
+
+                    liveStreaming: auction.LiveStreaming,
+                    startDate: auction.StartDate,
+                    endDate: auction.EndDate,
+                    startTime: auction.StartTime,
+                    endTime: auction.EndTime,
+                    prevStartDate: auction.PrevStartDate,
+                    prevEndDate: auction.PrevEndDate,
+                    prevStartTime: auction.PrevStartTime,
+                    prevEndTime: auction.PrevEndTime,
+
+                    country: auction.Country,
+                    state: auction.State,
+                    zipCode: auction.ZipCode,
+                    city: auction.City,
+                    address: auction.Address,
+                    fullAddress: `Street ${auction.Address}, ${auction.City}, ${auction.ZipCode}, ${auction.State}, ${auction.Country}`,
+                    shippingMethod: auction.ShippingMethod,
+                    termsConditions: auction.TermsConditions,
+                    paymentTerms: auction.PaymentTerms,
+                    // termsConxditions: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
+                    // paymentTerms: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
+                    createdAt: auction.CreatedAt,
+                    updatedAt: auction.UpdateddAt,
+                    isDeleted: auction.IsDeleted,
+                    isSold: auction.IsSold,
+                    totalLots: auction.TotalLots
+                };
+                setAuctionDetails(formattedAuctionDetails);
+            }
+
+            if (lots.length > 0) {
+                const formattedLots = lots.map((item: any) => ({
+                    id: item.Id,
+                    lotNumber: item.LotNo,
+                    name: item.ShortDescription,
+                    description: item.LongDescription,
+                    countDown: "N/A",
+                    location: "N/A",
+                    image: item.Image,
+                    type: "current",
+                    highestBid: item.BidStartAmount,
+                    sold: !item.IsSold,
+                    details: {
+                        description: item.LongDescription,
+                        date: `${item.StartDate} to ${item.EndDate}`,
+                        time: `${item.StartTime} to ${item.EndTime}`,
+                        orderNumber: item.OrderNo,
+                        lot: item.LotNo,
+                        category: item.Category,
+                        subCategory: item.SubCategory,
+                        winner: {
+                            email: "N/A", // Replace with actual data if available
+                            phone: "N/A", // Replace with actual data if available
+                            location: "N/A", // Replace with actual data if available
+                        },
+                    },
+                }));
+                setAuctionLots(formattedLots)
+            }
+
+            setIsFetchingData(false)
+
+        } catch (error) {
+            console.error('Error fetching auction data:', error);
+            setIsFetchingData(false)
+        }
+    };
 
     const navigate = useNavigate()
 
@@ -92,6 +189,7 @@ const AuctionDetailPage = () => {
                                     className={classes.media}
                                 />
                             </Card>
+
                             <Box paddingTop={3}>
                                 <Typography className={classes.dateTime} color={theme.palette.primary.main2} gutterBottom>
                                     Auction Date and Time for Live Streaming
@@ -100,12 +198,14 @@ const AuctionDetailPage = () => {
                                 <Box className={classes.row}>
                                     <Box className={classes.iconText}>
                                         <CalendarMonthIcon fontSize="small" color="primary" />
-                                        <Typography className={classes.text}>{auctionDetails.details?.date}</Typography>
+                                        <Typography className={classes.text}>
+                                            {auctionDetails?.dateRange}
+                                        </Typography>
                                     </Box>
                                     <Box className={classes.iconText}>
                                         <WatchLaterRoundedIcon fontSize="small" color="primary" />
                                         <Typography className={classes.text} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                            {auctionDetails.details?.time}
+                                            {auctionDetails?.timeRange}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -118,12 +218,12 @@ const AuctionDetailPage = () => {
                                 <Box className={classes.row}>
                                     <Box className={classes.iconText}>
                                         <CalendarMonthIcon fontSize="small" color="primary" />
-                                        <Typography className={classes.text}>{auctionDetails.details?.date}</Typography>
+                                        <Typography className={classes.text}>{auctionDetails?.previewDateRange}</Typography>
                                     </Box>
                                     <Box className={classes.iconText}>
                                         <WatchLaterRoundedIcon fontSize="small" color="primary" />
                                         <Typography className={classes.text} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                            {auctionDetails.details?.time}
+                                            {auctionDetails?.previewTimeRange}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -131,75 +231,58 @@ const AuctionDetailPage = () => {
 
                             <Box paddingTop={3}>
                                 <Typography className={classes.location} color={theme.palette.primary.main2} gutterBottom>
-                                    Street Number 21, Hawks Street , UK London, 45560, London, United Kingdom
+                                    {/* Street Number 21, Hawks Street , UK London, 45560, London, United Kingdom */}
+                                    {auctionDetails.fullAddress}
                                 </Typography>
                                 <Box className={classes.details}>
-                                    <Typography className={classes.detailHeading}>Currency USD</Typography>
-                                    <Typography className={classes.detailText} py={1}>&nbsp;: 5000</Typography>
+                                    <Typography className={classes.detailHeading} py={1}>Currency USD</Typography>
+                                    {/* <Typography className={classes.detailText} >&nbsp;: 5000</Typography> */}
                                 </Box>
                             </Box>
 
+                            {/* 
                             <Box paddingTop={3}>
-                                <BiddingTable data={biddingTableData} />
-                            </Box>
+                                <BiddingTable biddingData={biddingTableData} />
+                            </Box> */}
 
-                            <Box paddingTop={3}>
-                                <Typography className={classes.terms}>Terms and Condition:</Typography>
-                                <Typography className={classes.termsText}>
-                                    The auction held in London was an exclusive event showcasing a stunning collection of rare and valuable items. Attended by collectors, enthusiasts, and art connoisseurs from around the world, the atmosphere buzzed with anticipation.
-                                    {!showMoreTerms && <Typography
-                                        component={'span'}
-                                        className={classes.seeMore}
-                                        onClick={() => handleSeeMoreClick('terms')}
-                                    >
-                                        See More
-                                    </Typography>}
-                                </Typography>
-                                {showMoreTerms && (
+                            {auctionDetails.termsConditions?.length &&
+                                <Box paddingTop={1}>
+                                    <Typography className={classes.terms}>Terms and Condition:</Typography>
                                     <Typography className={classes.termsText}>
-                                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed earum ab rem hic iste suscipit omnis?
-                                        Quod quasi ex at ducimus sunt dignissimos, animi totam?
-                                        Sint excepturi consectetur minima nisi fuga architecto repudiandae minus aspernatur fugiat!
-                                        Error quasi corrupti tempore, obcaecati quibusdam placeat beatae mollitia quod iure odio, repellendus laudantium?
-                                        <Typography
-                                            component={'span'}
-                                            className={classes.seeMore}
-                                            onClick={() => handleSeeMoreClick('terms')}
-                                        >
-                                            See Less
-                                        </Typography>
+                                        {showMoreTerms || auctionDetails.termsConditions.length < 235
+                                            ? auctionDetails.termsConditions
+                                            : `${auctionDetails.termsConditions.slice(0, 235)}...`}
+                                        {auctionDetails.termsConditions.length > 235 &&
+                                            <Typography
+                                                component={'span'}
+                                                className={classes.seeMore}
+                                                onClick={() => handleSeeMoreClick('terms')}
+                                            >
+                                                {showMoreTerms ? "See Less" : "See More"}
+                                            </Typography>
+                                        }
                                     </Typography>
-                                )}
-                            </Box>
-                            <Box paddingTop={3}>
-                                <Typography className={classes.terms}>Payment Terms:</Typography>
-                                <Typography className={classes.termsText}>The auction held in London was an exclusive event showcasing a stunning collection of rare and valuable items. Attended by collectors, enthusiasts, and art connoisseurs from around the world, the atmosphere buzzed with anticipation.
-                                    {!showMorePaymentTerms &&
-                                        <Typography
-                                            component={'span'}
-                                            className={classes.seeMore}
-                                            onClick={() => handleSeeMoreClick('payment')}
-                                        >
-                                            See More
-                                        </Typography>
-                                    }
-                                </Typography>
-                                {showMorePaymentTerms && (
+                                </Box>
+                            }
+                            {auctionDetails.paymentTerms?.length &&
+                                <Box paddingTop={3}>
+                                    <Typography className={classes.terms}>Payment Terms:</Typography>
                                     <Typography className={classes.termsText}>
-                                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed earum ab rem hic iste suscipit omnis?
-                                        Quod quasi ex at ducimus sunt dignissimos, animi totam?
-                                        Sint excepturi consectetur minima nisi fuga architecto repudiandae minus aspernatur fugiat!
-                                        Error quasi corrupti tempore, obcaecati quibusdam placeat beatae mollitia quod iure odio, repellendus laudantium?
-                                        <Typography
-                                            component={'span'}
-                                            className={classes.seeMore}
-                                            onClick={() => handleSeeMoreClick('payment')}
-                                        >
-                                            See Less
-                                        </Typography>
+                                        {showMorePaymentTerms || auctionDetails.paymentTerms.length < 235
+                                            ? auctionDetails.paymentTerms
+                                            : `${auctionDetails.paymentTerms.slice(0, 235)}...`}
+                                        {auctionDetails.paymentTerms.length > 235 && (
+                                            <Typography
+                                                component={'span'}
+                                                className={classes.seeMore}
+                                                onClick={() => handleSeeMoreClick('payment')}
+                                            >
+                                                {showMorePaymentTerms ? " See Less" : " See More"}
+                                            </Typography>
+                                        )}
                                     </Typography>
-                                )}
-                            </Box>
+                                </Box>
+                            }
                         </Grid>
 
                         {/* Right Section */}
@@ -208,26 +291,25 @@ const AuctionDetailPage = () => {
                                 <Typography className={classes.rightTitle}>
                                     {auctionDetails.name}
                                 </Typography>
-                                <Typography gutterBottom className={classes.rightTitle}>
-                                    {auctionDetails.location}
-                                </Typography>
                                 <Typography className={classes.description} mb={2}>
-                                    {auctionDetails.details?.description}
+                                    {auctionDetails.description}
                                 </Typography>
 
                                 <Box display={'flex'} gap={3}>
                                     <Box className={classes.iconText}>
                                         <FiberManualRecordIcon sx={{ width: "15px", height: "15px" }} color="primary" />
-                                        <Typography className={classes.text}>ID# 123</Typography>
+                                        <Typography className={classes.text}>ID# {auctionDetails.id}</Typography>
                                     </Box>
                                     <Box className={classes.iconText}>
                                         <FiberManualRecordIcon sx={{ width: "15px", height: "15px" }} color="primary" />
                                         <Typography className={classes.text}>Online Auction</Typography>
                                     </Box>
-                                    <Box className={classes.iconText}>
-                                        <FiberManualRecordIcon sx={{ width: "15px", height: "15px" }} color="primary" />
-                                        <Typography className={classes.text}>Live Streaming</Typography>
-                                    </Box>
+                                    {auctionDetails.lLiveStreaming &&
+                                        <Box className={classes.iconText}>
+                                            <FiberManualRecordIcon sx={{ width: "15px", height: "15px" }} color="primary" />
+                                            <Typography className={classes.text}>Live Streaming</Typography>
+                                        </Box>
+                                    }
                                     <Box className={classes.iconText}>
                                         <FiberManualRecordIcon sx={{ width: "15px", height: "15px" }} color="primary" />
                                         <Typography className={classes.text}>Buyer Premium : 10%</Typography>
@@ -237,12 +319,12 @@ const AuctionDetailPage = () => {
                                 {/* Details */}
                                 <Box className={classes.iconText} py={1}>
                                     <CalendarMonthIcon fontSize="small" color="primary" />
-                                    <Typography className={classes.text}>{auctionDetails.details?.date}</Typography>
+                                    <Typography className={classes.text}>{auctionDetails.dateRange}</Typography>
                                 </Box>
                                 <Box className={classes.iconText}>
                                     <WatchLaterRoundedIcon fontSize="small" color="primary" />
                                     <Typography className={classes.text} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                        {auctionDetails.details?.time}
+                                        {auctionDetails.timeRange}
                                     </Typography>
                                 </Box>
 
@@ -258,28 +340,30 @@ const AuctionDetailPage = () => {
                             </Box>
                         </Grid>
                     </Grid>
-                    <Box maxWidth={'80vw'} overflow={'auto'} pt={3}>
-                        <Box className={classes.titleWrapper}>
-                            <Typography className={classes.title}>
-                                Auction Lots :
-                            </Typography>
-                            <Box className={classes.countBadge}>20</Box>
-                        </Box>
-                        <Box className={classes.cardContainer} >
-                            {auctionsData && auctionsData.map((auction) => (
-                                <Box minWidth={'345px'}>
-                                    <AuctionCard
-                                        key={auction.id}
-                                        headerType={'lots'}
-                                        cardData={auction}
-                                        handleEdit={handleEditLots}
-                                        handleDelete={handleDeleteAuction}
-                                    />
-                                </Box>
-                            ))}
-                        </Box>
 
-                    </Box>
+                    {auctionDetails.totalLots > 0 &&
+                        <Box maxWidth={'80vw'} overflow={'auto'} pt={3}>
+                            <Box className={classes.titleWrapper}>
+                                <Typography className={classes.title}>
+                                    Auction Lots :
+                                </Typography>
+                                <Box className={classes.countBadge}>{auctionDetails.totalLots}</Box>
+                            </Box>
+                            <Box className={classes.cardContainer} >
+                                {auctionLots && auctionLots.map((lot, index) => (
+                                    <Box minWidth={'345px'} key={index}>
+                                        <AuctionCard
+                                            key={lot.id}
+                                            headerType={'lots'}
+                                            cardData={lot}
+                                            handleEdit={handleEditLots}
+                                            handleDelete={handleDeleteAuction}
+                                        />
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Box>
+                    }
                 </Box>
                 :
                 <Box
@@ -303,7 +387,7 @@ const AuctionDetailPage = () => {
                 handleCloseModal={handleCloseModal}
                 handleConfirmDelete={handleConfirmDelete}
             />
-        </Box>
+        </Box >
     );
 };
 

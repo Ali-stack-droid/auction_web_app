@@ -5,7 +5,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import theme from '../../../../theme';
 
-export default function BiddingTable({ data }: any) {
+export default function BiddingTable({ biddingData }: any) {
     return (
         <Table sx={{ maxWidth: '300px', '& td, th': { textAlign: 'center', border: '1px solid #E2E8F0', whiteSpace: 'nowrap', width: "fit-content", fontSize: '12px' } }} aria-label="simple table">
             <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
@@ -16,9 +16,9 @@ export default function BiddingTable({ data }: any) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {data.map((row: any) => (
+                {biddingData.map((row: any, index: number) => (
                     <TableRow
-                        key={row.name}
+                        key={"row-" + index}
                     >
                         <TableCell>{row.startAmount}</TableCell>
                         <TableCell>{row.endAmount}</TableCell>
