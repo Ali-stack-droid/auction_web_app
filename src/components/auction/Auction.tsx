@@ -46,7 +46,7 @@ const Auction = () => {
                     details: {
                         location: `${item.City}, ${item.Country}`,
                         dateRange: `${item.StartDate} to ${item.EndDate}`,
-                        lotsAvailable: null // Replace with actual data if available
+                        lotsAvailable: item.TotalLots // Replace with actual data if available
                     }
                 }));
                 setFilteredData(updatedData);

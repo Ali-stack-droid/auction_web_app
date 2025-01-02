@@ -30,7 +30,10 @@ const AuctionDetails = ({ auctionDetails }: any) => {
                 {/* Lots Available */}
                 <Box className={classes.iconText}>
                     <ViewInArRoundedIcon fontSize="small" color="primary" />
-                    <Typography className={classes.text}>{auctionDetails.lotsAvailable}</Typography>
+                    <Typography className={classes.text}>
+                        {auctionDetails.lotsAvailable > 0 ? auctionDetails.lotsAvailable : "No"}&nbsp;
+                        {auctionDetails.lotsAvailable > 1 ? "Lots" : "Lot"}&nbsp;Available
+                    </Typography>
                 </Box>
             </Box>
         </Box>
