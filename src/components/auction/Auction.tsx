@@ -92,7 +92,6 @@ const Auction = () => {
         try {
             // Call the delete API
             const response: any = await deleteAuction(id);
-            console.log("response: ", response)
             if (response.status === 200) {
                 SuccessMessage('Auction deleted successfully!')
                 // Update state with filtered data if API call is successful

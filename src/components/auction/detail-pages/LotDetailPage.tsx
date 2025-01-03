@@ -47,8 +47,6 @@ const LotDetailPage = () => {
     const fetchLotDetails = async () => {
         try {
             const response = await getLotDetailsById(getQueryParam('lotId'));
-
-            console.log("data: ", response.data);
             const lot = response.data?.Lot;
             const images = [
                 ...(lot.Image ? [lot.Image] : []),

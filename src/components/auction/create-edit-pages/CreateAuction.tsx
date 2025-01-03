@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     Box,
-    Paper,
     Typography,
     Checkbox,
     FormControlLabel,
     Button,
     MenuItem,
-    InputAdornment,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -15,13 +13,16 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
-import { createAuction } from '../../Services/Methods';
+import CustomDialogue from '../../custom-components/CustomDialogue';
+import { useNavigate } from 'react-router-dom';
 
 const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) => {
     const classes = useCreateAuctionStyles();
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+    const navigate = useNavigate()
 
-    const [submissionAttempt, setSubmissionAttempt] = useState(false)
+    const [submissionAttempt, setSubmissionAttempt] = useState(false);
+    const [isCancelOpen, setIsCancelOpen] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -60,7 +61,6 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
             auctionPreviewEndTime: Yup.string().required('Preview End Time is required'),
         }),
         onSubmit: (values) => {
-            // console.log('Form Data:', values);
             setAuctionData(values);
             setIsContinue(true)
         },
@@ -75,7 +75,12 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                 errorElement.focus();
             }
         }
-    }, [formik.errors, submissionAttempt]);
+    }, [submissionAttempt]);
+
+    const handleCancelConfirmation = () => {
+        formik.resetForm();
+        navigate('/auction')
+    }
 
     return (
         <Box>
@@ -357,7 +362,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                     <Button
                         className={classes.cancelButton}
                         variant="outlined"
-                        onClick={() => formik.resetForm()}
+                        onClick={() => setIsCancelOpen(true)}
                     >
                         Cancel
                     </Button>
@@ -371,8 +376,18 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                         Continue
                     </Button>
                 </Box>
-            </form>
-        </Box>
+            </form >
+
+            {/* Cancel Cofirmation on Cancel Button*/}
+            <CustomDialogue
+                type={"create"}
+                title={"Cancel Auction Creation?"}
+                message={"Are you sure you want to cancel creating the current auction?"}
+                openDialogue={isCancelOpen}
+                handleCloseModal={() => setIsCancelOpen(false)}
+                handleConfirmModal={handleCancelConfirmation}
+            />
+        </Box >
     );
 };
 

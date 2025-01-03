@@ -21,8 +21,10 @@ import { useNavigate } from 'react-router-dom';
 const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigation }: any) => {
     const classes = useCreateAuctionStyles();
 
-    const [openConfirmModal, setOpenConfirmModal] = useState(false)
-    const [openSaveModal, setOpenSaveModal] = useState(false)
+    const [openConfirmModal, setOpenConfirmModal] = useState(false);
+    const [openSaveModal, setOpenSaveModal] = useState(false);
+    const [isCancelOpen, setIsCancelOpen] = useState(false);
+
 
     const [formData, setFormData]: any = useState({})
     const [submissionAttempt, setSubmissionAttempt]: any = useState({})
@@ -68,7 +70,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigat
                 errorElement.focus();
             }
         }
-    }, [formik.errors, submissionAttempt]);
+    }, [submissionAttempt]);
 
     const handleConfirmSubmission = () => {
         setLocationData(formData)
@@ -88,6 +90,11 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigat
                 setIsSubmitted(true);
             }
         });
+    }
+
+    const handleCancelConfirmation = () => {
+        formik.resetForm();
+        navigate('/auction')
     }
 
     return (
@@ -305,7 +312,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigat
                         <Button
                             className={classes.cancelButton}
                             variant="outlined"
-                            onClick={() => formik.resetForm()}
+                            onClick={() => setIsCancelOpen(true)}
                         >
                             Cancel
                         </Button>
@@ -341,6 +348,16 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigat
                 openDialogue={openSaveModal}
                 handleCloseModal={() => setOpenSaveModal(false)}
                 handleConfirmModal={() => setOpenSaveModal(false)}
+            />
+
+            {/* Cancel Cofirmation on Cancel Button*/}
+            <CustomDialogue
+                type={"create"}
+                title={"Cancel Auction Creation?"}
+                message={"Are you sure you want to cancel creating the current auction?"}
+                openDialogue={isCancelOpen}
+                handleCloseModal={() => setIsCancelOpen(false)}
+                handleConfirmModal={handleCancelConfirmation}
             />
         </Box>
     );

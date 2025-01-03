@@ -90,7 +90,7 @@ const CreatePage = ({ type }: any) => {
             if (navigation == "auction") {
                 navigate('/auction')
             } else {
-                navigate(`auction/lots/create?aucId=${newAuctionId}`)
+                navigate(`/auction/lots/create?aucId=${newAuctionId}`)
             }
 
             SuccessMessage('Auction created successfully!');

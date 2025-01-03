@@ -15,8 +15,6 @@ import LotsTable from '../auction-components/LotsTable';
 import { useNavigate } from 'react-router-dom';
 
 // redux imports
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 
 const AddLot = () => {
@@ -24,9 +22,11 @@ const AddLot = () => {
     const [lots, setLots]: any = useState([])
     const [confirmModal, setConfirmModal] = useState(false);
     const [submissionAttempt, setSubmissionAttempt] = useState(false);
+    const [isCancelOpen, setIsCancelOpen] = useState(false);
 
     const classes = useCreateAuctionStyles();
     const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
             orderNumber: '',
@@ -123,7 +123,7 @@ const AddLot = () => {
                 errorElement.focus();
             }
         }
-    }, [formik.errors, submissionAttempt]);
+    }, [submissionAttempt]);
 
     const createNewLot = async (payload: any) => {
         const formData = new FormData();
@@ -148,7 +148,7 @@ const AddLot = () => {
         setFile(null)
     }
 
-    const handleCancel = () => {
+    const handleCancelConfirmation = () => {
         formik.resetForm();
         navigate('/auction');
     }
@@ -362,7 +362,7 @@ const AddLot = () => {
                         <Button
                             className={classes.cancelButton}
                             variant="outlined"
-                            onClick={handleCancel}
+                            onClick={() => setIsCancelOpen(true)}
                         >
                             Cancel
                         </Button>
@@ -388,7 +388,15 @@ const AddLot = () => {
                 handleConfirmModal={handleConfirmAddLot}
             />
 
-            {/* <CustomModal open={openModal} modalType={'savelot'} onClose={() => setOpenModal(false)} /> */}
+            {/* Cancel Cofirmation on Cancel Button*/}
+            <CustomDialogue
+                type={"create"}
+                title={"Cancel Auction Creation?"}
+                message={"Are you sure you want to cancel creating the current lot?"}
+                openDialogue={isCancelOpen}
+                handleCloseModal={() => setIsCancelOpen(false)}
+                handleConfirmModal={handleCancelConfirmation}
+            />
 
         </Box >
     );
