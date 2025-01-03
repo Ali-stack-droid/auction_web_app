@@ -18,10 +18,12 @@ import theme from '../../../theme';
 import CustomDialogue from '../../custom-components/CustomDialogue';
 import { useNavigate } from 'react-router-dom';
 
-const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitted }: any) => {
+const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, currentAuction }: any) => {
     const classes = useCreateAuctionStyles();
 
-    const [confirmSubmission, setConfirmSubmission] = useState(false)
+    const [openConfirmModal, setOpenConfirmModal] = useState(false)
+    const [openSaveModal, setOpenSaveModal] = useState(false)
+
     const [formData, setFormData]: any = useState({})
     const [submissionAttempt, setSubmissionAttempt]: any = useState({})
 
@@ -52,7 +54,7 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
         onSubmit: (values) => {
             if (!isSubmitted) {
                 setFormData(values)
-                setConfirmSubmission(true);
+                setOpenConfirmModal(true);
             }
         }
     });
@@ -68,22 +70,14 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
         }
     }, [formik.errors, submissionAttempt]);
 
-    const handleConfirmSubmission = (isAddingLot = false) => {
-        if (Object.keys(formik.errors).length == 0) {
-            setLocationData(formik.values)
-        } else {
-            setLocationData(formData)
-        }
-        setIsSubmitted(true)
+    const handleConfirmSubmission: any = (isAddingLot: boolean) => {
         if (isAddingLot) {
-            setIsAddLot(true);
-        } else {
-            navigate('/auction');
+            setLocationData(formData)
+            // setIsSubmitted(true)
+            // navigate(`/auction/lots/create?aucId=${currentAuction}`)
+        } else if (Object.keys(formik.errors).length > 0) {
+            setOpenSaveModal(true);
         }
-    }
-
-    const handleAddLot = () => {
-        handleConfirmSubmission(true);
     }
 
     return (
@@ -294,7 +288,7 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
                         <Button
                             className={classes.cancelButton}
                             variant="outlined"
-                            onClick={() => handleAddLot()}
+                            onClick={() => handleConfirmSubmission(false)}
                         >
                             Add a Lot
                         </Button>
@@ -310,6 +304,7 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
                             type="submit"
                             variant="contained"
                             color="primary"
+                            onClick={() => setSubmissionAttempt(!submissionAttempt)}
                         >
                             {isSubmitted ? <CircularProgress size={25} sx={{ color: theme.palette.primary.main3 }} /> : 'Submit'}
                         </Button>
@@ -317,14 +312,25 @@ const LocationForm = ({ setIsAddLot, setLocationData, isSubmitted, setIsSubmitte
                 </Box>
             </form>
 
-            {/* Confirmation Modal */}
+            {/* Confirmation Modal On Save Button*/}
             <CustomDialogue
                 type={"create"}
                 title={"Confirm Submission!"}
                 message={"Are you sure you want to create current auction without adding lots?"}
-                openDialogue={confirmSubmission}
-                handleCloseModal={() => setConfirmSubmission(false)}
-                handleConfirmDelete={handleConfirmSubmission}
+                openDialogue={openConfirmModal}
+                handleCloseModal={() => setOpenConfirmModal(false)}
+                handleConfirmDelete={() => handleConfirmSubmission(true)}
+            />
+
+
+            {/* Save Changes Modal On Add a Lot Button*/}
+            <CustomDialogue
+                type={"addALot"}
+                title={"Save Changes!"}
+                message={"Save your changes before adding a new lot."}
+                openDialogue={openConfirmModal}
+                handleCloseModal={() => setOpenSaveModal(false)}
+                handleConfirmModal={() => setOpenSaveModal(false)}
             />
         </Box>
     );

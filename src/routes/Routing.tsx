@@ -10,6 +10,7 @@ import AuctionDetailPage from '../components/auction/detail-pages/AuctionDetailP
 import CreatePage from '../components/auction/create-edit-pages/CreatePage';
 import LiveStreamingDetailPage from '../components/auction/detail-pages/LiveStreamingDetailPage';
 import { ToastContainer } from 'react-toastify';
+import AddLot from '../components/auction/create-edit-pages/AddLot';
 // import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
@@ -77,7 +78,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             path="auction/lots/create"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <CreatePage type={"lots"} />
+                                    <AddLot />
                                 </ProtectedRoute>
                             }
                         />

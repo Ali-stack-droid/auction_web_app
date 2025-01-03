@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
 import React from 'react'
 
-const CustomDialogue = ({ type, title, message, openDialogue, handleCloseModal, handleConfirmDelete }: any) => {
+const CustomDialogue = ({ type, title, message, openDialogue, handleCloseModal, handleConfirmModal }: any) => {
     return (
         <Dialog open={openDialogue} onClose={handleCloseModal} >
             <DialogTitle>
@@ -14,23 +14,25 @@ const CustomDialogue = ({ type, title, message, openDialogue, handleCloseModal, 
                 </DialogContentText>
             </DialogContent>
             <DialogActions sx={{ padding: "20px", gap: 1 }}>
-                <Button
-                    variant={'outlined'}
-                    sx={{ textTransform: 'none' }}
-                    onClick={handleCloseModal}
-                    color={"primary"}
-                >
-                    {type === "delete" ? "Cancel" : "No"}
+                {type !== "addALot" &&
+                    <Button
+                        variant={'outlined'}
+                        sx={{ textTransform: 'none' }}
+                        onClick={handleCloseModal}
+                        color={"primary"}
+                    >
+                        {type === "delete" ? "Cancel" : "No"}
 
-                </Button>
+                    </Button>
+                }
                 <Button
                     variant={'contained'}
                     sx={{ textTransform: 'none', }}
-                    onClick={handleConfirmDelete}
+                    onClick={handleConfirmModal}
                     color={type === "delete" ? "error" : "primary"}
                     autoFocus
                 >
-                    {type === "delete" ? "Delete" : "Yes"}
+                    {type === "delete" ? "Delete" : type === "addALot" ? "Continue" : "Yes"}
 
                 </Button>
 

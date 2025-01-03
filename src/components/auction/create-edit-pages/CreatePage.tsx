@@ -19,7 +19,7 @@ const CreatePage = ({ type }: any) => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [currentAuction, setCurrentAuction] = useState({})
     const [isContinue, setIsContinue] = useState(false);
-    const [isAddLot, setIsAddLot] = useState(false);
+    // const [isAddLot, setIsAddLot] = useState(false);
     const [file, setFile]: any = useState(null);
 
     const toastProps = {
@@ -33,13 +33,13 @@ const CreatePage = ({ type }: any) => {
     }
 
     useEffect(() => {
-        if (isContinue || isAddLot) {
+        if (isContinue) {
             document.getElementById('childContainer')?.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
         }
-    }, [isContinue, isAddLot]);
+    }, [isContinue]);
 
     useEffect(() => {
         if (isSubmitted && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
@@ -95,14 +95,12 @@ const CreatePage = ({ type }: any) => {
 
     return (
         <Box sx={{ padding: 2 }}>
-            {type === "lots" || (isContinue && isAddLot) ? (
-                <AddLot />
-            ) : isContinue && !isAddLot ? (
+            {isContinue ? (
                 <LocationForm
-                    setIsAddLot={setIsAddLot}
                     setLocationData={setLocationData}
                     isSubmitted={isSubmitted}
                     setIsSubmitted={setIsSubmitted}
+                    currentAuction={currentAuction}
                 />
             ) : (
                 <CreateAuction

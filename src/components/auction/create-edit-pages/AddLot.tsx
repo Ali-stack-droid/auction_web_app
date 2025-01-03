@@ -26,7 +26,6 @@ const AddLot = () => {
     const [submissionAttempt, setSubmissionAttempt] = useState(false);
 
     const classes = useCreateAuctionStyles();
-    const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
