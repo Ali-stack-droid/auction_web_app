@@ -7,6 +7,7 @@ import { formatDate, formatTime } from '../../../utils/Format';
 import { createAuction } from '../../Services/Methods';
 import { toast, ToastContainer } from 'react-toastify';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePage = ({ type }: any) => {
 
@@ -15,13 +16,12 @@ const CreatePage = ({ type }: any) => {
     const [locationData, setLocationData]: any = useState({});
 
     // utils
-    const [formData, setFormData] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [currentAuction, setCurrentAuction] = useState({})
     const [isContinue, setIsContinue] = useState(false);
-    // const [isAddLot, setIsAddLot] = useState(false);
     const [file, setFile]: any = useState(null);
+    const [navigation, setNavigation] = useState("");
 
+    const navigate = useNavigate()
     const toastProps = {
         position: "top-right",
         autoClose: 3000,
@@ -69,7 +69,6 @@ const CreatePage = ({ type }: any) => {
                 CreatedAt: formatDate(auctionData.auctionPreviewStartDate),
                 UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
             };
-            setFormData(updatedData);
             createNewAuction(updatedData)
         }
     }, [isSubmitted])
@@ -84,12 +83,21 @@ const CreatePage = ({ type }: any) => {
         }
 
         createAuction(formData).then((response) => {
-            setCurrentAuction(response.data);
+
+            const newAuctionId = response.data.Id;
             setIsSubmitted(false)
+
+            if (navigation == "auction") {
+                navigate('/auction')
+            } else {
+                navigate(`auction/lots/create?aucId=${newAuctionId}`)
+            }
+
             SuccessMessage('Auction created successfully!');
 
         }).catch(error => {
             ErrorMessage('Error creating auction!');
+            setIsSubmitted(false)
         });
     }
 
@@ -100,7 +108,7 @@ const CreatePage = ({ type }: any) => {
                     setLocationData={setLocationData}
                     isSubmitted={isSubmitted}
                     setIsSubmitted={setIsSubmitted}
-                    currentAuction={currentAuction}
+                    setNavigation={setNavigation}
                 />
             ) : (
                 <CreateAuction

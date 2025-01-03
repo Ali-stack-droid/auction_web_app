@@ -177,7 +177,7 @@ const Auction = () => {
                 type={"delete"}
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
-                handleConfirmDelete={handleConfirmDelete}
+                handleConfirmModal={handleConfirmDelete}
             />
 
         </Box >

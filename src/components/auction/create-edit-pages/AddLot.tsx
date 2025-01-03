@@ -154,7 +154,7 @@ const AddLot = () => {
     }
 
     return (
-        <Box>
+        <Box p={2}>
 
             <Typography className={classes.title}>Create New Auction</Typography>
             <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingBottom: 3 }}>
@@ -385,7 +385,7 @@ const AddLot = () => {
                 message={"Are you sure to create new lot without saving current lot?"}
                 openDialogue={confirmModal}
                 handleCloseModal={() => setConfirmModal(false)}
-                handleConfirmDelete={handleConfirmAddLot}
+                handleConfirmModal={handleConfirmAddLot}
             />
 
             {/* <CustomModal open={openModal} modalType={'savelot'} onClose={() => setOpenModal(false)} /> */}

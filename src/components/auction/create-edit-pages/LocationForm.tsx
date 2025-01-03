@@ -18,7 +18,7 @@ import theme from '../../../theme';
 import CustomDialogue from '../../custom-components/CustomDialogue';
 import { useNavigate } from 'react-router-dom';
 
-const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, currentAuction }: any) => {
+const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigation }: any) => {
     const classes = useCreateAuctionStyles();
 
     const [openConfirmModal, setOpenConfirmModal] = useState(false)
@@ -70,14 +70,24 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, currentAuc
         }
     }, [formik.errors, submissionAttempt]);
 
-    const handleConfirmSubmission: any = (isAddingLot: boolean) => {
-        if (isAddingLot) {
-            setLocationData(formData)
-            // setIsSubmitted(true)
-            // navigate(`/auction/lots/create?aucId=${currentAuction}`)
-        } else if (Object.keys(formik.errors).length > 0) {
-            setOpenSaveModal(true);
-        }
+    const handleConfirmSubmission = () => {
+        setLocationData(formData)
+        setOpenConfirmModal(false);
+        setNavigation('auction')
+        setIsSubmitted(true)
+    }
+
+    const handleAddLot = () => {
+        formik.validateForm().then((errors) => {
+            const hasErrors = Object.keys(errors).length > 0;
+            if (hasErrors) {
+                setOpenSaveModal(true);
+            } else {
+                setLocationData(formik.values);
+                setNavigation('lots')
+                setIsSubmitted(true);
+            }
+        });
     }
 
     return (
@@ -288,7 +298,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, currentAuc
                         <Button
                             className={classes.cancelButton}
                             variant="outlined"
-                            onClick={() => handleConfirmSubmission(false)}
+                            onClick={() => handleAddLot()}
                         >
                             Add a Lot
                         </Button>
@@ -319,7 +329,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, currentAuc
                 message={"Are you sure you want to create current auction without adding lots?"}
                 openDialogue={openConfirmModal}
                 handleCloseModal={() => setOpenConfirmModal(false)}
-                handleConfirmDelete={() => handleConfirmSubmission(true)}
+                handleConfirmModal={() => handleConfirmSubmission()}
             />
 
 
@@ -327,8 +337,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, currentAuc
             <CustomDialogue
                 type={"addALot"}
                 title={"Save Changes!"}
-                message={"Save your changes before adding a new lot."}
-                openDialogue={openConfirmModal}
+                message={"Save your changes before adding a lot."}
+                openDialogue={openSaveModal}
                 handleCloseModal={() => setOpenSaveModal(false)}
                 handleConfirmModal={() => setOpenSaveModal(false)}
             />
