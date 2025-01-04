@@ -37,7 +37,7 @@ const LotsTable: React.FC<LotsTableProps> = ({ lots, setLots }) => {
                         <TableCell>Lot No</TableCell>
                         <TableCell>Start Date</TableCell>
                         <TableCell>End Date</TableCell>
-                        <TableCell>Action</TableCell>
+                        {/* <TableCell>Action</TableCell> */}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -47,14 +47,14 @@ const LotsTable: React.FC<LotsTableProps> = ({ lots, setLots }) => {
                             <TableCell>{lot.LotNo}</TableCell>
                             <TableCell>{lot.StartDate}</TableCell>
                             <TableCell>{lot.EndDate}</TableCell>
-                            <TableCell>
+                            {/* <TableCell>
                                 <IconButton
                                     color="error"
                                     onClick={() => handleDelete(lot.Id)}
                                 >
                                     <DeleteIcon />
                                 </IconButton>
-                            </TableCell>
+                            </TableCell> */}
                         </TableRow>
                     ))}
                 </TableBody>

@@ -40,14 +40,9 @@ const Lots = ({ searchTerm }: any) => {
 
     const fetchLotsData = async () => {
         try {
-            // const response = isCurrentLot
-            //     ? await getCurrentAuctions()
-            //     : await getPastAuctions();
-
-            const selectedAuction = getQueryParam('aucId')
+            const selectedAuction = getQueryParam('aucId');
             const response = await getLotsByAuctionId(selectedAuction);
 
-            // console.log("data: ", response.data);
             if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
@@ -60,6 +55,7 @@ const Lots = ({ searchTerm }: any) => {
                     type: "current",
                     highestBid: item.BidStartAmount,
                     sold: !item.IsSold,
+                    isPast: item.IsPast,
                     details: {
                         description: item.LongDescription,
                         date: `${item.StartDate} to ${item.EndDate}`,
@@ -76,17 +72,26 @@ const Lots = ({ searchTerm }: any) => {
                     },
                 }));
 
-                setFilteredData(updatedData);
+                // Filter data based on isCurrentLot condition
+                const filteredData = updatedData.filter((lot: any) => {
+                    if (isCurrentLot) {
+                        return !lot.isPast; // Keep only current lots
+                    } else {
+                        return lot.isPast; // Keep only past lots
+                    }
+                });
+
+                setFilteredData(filteredData);
             } else {
                 setFilteredData([]);
             }
-            setIsFetchingData(false)
-
+            setIsFetchingData(false);
         } catch (error) {
             console.error('Error fetching auction data:', error);
-            setIsFetchingData(false)
+            setIsFetchingData(false);
         }
     };
+
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
@@ -150,13 +155,18 @@ const Lots = ({ searchTerm }: any) => {
             setFilteredData((prevData: any) => prevData.filter((item: any) => item.id !== movedLotId));
     }
 
+    const handleToggle = () => {
+        if (!isFetchingData) {
+            setIsCurrentLot(!isCurrentLot);
+        }
+    }
 
     return (
         <Box sx={{ padding: 2 }}>
             <AuctionHeader
                 headerType={"lots"}
                 isCurrent={isCurrentLot}
-                onToggle={() => setIsCurrentLot((prev) => !prev)}
+                onToggle={handleToggle}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
             />

@@ -161,7 +161,7 @@ const AddLot = () => {
                 <Box >
                     <Typography className={classes.location}>Lots:</Typography>
                 </Box>
-                <Button variant={"contained"} onClick={() => setConfirmModal(true)}>
+                <Button variant={"contained"} onClick={() => setConfirmModal(true)} sx={{ textTransform: 'none' }}>
                     Add Another Lot
                 </Button>
             </Box>

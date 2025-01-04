@@ -176,7 +176,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                             }}
                         />
                     </Box>
-                    <Box mt={2}>
+                    {/* <Box mt={2}>
                         <FormControlLabel
                             control={
                                 <Checkbox
@@ -187,7 +187,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                             }
                             label={<Typography className={classes.checkBoxLabel}>Live Streaming</Typography>}
                         />
-                    </Box>
+                    </Box> */}
                 </Box>
 
                 {/* Second Portion */}
