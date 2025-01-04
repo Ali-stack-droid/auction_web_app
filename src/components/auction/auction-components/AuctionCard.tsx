@@ -9,6 +9,8 @@ import React, { useState } from 'react';
 import ViewModal from '../../payment-tracking/ViewModal';
 import { useDispatch } from 'react-redux';
 import { setSelectedAuction } from '../../../redux/appSlice';
+import CustomDialogue from '../../custom-components/CustomDialogue';
+import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
 
 const AuctionCard = ({
     headerType,
@@ -18,9 +20,13 @@ const AuctionCard = ({
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
+
     const [select, setSelect] = useState(false)
-    const [moveDialogue, setMoveDialogue] = useState(false)
     const [moveLotId, setMoveLotId] = useState(0)
+
+    const [moveModalOpen, setMoveModalOpen] = useState(false)
+    const [moveDialogue, setMoveDialogue] = useState(false)
+
     const dispatch = useDispatch();
 
     const handleCardMediaClick = () => {
@@ -41,16 +47,16 @@ const AuctionCard = ({
         console.log("Join live stream: ", id)
     }
 
-    const handleMove = (id: number) => {
-        setMoveDialogue(true);
-        setMoveLotId(id);
-    }
-
     const isLiveDetail = headerType === "live" && getQueryParam('liveId');
 
     const handleViewCatalog = (id: number) => {
         // dispatch(setSelectedAuction(id));
         navigate(`/auction/lots?aucId=${id}`)
+    }
+
+    const handleMoveLot = (id: number) => {
+        setMoveLotId(id)
+        setMoveModalOpen(true);
     }
 
     return (
@@ -195,7 +201,7 @@ const AuctionCard = ({
                                 Join
                             </Button>
                             : headerType === "lots" ?
-                                <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleMove(cardData.id)}>
+                                <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleMoveLot(cardData.id)}>
                                     Move
                                 </Button>
                                 : null
@@ -203,7 +209,17 @@ const AuctionCard = ({
                 </Box>
             </Box>
 
-            <ViewModal open={moveDialogue} onClose={() => setMoveDialogue(false)} data={moveLotId} type={"move"} />
+            {/* Move Lot Confirmation on Move Button*/}
+            {/* <CustomDialogue
+                type={"create"}
+                title={"Move Lot Confirmation!"}
+                message={"Are you sure you want to move this lot from past auction to current auction?"}
+                openDialogue={moveDialogue}
+                handleCloseModal={() => setMoveDialogue(false)}
+                handleConfirmModal={() => { setMoveDialogue(false); setMoveModalOpen(true) }}
+            /> */}
+
+            <MoveLotModal open={moveModalOpen} onClose={() => setMoveModalOpen(false)} moveLotId={moveLotId} />
 
         </Card >
     );

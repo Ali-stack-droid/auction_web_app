@@ -11,6 +11,18 @@ const useWinnerModalStyle = makeStyles({
         padding: 0,
         height: "450px"
     },
+    label: {
+        fontSize: '15px',
+        fontWeight: 600,
+        color: theme.palette.primary.main10,
+        paddingBottom: '10px'
+    },
+    filterButton: {
+        textTransform: 'none',
+        backgroundColor: theme.palette.primary.main,
+        width: '160px',
+        height: '40px',
+    },
     text: {
         fontSize: "20px",
         color: "#333333"
