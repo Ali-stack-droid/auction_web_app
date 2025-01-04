@@ -24,3 +24,4 @@ export const moveLotToAuction = (lotId: any, newAuctionId: any) => putRequest(`/
 // Place Bids
 export const placeBid = (payload: any) => postWithFormRequest('/lots/newbid', payload);
 export const getLotWinner = (id: any) => getRequest(`/lots/lotwinner?id=${id}`);
+export const getBiddersByLotId = (id: any) => getRequest(`/lots/biddersbylot?id=${id}`);

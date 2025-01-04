@@ -29,7 +29,7 @@ const ImageUpload = () => {
                 body: JSON.stringify({ image: base64 }),
             });
             if (response.ok) {
-                console.log('Image uploaded successfully');
+                // console.log('Image uploaded successfully');
             } else {
                 console.error('Failed to upload image');
             }

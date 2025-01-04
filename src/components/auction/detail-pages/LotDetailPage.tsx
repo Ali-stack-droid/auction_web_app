@@ -11,7 +11,6 @@ import {
     CircularProgress,
 } from "@mui/material";
 import useDetailStyles from "./detail-pages-components/DetailPageStyles";
-import lotsData from "../lotsData";
 import { getQueryParam } from "../../../helper/GetQueryParam";
 import theme from "../../../theme";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -19,21 +18,25 @@ import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import { useNavigate } from "react-router-dom";
 import CustomDialogue from "../../custom-components/CustomDialogue";
 import WinnerModal from "./detail-pages-components/WinnerModal";
-import { getLotDetails, getLotDetailsById } from "../../Services/Methods";
+import { getBiddersByLotId, getLotDetails, getLotDetailsById, getWinnerByLotId } from "../../Services/Methods";
 import { ErrorMessage, SuccessMessage } from "../../../utils/ToastMessages";
 import BiddingTable from "./detail-pages-components/BiddingTable";
+import BiddersModal from "./detail-pages-components/BiddersModal";
 
 const LotDetailPage = () => {
     const classes = useDetailStyles();
     const navigate = useNavigate();
 
     const [lotDetails, setLotDetails]: any = useState({})
+    const [bidders, setBidders]: any = useState([])
+    const [winner, setWinner]: any = useState({});
 
     const [confirmDelete, setConfirmDelete] = useState(false)
     const [deleteLotId, setDeleteLotId] = useState(0)
 
     const [winnerModal, setWinnerModal] = useState(false)
     const [isFetchingData, setIsFetchingData] = useState(false)
+    const [openBidders, setOpenBidders] = useState(false)
 
     const [mainImage, setMainImage] = useState("");
 
@@ -42,7 +45,7 @@ const LotDetailPage = () => {
             setIsFetchingData(true);
             fetchLotDetails();
         }
-    }, [lotsData])
+    }, [])
 
     const fetchLotDetails = async () => {
         try {
@@ -52,7 +55,6 @@ const LotDetailPage = () => {
                 ...(lot.Image ? [lot.Image] : []),
                 ...(response.data?.Images || []).map((img: any) => img.Image)
             ];
-
             const bidsRange = response.data?.BidsRange || [];
 
             if (lot) {
@@ -69,6 +71,7 @@ const LotDetailPage = () => {
                     sold: lot.IsSold,
                     buyerPremium: lot.BuyerPremium,
                     currency: lot.Currency,
+                    images: images,
                     details: {
                         description: lot.LongDescription,
                         date: `${lot.StartDate} to ${lot.EndDate}`,
@@ -81,7 +84,6 @@ const LotDetailPage = () => {
                         createdAt: lot.CreatedAt,
                         updatedAt: lot.UpdateddAt,
                     },
-                    images: images,
                     bidsRange: bidsRange.map((bid: any) => ({
                         id: bid.Id,
                         startAmount: bid.StartAmount,
@@ -91,6 +93,8 @@ const LotDetailPage = () => {
                 };
                 setMainImage(formattedLotDetails.image || `${process.env.PUBLIC_URL}/assets/pngs/placeholder.png`)
                 setLotDetails(formattedLotDetails);
+                fetchBidders();
+                fetchWinner();
             } else {
                 setLotDetails([]);
             }
@@ -99,6 +103,46 @@ const LotDetailPage = () => {
             setIsFetchingData(false);
         } finally {
             setIsFetchingData(false);
+        }
+    };
+
+    const fetchBidders = async () => {
+        try {
+            const response = await getBiddersByLotId(getQueryParam('lotId'));
+            const bidders = response.data;
+            if (bidders.length > 0) {
+                const formattedBidders = response.data.map((bidder: any) => ({
+                    id: bidder.Id,
+                    clientId: bidder.ClientId,
+                    name: bidder.Name,
+                    bidAmount: bidder.BidAmount,
+                    email: bidder.Email,
+                    address: bidder.Address,
+                    company: bidder.Company,
+                }));
+                setBidders(formattedBidders)
+            } else {
+                setBidders([]);
+            }
+        } catch (error) {
+            console.error('Error fetching auction data:', error);
+        }
+    };
+
+    const fetchWinner = async () => {
+        try {
+            const response = await getWinnerByLotId(getQueryParam('lotId'));
+            const winnerDetails = response.data;
+            const formattedWinner = {
+                name: winnerDetails.Clients?.Name || "N/A",
+                email: winnerDetails.Clients?.Email || "N/A",
+                phone: winnerDetails.Clients?.Phone || "N/A", // Replace with actual phone if available
+                location: winnerDetails.Clients?.Address || "N/A",
+                image: winnerDetails.Lots?.Image || `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
+            };
+            setWinner(formattedWinner);
+        } catch (err) {
+            console.error(err);
         }
     };
 
@@ -163,37 +207,49 @@ const LotDetailPage = () => {
                             </Button>
 
                             {/* Thumbnails */}
-                            <Box className={classes.thmbnailsWrapper}>
-                                {lotDetails.images?.map((img: any, index: number) => (
-                                    <CardMedia
-                                        key={index}
-                                        component="img"
-                                        image={img || `${process.env.PUBLIC_URL}/assets/pngs/placeholder.png`}
-                                        alt="Thumbnail"
-                                        className={classes.thumbnails}
-                                        onClick={() => handleThumbnailClick(img)}
-                                    />
-                                ))}
-                            </Box>
+                            {lotDetails.images?.length > 1 &&
+                                <Box className={classes.thmbnailsWrapper}>
+                                    {lotDetails.images?.map((img: any, index: number) => (
+                                        <CardMedia
+                                            key={index}
+                                            component="img"
+                                            image={img || `${process.env.PUBLIC_URL}/assets/pngs/placeholder.png`}
+                                            alt="Thumbnail"
+                                            className={classes.thumbnails}
+                                            onClick={() => handleThumbnailClick(img)}
+                                        />
+                                    ))}
+                                </Box>
+                            }
                         </Card>
 
                         {/* Winner and View Bidders */}
                         <Box className={classes.buttonContainer}>
-                            <Button
-                                variant="contained"
-                                className={classes.winnerButton}
-                                onClick={handleWinnerDetails}
-                            >
-                                Winner Detail
-                            </Button>
-                            <Button variant="outlined" className={classes.viewButton}>
-                                View Bidders
-                            </Button>
+                            {winner.id > 0 &&
+                                <Button
+                                    variant="contained"
+                                    className={classes.winnerButton}
+                                    onClick={handleWinnerDetails}
+                                >
+                                    Winner Detail
+                                </Button>
+                            }
+                            {bidders?.length > 0 &&
+                                <Button
+                                    variant="outlined"
+                                    className={classes.viewButton}
+                                    onClick={() => setOpenBidders(true)}
+                                >
+                                    View Bidders
+                                </Button>
+                            }
                         </Box>
 
-                        <Box paddingTop={5}>
-                            <BiddingTable biddingData={lotDetails.bidsRange} />
-                        </Box>
+                        {lotDetails.bidsRange?.length > 0 &&
+                            <Box paddingTop={5}>
+                                <BiddingTable biddingData={lotDetails.bidsRange} />
+                            </Box>
+                        }
 
                     </Grid>
 
@@ -282,8 +338,10 @@ const LotDetailPage = () => {
                 handleConfirmModal={handleConfirmDelete}
             />
 
-            <WinnerModal open={winnerModal} onClose={() => setWinnerModal(false)} lotId={lotDetails.id} />
-        </Box>
+            <WinnerModal open={winnerModal} onClose={() => setWinnerModal(false)} winner={winner} />
+
+            <BiddersModal open={openBidders} onClose={() => setOpenBidders(false)} bidders={bidders} />
+        </Box >
     );
 };
 

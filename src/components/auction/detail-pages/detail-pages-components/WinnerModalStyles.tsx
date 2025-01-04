@@ -118,6 +118,65 @@ const useWinnerModalStyle = makeStyles({
         left: 0,
         right: 0,
     },
+    detail: {
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: '100%',
+    },
+    bidderHeading: {
+        fontSize: "15px",
+        fontWeight: 600,
+        color: theme.palette.primary.main10
+    },
+    bidderValue: {
+        marginTop: '6px',
+        fontSize: "13px",
+        fontWeight: 400,
+        color: theme.palette.primary.main10
+    },
+    detailsWrapper: {
+        height: "60px",
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    bidderImageBox: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    bidderName: {
+        fontWeight: 600,
+        color: theme.palette.primary.main10,
+        marginTop: "8px"
+    },
+    bidderImage: {
+        width: '80px',
+        height: '80px',
+        objectFit: 'cover',
+        borderRadius: '8px',
+        boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.2)',
+    },
+    bidderDetails: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '16px',
+        padding: '12px',
+        marginBottom: '12px',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    },
+    noBidder: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '50vh',
+        color: theme.palette.primary.main10,
+    }
 });
 
 export default useWinnerModalStyle;

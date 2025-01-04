@@ -1,42 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, IconButton, Typography, Box } from '@mui/material';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import useWinnerModalStyle from './WinnerModalStyles';
-import { getWinnerByLotId } from '../../../Services/Methods';
 
-const WinnerModal = ({ open, onClose, lotId }: any) => {
+const WinnerModal = ({ open, onClose, winner }: any) => {
     const classes = useWinnerModalStyle();
-    const [winner, setWinner]: any = useState({});
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchWinner = async () => {
-            setLoading(true);
-            try {
-                const response = await getWinnerByLotId(lotId);
-                const winnerDetails = response.data;
-                const formattedWinner = {
-                    name: winnerDetails.Clients?.Name || "N/A",
-                    email: winnerDetails.Clients?.Email || "N/A",
-                    phone: winnerDetails.Clients?.Phone || "N/A", // Replace with actual phone if available
-                    location: winnerDetails.Clients?.Address || "N/A",
-                    image: winnerDetails.Lots?.Image || `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
-                };
-                setWinner(formattedWinner);
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (open && lotId) fetchWinner();
-    }, [open, lotId]);
-
-
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" >
             <Box className={classes.closeButtonWrapper}>
