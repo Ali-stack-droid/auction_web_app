@@ -32,17 +32,19 @@ import {
     Logout as LogoutIcon,
 } from '@mui/icons-material';
 import CustomNotifications from '../../custom-components/CustomNotifications';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CustomButton from '../../custom-components/CustomButton';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { getQueryParam } from '../../../helper/GetQueryParam';
 
-const Header = () => {
+const Header = ({ searchTerm, setSearchTerm }: any) => {
     const theme: any = useTheme();
     const classes = useHeaderStyles();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate()
-    const [searchTerm, setSearchTerm] = useState('');
+    const location = useLocation();
+
     const [notificationMenuAnchor, setNotificationMenuAnchor] = useState(null);
     const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
 
@@ -118,6 +120,10 @@ const Header = () => {
         setShowPassword((prev) => !prev);
     };
 
+    const isShowSearch = !isMobile
+        && (location.pathname === "/auction" || location.pathname === "/auction/lots")
+        && getQueryParam('lotId') === null;
+
     return (
         <Box className={classes.headerContainer}>
             <Toolbar className={classes.toolbar}>
@@ -134,9 +140,9 @@ const Header = () => {
                     </Box>
                 </Box>
 
-                <Box display="flex" flex={isMobile ? 0 : 0.5}>
+                <Box display="flex" flex={!isShowSearch ? 0 : 0.5}>
                     {/* Center Section - Search Bar */}
-                    {!isMobile &&
+                    {isShowSearch &&
                         <Box className={classes.centerSection}>
                             <CustomTextField
                                 value={searchTerm}
@@ -154,7 +160,7 @@ const Header = () => {
                         </Box>
                     }
 
-                    <Box display="flex" flex={0.5} justifyContent="flex-end" alignItems="center">
+                    <Box display="flex" flex={isShowSearch ? 0.5 : 1} justifyContent="flex-end" alignItems="center">
                         {/* Notifications Icon */}
                         <IconButton onClick={handleNotificationClick}  >
                             <Badge badgeContent={4} className={classes.badge}>
@@ -171,11 +177,6 @@ const Header = () => {
                         >
                             <CustomNotifications />
                         </Menu>
-
-                        {/* Help Icon */}
-                        <IconButton>
-                            <HelpIcon sx={{ height: '30px', width: '30px' }} />
-                        </IconButton>
 
                         {/* User Avatar */}
                         <IconButton onClick={handleProfileClick}>

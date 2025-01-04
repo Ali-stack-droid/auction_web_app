@@ -21,7 +21,7 @@ import { getQueryParam } from '../../helper/GetQueryParam';
 import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 
 
-const Lots = () => {
+const Lots = ({ searchTerm }: any) => {
     const [isCurrentLot, setIsCurrentLot] = useState(true); // Toggle between Current and Past Lots
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
@@ -166,17 +166,26 @@ const Lots = () => {
                     <Fade in={fadeIn} timeout={200}>
                         <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
                             <Grid container spacing={3}>
-                                {filteredData && filteredData.map((lot: any) => (
-                                    <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
-                                        <AuctionCard
-                                            headerType={"lots"}
-                                            cardData={lot}
-                                            handleEdit={handleEdit}
-                                            handleDelete={() => handleDeleteLot(lot.id)}
-                                            handleMoveModal={handleMoveModal}
-                                        />
-                                    </Grid>
-                                ))}
+                                {filteredData && filteredData
+                                    .filter((auction: any) => {
+                                        if (!searchTerm) return true; // Show all if no search term
+                                        const lowerCaseTerm = searchTerm.toLowerCase();
+                                        return (
+                                            auction.id.toString().includes(searchTerm) || // Match ID
+                                            auction.name.toLowerCase().includes(lowerCaseTerm) || // Match Name
+                                            auction.details.location.toLowerCase().includes(lowerCaseTerm) // Match Location
+                                        );
+                                    }).map((lot: any) => (
+                                        <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
+                                            <AuctionCard
+                                                headerType={"lots"}
+                                                cardData={lot}
+                                                handleEdit={handleEdit}
+                                                handleDelete={() => handleDeleteLot(lot.id)}
+                                                handleMoveModal={handleMoveModal}
+                                            />
+                                        </Grid>
+                                    ))}
                             </Grid>
                         </Container>
                     </Fade>
