@@ -144,6 +144,7 @@ const Auction = () => {
                                             cardData={auction}
                                             handleEdit={handleEdit}
                                             handleDelete={() => handleDeleteAuction(auction.id)}
+                                            handleMoveModal={() => { }}
                                         />
                                     </Grid>
                                 ))}

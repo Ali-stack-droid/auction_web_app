@@ -6,17 +6,15 @@ import AuctionDetails from './card-details-components/AuctionDetails';
 import LiveStreamingDetails from './card-details-components/LiveStreamingDetails';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import React, { useState } from 'react';
-import ViewModal from '../../payment-tracking/ViewModal';
 import { useDispatch } from 'react-redux';
-import { setSelectedAuction } from '../../../redux/appSlice';
-import CustomDialogue from '../../custom-components/CustomDialogue';
 import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
 
 const AuctionCard = ({
     headerType,
     cardData,
     handleEdit,
-    handleDelete
+    handleDelete,
+    handleMoveModal
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
@@ -25,7 +23,7 @@ const AuctionCard = ({
     const [moveLotId, setMoveLotId] = useState(0)
 
     const [moveModalOpen, setMoveModalOpen] = useState(false)
-    const [moveDialogue, setMoveDialogue] = useState(false)
+    // const [moveDialogue, setMoveDialogue] = useState(false)
 
     const dispatch = useDispatch();
 
@@ -219,7 +217,7 @@ const AuctionCard = ({
                 handleConfirmModal={() => { setMoveDialogue(false); setMoveModalOpen(true) }}
             /> */}
 
-            <MoveLotModal open={moveModalOpen} onClose={() => setMoveModalOpen(false)} moveLotId={moveLotId} />
+            <MoveLotModal open={moveModalOpen} handleMoveModal={handleMoveModal} setMoveModalOpen={setMoveModalOpen} moveLotId={moveLotId} />
 
         </Card >
     );

@@ -145,6 +145,11 @@ const Lots = () => {
         }
     };
 
+    const handleMoveModal = (movedLotId: number) => {
+        if (movedLotId > 0)
+            setFilteredData((prevData: any) => prevData.filter((item: any) => item.id !== movedLotId));
+    }
+
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -168,6 +173,7 @@ const Lots = () => {
                                             cardData={lot}
                                             handleEdit={handleEdit}
                                             handleDelete={() => handleDeleteLot(lot.id)}
+                                            handleMoveModal={handleMoveModal}
                                         />
                                     </Grid>
                                 ))}

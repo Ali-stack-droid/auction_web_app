@@ -41,6 +41,7 @@ const LiveStreamingDetailPage: React.FC = () => {
                         cardData={liveStream}
                         handleEdit={() => { }}
                         handleDelete={() => { }}
+                        handleMoveModal={() => { }}
                     />
                 </Box>
                 <Box className={classes.rightSection}>
@@ -77,6 +78,7 @@ const LiveStreamingDetailPage: React.FC = () => {
                                     cardData={auction}
                                     handleEdit={() => navigate(`/auction/lots/edit/${auction.id}`)}
                                     handleDelete={() => { }}
+                                    handleMoveModal={() => { }}
                                 />
                             </Box>
                         ))}

@@ -164,6 +164,12 @@ const AuctionDetailPage = () => {
         }
     };
 
+    const handleMoveModal = (movedLotId: number) => {
+        if (movedLotId > 0) {
+            setAuctionLots((prevData: any) => prevData.filter((item: any) => item.id !== movedLotId));
+        }
+    }
+
     return (
         <Box p={2}>
             <Box>
@@ -334,7 +340,7 @@ const AuctionDetailPage = () => {
                         </Grid>
                     </Grid>
 
-                    {auctionDetails.totalLots > 0 &&
+                    {auctionLots.length > 0 &&
                         <Box maxWidth={'80vw'} overflow={'auto'} pt={3}>
                             <Box className={classes.titleWrapper}>
                                 <Typography className={classes.title}>
@@ -351,6 +357,7 @@ const AuctionDetailPage = () => {
                                             cardData={lot}
                                             handleEdit={handleEditLots}
                                             handleDelete={handleDeleteAuction}
+                                            handleMoveModal={handleMoveModal}
                                         />
                                     </Box>
                                 ))}
