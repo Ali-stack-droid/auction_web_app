@@ -18,11 +18,13 @@ import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 const Auction = ({ searchTerm }: any) => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
-    const [filteredData, setFilteredData]: any = useState(); // Filtered data state
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
     const [isFetchingData, setIsFetchingData] = useState(false);
+
+    const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
+    const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
 
     useEffect(() => {
         if (!isFetchingData) {
@@ -50,8 +52,10 @@ const Auction = ({ searchTerm }: any) => {
                     }
                 }));
                 setFilteredData(updatedData);
+                setPaginationedData(updatedData)
             } else {
                 setFilteredData([]);
+                setPaginationedData([])
             }
             setIsFetchingData(false)
 
@@ -116,9 +120,8 @@ const Auction = ({ searchTerm }: any) => {
         setFadeIn(false); // Trigger fade-out
         setTimeout(() => {
             setFadeIn(true); // Trigger fade-in after filtering
-            // setFilteredData(newFilteredData);
-        }, 200);
-    }, [selectedLocation]);
+        }, 300);
+    }, [paginationedData, selectedLocation]);
 
 
     return (
@@ -131,13 +134,13 @@ const Auction = ({ searchTerm }: any) => {
                 setSelectedLocation={setSelectedLocation}
             />
 
-            {!isFetchingData && filteredData?.length ?
+            {!isFetchingData && paginationedData?.length ?
                 <Box>
                     {/* Auction Cards */}
-                    <Fade in={fadeIn} timeout={200}>
+                    <Fade in={fadeIn} timeout={300}>
                         <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
                             <Grid container spacing={3}>
-                                {filteredData
+                                {paginationedData
                                     .filter((auction: any) => {
                                         if (!searchTerm) return true; // Show all if no search term
                                         const lowerCaseTerm = searchTerm.toLowerCase();
@@ -162,7 +165,7 @@ const Auction = ({ searchTerm }: any) => {
                         </Container>
                     </Fade>
 
-                    <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
+                    <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
                 </Box>
                 : isFetchingData ?
                     <Box

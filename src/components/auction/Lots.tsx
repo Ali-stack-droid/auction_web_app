@@ -24,11 +24,14 @@ import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 const Lots = ({ searchTerm }: any) => {
     const [isCurrentLot, setIsCurrentLot] = useState(true); // Toggle between Current and Past Lots
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
-    const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
+
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteLotId, setDeleteLotId] = useState(0);
     const [isFetchingData, setIsFetchingData] = useState(false);
+
+    const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
+    const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
     // const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
 
     useEffect(() => {
@@ -82,8 +85,10 @@ const Lots = ({ searchTerm }: any) => {
                 });
 
                 setFilteredData(filteredData);
+                setPaginationedData(filteredData);
             } else {
                 setFilteredData([]);
+                setPaginationedData([]);
             }
             setIsFetchingData(false);
         } catch (error) {
@@ -102,9 +107,10 @@ const Lots = ({ searchTerm }: any) => {
         setFadeIn(false); // Trigger fade-out
         setTimeout(() => {
             setFadeIn(true); // Trigger fade-in after filtering
-            setFilteredData(filteredData);
+            // setFilteredData(filteredData);
+            // setPaginationedData(filteredData)
         }, 200);
-    }, [isCurrentLot, selectedLocation]);
+    }, [isCurrentLot, selectedLocation, paginationedData]);
 
     // Open confirmation modal
     const handleDeleteLot = (id: number) => {
@@ -151,8 +157,10 @@ const Lots = ({ searchTerm }: any) => {
     };
 
     const handleMoveModal = (movedLotId: number) => {
-        if (movedLotId > 0)
-            setFilteredData((prevData: any) => prevData.filter((item: any) => item.id !== movedLotId));
+        if (movedLotId > 0) {
+            const afterMovedData = paginationedData.filter((item: any) => item.id !== movedLotId)
+            setFilteredData(afterMovedData);
+        }
     }
 
     const handleToggle = () => {
@@ -170,13 +178,13 @@ const Lots = ({ searchTerm }: any) => {
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
             />
-            {!isFetchingData && filteredData?.length ?
+            {!isFetchingData && paginationedData?.length ?
                 <Box>
                     {/* Lot Cards */}
                     <Fade in={fadeIn} timeout={200}>
                         <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
                             <Grid container spacing={3}>
-                                {filteredData && filteredData
+                                {paginationedData && paginationedData
                                     .filter((auction: any) => {
                                         if (!searchTerm) return true; // Show all if no search term
                                         const lowerCaseTerm = searchTerm.toLowerCase();
@@ -200,7 +208,7 @@ const Lots = ({ searchTerm }: any) => {
                         </Container>
                     </Fade>
 
-                    <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} />
+                    <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
                 </Box>
                 : isFetchingData ?
                     <Box

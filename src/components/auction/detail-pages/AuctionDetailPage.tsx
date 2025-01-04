@@ -12,11 +12,14 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AuctionCard from "../auction-components/AuctionCard";
 import BiddingTable from "./detail-pages-components/BiddingTable";
 import { getAuctionDetailById } from "../../Services/Methods";
+import PaginationButton from "../auction-components/PaginationButton";
 
 const AuctionDetailPage = () => {
     const classes = useDetailStyles();
 
-    const [auctionDetails, setAuctionDetails]: any = useState({})
+    const [auctionDetails, setAuctionDetails]: any = useState([])
+    const [paginationedData, setPaginationedData]: any = useState([])
+
     const [auctionLots, setAuctionLots] = useState<any[]>([]);
 
     const [deleteAuctionId, setDeleteAuctionId] = useState(0)
@@ -349,7 +352,7 @@ const AuctionDetailPage = () => {
                                 <Box className={classes.countBadge}>{auctionDetails.totalLots}</Box>
                             </Box>
                             <Box className={classes.cardContainer} >
-                                {auctionLots && auctionLots.map((lot, index) => (
+                                {paginationedData && paginationedData.map((lot: any, index: number) => (
                                     <Box minWidth={'345px'} key={index}>
                                         <AuctionCard
                                             key={lot.id}
@@ -362,6 +365,7 @@ const AuctionDetailPage = () => {
                                     </Box>
                                 ))}
                             </Box>
+                            <PaginationButton filteredData={auctionLots} setPaginationedData={setPaginationedData} />
                         </Box>
                     }
                 </Box>

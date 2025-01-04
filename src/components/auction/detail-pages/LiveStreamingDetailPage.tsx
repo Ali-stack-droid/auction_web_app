@@ -83,7 +83,7 @@ const LiveStreamingDetailPage: React.FC = () => {
                             </Box>
                         ))}
                     </Box>
-                    <PaginationButton filteredData={auctionsData} setFilteredData={() => { }} />
+                    {/* <PaginationButton filteredData={auctionsData} setFilteredData={() => { }} /> */}
                 </Box>
             }
         </Box >

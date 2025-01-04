@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Box, ToggleButtonGroup, ToggleButton, Pagination, Stack } from '@mui/material';
 import useAuctionHeaderStyles from './AuctionHeaderStyles';
-import usePaymentTrackingStyles from '../../payment-tracking/PaymentTrackingStyles';
+import { useLocation } from 'react-router-dom';
 
 interface PaginationButtonProps {
     filteredData: any[];
-    setFilteredData: (data: any[]) => void;
+    setPaginationedData: (data: any[]) => void;
 }
 
-const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filteredData, setFilteredData }) => {
+const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filteredData, setPaginationedData }) => {
     const classes = useAuctionHeaderStyles();
-    const bottomClass = usePaymentTrackingStyles();
+    const location = useLocation();
+    const rowsPerPage = location.pathname === "/auction/details" ? 4 : 8;
 
-    const rowsPerPage = 6;
     const [isPagination, setIsPagination] = useState(false);
     const [page, setPage] = useState<number>(0);
 
     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
     useEffect(() => {
-        setFilteredData(filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
-    }, [page])
+        if (isPagination) {
+            setPaginationedData(filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
+        } else {
+            setPaginationedData(filteredData)
+        }
+    }, [page, isPagination, filteredData])
 
     const handleChangePage = (_event: React.ChangeEvent<unknown>, newPage: number) => {
         setPage(newPage - 1); // Adjust for 0-based index
@@ -27,8 +31,8 @@ const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filtered
 
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 5 }}>
-            {!isPagination ?
+        <Box className={classes.paginationButton}>
+            {isPagination ?
                 <Stack spacing={0}>
                     <Pagination
                         count={totalPages} // Set the total pages dynamically
@@ -51,13 +55,13 @@ const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filtered
                 >
                     <ToggleButton
                         value="single"
-                        className={`${classes.toggleButton} ${isPagination ? 'current' : 'past'}`}
+                        className={`${classes.toggleButton} ${isPagination ? 'past' : 'current'}`}
                     >
                         Single Page
                     </ToggleButton>
                     <ToggleButton
                         value="pagination"
-                        className={`${classes.toggleButton} ${!isPagination ? 'current' : 'past'}`}
+                        className={`${classes.toggleButton} ${!isPagination ? 'past' : 'current'}`}
                     >
                         Pagination
                     </ToggleButton>

@@ -73,6 +73,14 @@ const useAuctionHeaderStyles = makeStyles((theme: any) => ({
             backgroundColor: theme.palette.primary.main6,
         },
     },
+    paginationButton: {
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginTop: "20px",
+    }
 }));
 
 export default useAuctionHeaderStyles;
