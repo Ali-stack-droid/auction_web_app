@@ -20,23 +20,22 @@ const LotDetails = ({ lotData }: any) => {
                 endDateTime: new Date(`${endDate} ${endTime}`),
             };
         };
-
         const calculateCountdown = () => {
             const { endDateTime } = parseDateTime();
             const now = new Date();
 
             const remainingTime = endDateTime.getTime() - now.getTime();
             if (remainingTime > 0) {
+                const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
                 const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
                 const seconds = Math.floor((remainingTime / 1000) % 60);
+
                 setCountdown(
-                    `${hours.toString().padStart(2, '0')}:${minutes
-                        .toString()
-                        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                    `${days}d"${hours}h ${minutes}m ${seconds}s`
                 );
             } else {
-                setCountdown('00:00:00'); // Auction ended
+                setCountdown('0d 0h 0m 0s'); // Auction ended
             }
         };
 
@@ -57,9 +56,9 @@ const LotDetails = ({ lotData }: any) => {
                     <Typography color={theme.palette.primary.main9} fontWeight={500}>Lot Number</Typography>
                     <Typography ml={0.5} color={theme.palette.primary.main2}>: #&nbsp;{lotData.lotNumber}</Typography>
                 </Box>
-                <Box display={"flex"} flex={1}>
+                <Box display={"flex"} flex={1} >
                     <Typography color={theme.palette.primary.main9} fontWeight={500} whiteSpace={"nowrap"}>Count Down</Typography>
-                    <Typography ml={0.5} letterSpacing={3} color={theme.palette.primary.main2} >
+                    <Typography ml={0.5} letterSpacing={3} color={theme.palette.primary.main2} whiteSpace={'nowrap'}>
                         :&nbsp;{countdown}
                     </Typography>
                 </Box>
