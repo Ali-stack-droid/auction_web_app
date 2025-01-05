@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import theme from '../../../../theme';
 import { getCurrentAuctions, moveLotToAuction } from '../../../Services/Methods';
-import { SuccessMessage } from '../../../../utils/ToastMessages';
+import { ErrorMessage, SuccessMessage } from '../../../../utils/ToastMessages';
 import CustomTextField from '../../../custom-components/CustomTextField';
 import { getQueryParam } from '../../../../helper/GetQueryParam';
 import useWinnerModalStyle from './WinnerModalStyles';
@@ -57,7 +57,7 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
     }, [open]);
 
     const handleMoveLot = async (newAuctionId: any) => {
-        if (!isMoving) {
+        if (!isMoving && newAuctionId > 0) {
             setIsMoving(true);
             let responsedId = 0;
             try {
@@ -73,6 +73,8 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
                 handleMoveModal(responsedId);
                 setMoveModalOpen(false);
             }
+        } else if (!newAuctionId) {
+            ErrorMessage('Please choose an auction first.')
         }
     };
 
@@ -130,6 +132,9 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
                                 placeholder="Search by anything"
                                 className={classes.searchField}
                                 onChange={(e: any) => setSearchedValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleSearch();
+                                }}
                                 InputProps={{
                                     endAdornment: (
                                         <Button className={classes.searchButton}
