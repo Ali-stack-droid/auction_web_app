@@ -323,10 +323,16 @@ const LotDetailPage = () => {
 
                             {/* Buttons */}
                             <Box className={classes.actionButtons}>
-                                <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(lotDetails.id)}>
+                                <Button className={classes.actionButton}
+                                    variant="contained" size="small" color="primary"
+                                    onClick={() => handleEdit(lotDetails.id)}
+                                >
                                     Edit
                                 </Button>
-                                <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDeleteLot(lotDetails.id)}>
+                                <Button className={classes.actionButton}
+                                    variant="contained" size="small" color="error"
+                                    onClick={() => handleDeleteLot(lotDetails.id)}
+                                >
                                     Delete
                                 </Button>
                             </Box>

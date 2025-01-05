@@ -87,6 +87,25 @@ const Auction = ({ searchTerm }: any) => {
         }
     };
 
+    const handleDelete = async (id: string) => {
+        try {
+            // Call the delete API
+            const response: any = await deleteAuction(id);
+            if (response.status === 200) {
+                SuccessMessage('Auction deleted successfully!')
+                // Update state with filtered data if API call is successful
+                const updatedData = filteredData.filter((auction: any) => auction.id !== id);
+                setFilteredData(updatedData);
+            } else {
+                ErrorMessage('Error deleting auction!')
+            }
+        } catch (error) {
+            console.error('Error deleting auction:', error);
+        } finally {
+            handleCloseModal();
+        }
+    };
+
     // Open confirmation modal
     const handleDeleteAuction = (id: string) => {
         setDeleteAuctionId(id);
@@ -115,25 +134,6 @@ const Auction = ({ searchTerm }: any) => {
     // Handle Edit
     const handleEdit = (id: string) => {
         navigate(`edit/${id}`); // Navigate to the edit route with auction ID
-    };
-
-    const handleDelete = async (id: string) => {
-        try {
-            // Call the delete API
-            const response: any = await deleteAuction(id);
-            if (response.status === 200) {
-                SuccessMessage('Auction deleted successfully!')
-                // Update state with filtered data if API call is successful
-                const updatedData = filteredData.filter((auction: any) => auction.id !== id);
-                setFilteredData(updatedData);
-            } else {
-                ErrorMessage('Error deleting auction!')
-            }
-        } catch (error) {
-            console.error('Error deleting auction:', error);
-        } finally {
-            handleCloseModal();
-        }
     };
 
     // Filtered Data based on `type` and `location`

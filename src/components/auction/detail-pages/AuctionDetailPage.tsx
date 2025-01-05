@@ -24,6 +24,7 @@ const AuctionDetailPage = () => {
 
     const [deleteAuctionId, setDeleteAuctionId] = useState(0)
     const [confirmDelete, setConfirmDelete] = useState(false)
+    const [isDeletedFromDetail, setIsDeletedFromDetail] = useState(false)
 
     const [showMoreTerms, setShowMoreTerms] = useState(false);
     const [showMorePaymentTerms, setShowMorePaymentTerms] = useState(false);
@@ -143,7 +144,12 @@ const AuctionDetailPage = () => {
             const response: any = await deleteAuction(deleteAuctionId);
             if (response.status === 200) {
                 SuccessMessage('Lot deleted successfully!')
-                navigate('/auction')
+                if (isDeletedFromDetail) {
+                    navigate('/auction')
+                } else {
+                    setAuctionLots(auctionLots.filter(lot => lot.id !== deleteAuctionId))
+                    setPaginationedData(auctionLots.filter(lot => lot.id !== deleteAuctionId))
+                }
             } else {
                 ErrorMessage('Error deleting lot!')
             }
@@ -361,10 +367,19 @@ const AuctionDetailPage = () => {
 
                                 {/* Buttons */}
                                 <Box className={classes.actionButtons} py={1}>
-                                    <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(auctionDetails.id)}>
+                                    <Button className={classes.actionButton}
+                                        variant="contained" size="small" color="primary"
+                                        onClick={() => handleEdit(auctionDetails.id)}
+                                    >
                                         Edit
                                     </Button>
-                                    <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDeleteAuction(auctionDetails.id)}>
+                                    <Button className={classes.actionButton}
+                                        variant="contained" size="small" color="error"
+                                        onClick={() => {
+                                            setIsDeletedFromDetail(true);
+                                            handleDeleteAuction(auctionDetails.id)
+                                        }}
+                                    >
                                         Delete
                                     </Button>
                                 </Box>
@@ -373,14 +388,14 @@ const AuctionDetailPage = () => {
                     </Grid>
 
                     {auctionLots.length > 0 &&
-                        <Box maxWidth={'75vw'} overflow={'auto'} pt={3}>
+                        <Box width={'80vw'} overflow={'auto'} pt={3}>
                             <Box className={classes.titleWrapper}>
                                 <Typography className={classes.title}>
                                     Auction Lots :
                                 </Typography>
                                 <Box className={classes.countBadge}>{auctionDetails.totalLots}</Box>
                             </Box>
-                            <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                            <Container disableGutters maxWidth={false} sx={{ mt: 3, pl: 1 }}>
                                 <Grid container spacing={3}>
                                     {paginationedData && paginationedData.map((lot: any) => (
                                         <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>

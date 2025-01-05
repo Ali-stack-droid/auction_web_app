@@ -11,8 +11,9 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionCard from '../auction/auction-components/AuctionCard';
 import AuctionHeader from '../auction/auction-components/AuctionHeader';
 import PaginationButton from '../auction/auction-components/PaginationButton';
-import { getCurrentLiveAuctions } from '../Services/Methods';
+import { deleteAuction, getCurrentLiveAuctions } from '../Services/Methods';
 import NoRecordFound from '../../utils/NoRecordFound';
+import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 
 
 const LiveStreaming = () => {
@@ -21,7 +22,9 @@ const LiveStreaming = () => {
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
+
     const [isFetchingData, setIsFetchingData] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [filteredData, setFilteredData] = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
@@ -72,6 +75,25 @@ const LiveStreaming = () => {
         }
     };
 
+    const handleDelete = async (id: string) => {
+        try {
+            // Call the delete API
+            const response: any = await deleteAuction(id);
+            if (response.status === 200) {
+                SuccessMessage('Auction deleted successfully!')
+                // Update state with filtered data if API call is successful
+                const updatedData = filteredData.filter((auction: any) => auction.id !== id);
+                setFilteredData(updatedData);
+            } else {
+                ErrorMessage('Error deleting auction!')
+            }
+        } catch (error) {
+            console.error('Error deleting auction:', error);
+        } finally {
+            handleCloseModal();
+        }
+    };
+
 
     // Open confirmation modal
     const handleDeleteAuction = (id: string) => {
@@ -81,16 +103,19 @@ const LiveStreaming = () => {
 
     // Close modal
     const handleCloseModal = () => {
-        setConfirmDelete(false);
-        setDeleteAuctionId(null);
+        if (!isDeleting) {
+            setIsDeleting(false)
+            setConfirmDelete(false);
+            setDeleteAuctionId(null);
+        }
     };
 
     // Confirm deletion
     const handleConfirmDelete = () => {
-        if (deleteAuctionId) {
+        if (deleteAuctionId && !isDeleting) {
+            setIsDeleting(true)
             handleDelete(deleteAuctionId); // Call the delete handler
         }
-        handleCloseModal();
     };
 
     const navigate = useNavigate()
@@ -99,13 +124,6 @@ const LiveStreaming = () => {
     const handleEdit = (id: string) => {
         navigate(`/auction/edit/${id}`); // Navigate to the edit route with auction ID
     };
-
-    // Handle Delete
-    const handleDelete = (id: string) => {
-        const updatedData = filteredData.filter((auction: any) => auction.id !== id); // Remove auction by ID
-        setFilteredData(updatedData); // Update state with filtered data
-    };
-
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
@@ -176,7 +194,7 @@ const LiveStreaming = () => {
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmModal={handleConfirmDelete}
-                isDeleting={false}
+                isDeleting={isDeleting}
             />
 
         </Box>

@@ -22,7 +22,7 @@ const LiveStreamingDetailPage = () => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const [auctionDetails, setAuctionDetails]: any = useState({})
-    const [auctionLots, setAuctionLots] = useState([])
+    const [auctionLots, setAuctionLots]: any = useState([])
     const [paginationedData, setPaginationedData]: any = useState([])
 
     useEffect(() => {
@@ -136,7 +136,8 @@ const LiveStreamingDetailPage = () => {
             const response: any = await deleteAuction(deleteAuctionId);
             if (response.status === 200) {
                 SuccessMessage('Lot deleted successfully!')
-                navigate('/auction')
+                setAuctionLots(auctionLots.filter((lot: any) => lot.id !== deleteAuctionId))
+                setPaginationedData(auctionLots.filter((lot: any) => lot.id !== deleteAuctionId))
             } else {
                 ErrorMessage('Error deleting lot!')
             }
@@ -224,31 +225,33 @@ const LiveStreamingDetailPage = () => {
                             </List>
                         </Box>
                     </Box>
-                    <Box width={'75vw'} pt={3}>
-                        <Box className={classes.titleWrapper}>
-                            <Typography className={classes.title}>
-                                Auction Lots :
-                            </Typography>
-                            <Box className={classes.countBadge}>{auctionLots.length}</Box>
+                    {auctionLots.length > 0 &&
+                        <Box width={'80vw'} pt={3}>
+                            <Box className={classes.titleWrapper}>
+                                <Typography className={classes.title}>
+                                    Auction Lots :
+                                </Typography>
+                                <Box className={classes.countBadge}>{auctionLots.length}</Box>
+                            </Box>
+                            <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                                <Grid container spacing={3}>
+                                    {paginationedData && paginationedData.map((lot: any) => (
+                                        <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
+                                            <AuctionCard
+                                                key={lot.id}
+                                                headerType={'lots'}
+                                                cardData={lot}
+                                                handleEdit={handleEditLots}
+                                                handleDelete={handleDeleteAuction}
+                                                handleMoveModal={handleMoveModal}
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Container>
+                            <PaginationButton filteredData={auctionLots} setPaginationedData={setPaginationedData} />
                         </Box>
-                        <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
-                            <Grid container spacing={3}>
-                                {paginationedData && paginationedData.map((lot: any) => (
-                                    <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
-                                        <AuctionCard
-                                            key={lot.id}
-                                            headerType={'lots'}
-                                            cardData={lot}
-                                            handleEdit={handleEditLots}
-                                            handleDelete={handleDeleteAuction}
-                                            handleMoveModal={handleMoveModal}
-                                        />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </Container>
-                        <PaginationButton filteredData={auctionLots} setPaginationedData={setPaginationedData} />
-                    </Box>
+                    }
                 </Box>
                 :
                 <Box
