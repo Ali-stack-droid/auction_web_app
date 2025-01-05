@@ -93,6 +93,8 @@ const AuctionDetailPage = () => {
                     totalLots: auction.TotalLots
                 };
                 setAuctionDetails(formattedAuctionDetails);
+            } else {
+                setAuctionDetails(null)
             }
 
             if (lots.length > 0) {
@@ -123,6 +125,10 @@ const AuctionDetailPage = () => {
                     },
                 }));
                 setAuctionLots(formattedLots)
+                setPaginationedData(formattedLots)
+            } else {
+                setPaginationedData([])
+                setAuctionLots([])
             }
 
         } catch (error) {

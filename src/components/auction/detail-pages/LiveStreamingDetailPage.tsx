@@ -27,7 +27,7 @@ const LiveStreamingDetailPage = () => {
 
     useEffect(() => {
         if (!isFetchingData) {
-            // setIsFetchingData(true);
+            setIsFetchingData(true);
             fetchAuctionDetails()
         }
     }, [])
@@ -37,8 +37,6 @@ const LiveStreamingDetailPage = () => {
             const response = await getAuctionDetailById(getQueryParam("aucId"));
             const auction = response.data.Auction;
             const lots = response.data.Lots;
-            console.log(auction)
-            console.log(lots)
 
             if (auction) {
                 const formattedAuctionDetails = {
@@ -88,6 +86,8 @@ const LiveStreamingDetailPage = () => {
                     totalLots: auction.TotalLots
                 };
                 setAuctionDetails(formattedAuctionDetails);
+            } else {
+                setAuctionDetails([]);
             }
 
             if (lots?.length > 0) {
@@ -118,6 +118,10 @@ const LiveStreamingDetailPage = () => {
                     },
                 }));
                 setAuctionLots(formattedLots)
+                setPaginationedData(formattedLots)
+            } else {
+                setAuctionLots([])
+                setPaginationedData([])
             }
 
         } catch (error) {
@@ -225,15 +229,15 @@ const LiveStreamingDetailPage = () => {
                             <Typography className={classes.title}>
                                 Auction Lots :
                             </Typography>
-                            <Box className={classes.countBadge}>20</Box>
+                            <Box className={classes.countBadge}>{auctionLots.length}</Box>
                         </Box>
                         <Box className={classes.cardContainer}>
-                            {auctionLots && auctionLots.map((lot: any, index: number) => (
+                            {paginationedData && paginationedData.map((lot: any, index: number) => (
                                 <Box minWidth={'345px'} key={index}>
                                     <AuctionCard
                                         key={lot.id}
                                         headerType={'lots'}
-                                        cardData={lot || []}
+                                        cardData={lot}
                                         handleEdit={handleEditLots}
                                         handleDelete={handleDeleteAuction}
                                         handleMoveModal={handleMoveModal}

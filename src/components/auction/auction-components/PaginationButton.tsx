@@ -11,7 +11,7 @@ interface PaginationButtonProps {
 const PaginationButton: React.FC<PaginationButtonProps> = React.memo(({ filteredData, setPaginationedData }) => {
     const classes = useAuctionHeaderStyles();
     const location = useLocation();
-    const rowsPerPage = location.pathname === "/auction/details" ? 4 : 8;
+    const rowsPerPage = location.pathname === "/auction/details" || location.pathname === "/live-streaming/details" ? 3 : 8;
 
     const [isPagination, setIsPagination] = useState(false);
     const [page, setPage] = useState<number>(0);
