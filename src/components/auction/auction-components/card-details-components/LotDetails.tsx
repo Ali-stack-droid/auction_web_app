@@ -4,9 +4,47 @@ import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import ViewInArRoundedIcon from '@mui/icons-material/ViewInArRounded';
 import { useAuctionDetailStyles } from '../AuctionStyles';
 import theme from '../../../../theme';
+import { useState, useEffect } from 'react';
 
 const LotDetails = ({ lotData }: any) => {
     const classes = useAuctionDetailStyles();
+    const [countdown, setCountdown] = useState<string>('00:00:00');
+
+    useEffect(() => {
+        const parseDateTime = () => {
+            const [startDate, endDate] = lotData.details.date.split(' to ');
+            const [startTime, endTime] = lotData.details.time.split(' to ');
+
+            return {
+                startDateTime: new Date(`${startDate} ${startTime}`),
+                endDateTime: new Date(`${endDate} ${endTime}`),
+            };
+        };
+
+        const calculateCountdown = () => {
+            const { endDateTime } = parseDateTime();
+            const now = new Date();
+
+            const remainingTime = endDateTime.getTime() - now.getTime();
+            if (remainingTime > 0) {
+                const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+                const seconds = Math.floor((remainingTime / 1000) % 60);
+                setCountdown(
+                    `${hours.toString().padStart(2, '0')}:${minutes
+                        .toString()
+                        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                );
+            } else {
+                setCountdown('00:00:00'); // Auction ended
+            }
+        };
+
+        calculateCountdown(); // Initial calculation
+        const interval = setInterval(calculateCountdown, 1000); // Update every second
+
+        return () => clearInterval(interval); // Cleanup on component unmount
+    }, [lotData.details.date, lotData.details.time]);
 
     return (
         <Box className={classes.lotContainer}>
@@ -21,7 +59,9 @@ const LotDetails = ({ lotData }: any) => {
                 </Box>
                 <Box display={"flex"} flex={1}>
                     <Typography color={theme.palette.primary.main9} fontWeight={500} whiteSpace={"nowrap"}>Count Down</Typography>
-                    <Typography ml={0.5} letterSpacing={3} color={theme.palette.primary.main2} >:&nbsp;{"10:10:10"}</Typography>
+                    <Typography ml={0.5} letterSpacing={3} color={theme.palette.primary.main2} >
+                        :&nbsp;{countdown}
+                    </Typography>
                 </Box>
             </Box>
         </Box>

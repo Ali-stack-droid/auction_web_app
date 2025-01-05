@@ -198,7 +198,7 @@ const AuctionCard = ({
                             <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleJoin(cardData.id)}>
                                 Join
                             </Button>
-                            : headerType === "lots" ?
+                            : headerType === "lots" && cardData?.isPast ?
                                 <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleMoveLot(cardData.id)}>
                                     Move
                                 </Button>

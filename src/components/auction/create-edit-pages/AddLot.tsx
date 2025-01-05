@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Typography, Button, MenuItem, FormControlLabel, Checkbox, IconButton, Modal } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -26,6 +26,7 @@ const AddLot = () => {
 
     const classes = useCreateAuctionStyles();
     const navigate = useNavigate();
+    const today = useMemo(() => new Date().toISOString().split('T')[0], []);
 
     const formik = useFormik({
         initialValues: {
@@ -285,6 +286,7 @@ const AddLot = () => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                                 helperText={formik.touched.startDate && formik.errors.startDate}
+                                inputProps={{ min: today }} // Disable past dates
                             />
                         </Box>
                         <Box flex={1}>
@@ -311,6 +313,8 @@ const AddLot = () => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.endDate && Boolean(formik.errors.endDate)}
                                 helperText={formik.touched.endDate && formik.errors.endDate}
+                                inputProps={{ min: today }} // Disable past dates
+
                             />
                         </Box>
                     </Box>

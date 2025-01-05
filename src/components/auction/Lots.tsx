@@ -57,7 +57,7 @@ const Lots = ({ searchTerm }: any) => {
                     image: item.Image,
                     type: "current",
                     highestBid: item.BidStartAmount,
-                    sold: !item.IsSold,
+                    sold: item.IsSold,
                     isPast: item.IsPast,
                     details: {
                         description: item.LongDescription,
