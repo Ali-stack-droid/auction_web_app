@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Typography, Card, CardMedia, Grid, CircularProgress } from "@mui/material";
+import { Box, Button, Typography, Card, CardMedia, Grid, CircularProgress, Container } from "@mui/material";
 import useDetailStyles from "./detail-pages-components/DetailPageStyles";
 import { getQueryParam } from "../../../helper/GetQueryParam";
 import theme from "../../../theme";
@@ -108,7 +108,7 @@ const AuctionDetailPage = () => {
                     image: item.Image,
                     type: "current",
                     highestBid: item.BidStartAmount,
-                    sold: !item.IsSold,
+                    sold: item.IsSold,
                     details: {
                         description: item.LongDescription,
                         date: `${item.StartDate} to ${item.EndDate}`,
@@ -373,27 +373,29 @@ const AuctionDetailPage = () => {
                     </Grid>
 
                     {auctionLots.length > 0 &&
-                        <Box maxWidth={'80vw'} overflow={'auto'} pt={3}>
+                        <Box maxWidth={'75vw'} overflow={'auto'} pt={3}>
                             <Box className={classes.titleWrapper}>
                                 <Typography className={classes.title}>
                                     Auction Lots :
                                 </Typography>
                                 <Box className={classes.countBadge}>{auctionDetails.totalLots}</Box>
                             </Box>
-                            <Box className={classes.cardContainer} >
-                                {paginationedData && paginationedData.map((lot: any, index: number) => (
-                                    <Box minWidth={'345px'} key={index}>
-                                        <AuctionCard
-                                            key={lot.id}
-                                            headerType={'lots'}
-                                            cardData={lot}
-                                            handleEdit={handleEditLots}
-                                            handleDelete={handleDeleteAuction}
-                                            handleMoveModal={handleMoveModal}
-                                        />
-                                    </Box>
-                                ))}
-                            </Box>
+                            <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                                <Grid container spacing={3}>
+                                    {paginationedData && paginationedData.map((lot: any) => (
+                                        <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
+                                            <AuctionCard
+                                                key={lot.id}
+                                                headerType={'lots'}
+                                                cardData={lot}
+                                                handleEdit={handleEditLots}
+                                                handleDelete={handleDeleteAuction}
+                                                handleMoveModal={handleMoveModal}
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Container>
                             <PaginationButton filteredData={auctionLots} setPaginationedData={setPaginationedData} />
                         </Box>
                     }

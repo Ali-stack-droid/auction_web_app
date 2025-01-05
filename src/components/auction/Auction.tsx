@@ -151,7 +151,11 @@ const Auction = ({ searchTerm }: any) => {
             <AuctionHeader
                 headerType={"auction"}
                 isCurrent={isCurrentAuction}
-                onToggle={() => setIsCurrentAuction((prev) => !prev)}
+                onToggle={() => {
+                    if (!isFetchingData) {
+                        setIsCurrentAuction((prev) => !prev)
+                    }
+                }}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
                 locations={locations}
