@@ -136,6 +136,16 @@ const useWinnerModalStyle = makeStyles({
         fontWeight: 400,
         color: theme.palette.primary.main10
     },
+    paymentHeading: {
+        fontSize: "16px",
+        fontWeight: 600,
+        color: theme.palette.primary.main10
+    },
+    paymentValue: {
+        fontSize: "15px",
+        fontWeight: 400,
+        color: theme.palette.primary.main10
+    },
     detailsWrapper: {
         height: "60px",
         flex: 1,

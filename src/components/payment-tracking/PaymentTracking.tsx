@@ -1,9 +1,9 @@
 import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, Pagination, Stack, Button, ToggleButton, ToggleButtonGroup, Fade, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import usePaymentTrackingStyles from "./PaymentTrackingStyles";
-import ViewModal from "./ViewModal";
 import { getPaidInvoices, getPendingInvoices } from "../Services/Methods";
 import NoRecordFound from "../../utils/NoRecordFound";
+import PaymentViewModal from "./PaymentViewModal";
 
 const PaymentTracking = () => {
     const classes = usePaymentTrackingStyles();
@@ -15,7 +15,7 @@ const PaymentTracking = () => {
     const [selectedInvoice, setSelectedInvoice] = useState({});
     const [paidInvoice, setPaidInvoice] = useState<boolean>(false);
     const [viewDetails, setViewDetails] = useState(false);
-    const rowsPerPage = 6;
+    const rowsPerPage = 10;
 
     useEffect(() => {
         fetchInvoices();
@@ -35,7 +35,11 @@ const PaymentTracking = () => {
                     email: invoice.Email,
                     amount: invoice.TotalAmount,
                     deadline: invoice.Date,
-                    status: invoice.Status
+                    status: invoice.Status,
+                    totalLots: invoice.TotalLots,
+                    paidAmount: invoice.PaidAmount,
+                    pendingAmount: invoice.Pending,
+                    paymentMethod: invoice.PaymenMethod,
                 }));
                 setInvoices(formattedInvoices);
             } else {
@@ -63,6 +67,7 @@ const PaymentTracking = () => {
         }
     }
     const handleViewButton = (ind: number) => {
+        console.log(invoices[ind]);
         setSelectedInvoice(invoices[ind]);
         setViewDetails(true)
     }
@@ -166,7 +171,7 @@ const PaymentTracking = () => {
                     </Box>
             }
 
-            <ViewModal open={viewDetails} onClose={() => setViewDetails(false)} data={selectedInvoice} type={"details"} />
+            <PaymentViewModal open={viewDetails} onClose={() => setViewDetails(false)} invoice={selectedInvoice} />
         </Box >
     );
 };
