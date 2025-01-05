@@ -187,6 +187,13 @@ const useWinnerModalStyle = makeStyles({
         height: '50vh',
         color: theme.palette.primary.main10,
     },
+    noWinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '40vh',
+        color: theme.palette.primary.main10,
+    },
     centerSection: {
         display: 'flex',
         alignItems: 'center',

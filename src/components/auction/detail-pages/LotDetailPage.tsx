@@ -225,24 +225,20 @@ const LotDetailPage = () => {
 
                         {/* Winner and View Bidders */}
                         <Box className={classes.buttonContainer}>
-                            {winner.id > 0 &&
-                                <Button
-                                    variant="contained"
-                                    className={classes.winnerButton}
-                                    onClick={handleWinnerDetails}
-                                >
-                                    Winner Detail
-                                </Button>
-                            }
-                            {bidders?.length > 0 &&
-                                <Button
-                                    variant="outlined"
-                                    className={classes.viewButton}
-                                    onClick={() => setOpenBidders(true)}
-                                >
-                                    View Bidders
-                                </Button>
-                            }
+                            <Button
+                                variant="contained"
+                                className={classes.winnerButton}
+                                onClick={handleWinnerDetails}
+                            >
+                                Winner Detail
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                className={classes.viewButton}
+                                onClick={() => setOpenBidders(true)}
+                            >
+                                View Bidders
+                            </Button>
                         </Box>
 
                         {lotDetails.bidsRange?.length > 0 &&

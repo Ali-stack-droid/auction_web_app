@@ -29,7 +29,7 @@ const BiddersModal = ({ open, onClose, bidders }: any) => {
                     {/* Bidders List */}
                     {bidders.length === 0 ? (
                         <Box className={classes.noBidder}>
-                            <h2>No Bidders Found!</h2>
+                            <h2>No Bidder Found!</h2>
                         </Box>
                     ) : (
                         <Box style={{ padding: '10px' }}>

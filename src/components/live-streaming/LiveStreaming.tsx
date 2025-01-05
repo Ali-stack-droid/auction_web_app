@@ -20,6 +20,46 @@ const LiveStreaming = () => {
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
+    const [isFetchingData, setIsFetchingData] = useState(false);
+
+
+    // useEffect(() => {
+    //     if (!isFetchingData) {
+    //         setIsFetchingData(true)
+    //         fetchLiveStreamingData();
+    //     }
+    // }, [isCurrentAuction])
+
+    // const fetchLiveStreamingData = async () => {
+    //     try {
+    //         const response = await getCurrentAuctions()
+
+    //         // console.log("data: ", response.data);
+    //         if (response.data && response.data.length > 0) {
+    //             const updatedData = response.data.map((item: any) => ({
+    //                 id: item.Id,
+    //                 name: item.Name,
+    //                 image: item.Image,
+    //                 details: {
+    //                     location: `${item.City}, ${item.Country}`,
+    //                     dateRange: `${item.StartDate} to ${item.EndDate}`,
+    //                     lotsAvailable: item.TotalLots // Replace with actual data if available
+    //                 }
+    //             }));
+    //             setFilteredData(updatedData);
+    //             setPaginationedData(updatedData)
+    //         } else {
+    //             setFilteredData([]);
+    //             setPaginationedData([])
+    //         }
+    //         setIsFetchingData(false)
+
+    //     } catch (error) {
+    //         console.error('Error fetching auction data:', error);
+    //         setIsFetchingData(false)
+    //     }
+    // };
+
 
     // Open confirmation modal
     const handleDeleteAuction = (id: string) => {
