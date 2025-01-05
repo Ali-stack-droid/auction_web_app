@@ -83,7 +83,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             }
                         />
                         <Route
-                            path="/auction/edit/*"
+                            path="/auction/edit"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <CreatePage type={"auction"} />
@@ -91,10 +91,10 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             }
                         />
                         <Route
-                            path="/auction/lots/edit/*"
+                            path="/auction/lots/edit"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <CreatePage type={"lots"} />
+                                    <AddLot />
                                 </ProtectedRoute>
                             }
                         />

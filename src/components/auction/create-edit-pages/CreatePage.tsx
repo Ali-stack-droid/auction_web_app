@@ -23,16 +23,6 @@ const CreatePage = ({ type }: any) => {
     const [navigation, setNavigation] = useState("");
 
     const navigate = useNavigate()
-    const toastProps = {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-    }
-
     useEffect(() => {
         if (isContinue) {
             document.getElementById('childContainer')?.scrollTo({

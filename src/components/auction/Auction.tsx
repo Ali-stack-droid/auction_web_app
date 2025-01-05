@@ -133,7 +133,7 @@ const Auction = ({ searchTerm }: any) => {
 
     // Handle Edit
     const handleEdit = (id: string) => {
-        navigate(`edit/${id}`); // Navigate to the edit route with auction ID
+        navigate(`edit?aucId=${id}`); // Navigate to the edit route with auction ID
     };
 
     // Filtered Data based on `type` and `location`
