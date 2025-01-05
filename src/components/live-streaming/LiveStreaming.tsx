@@ -145,6 +145,7 @@ const LiveStreaming = () => {
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmModal={handleConfirmDelete}
+                isDeleting={false}
             />
 
         </Box>

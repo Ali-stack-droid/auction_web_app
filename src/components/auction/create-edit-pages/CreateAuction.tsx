@@ -386,6 +386,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                 openDialogue={isCancelOpen}
                 handleCloseModal={() => setIsCancelOpen(false)}
                 handleConfirmModal={handleCancelConfirmation}
+                isDeleting={false}
             />
         </Box >
     );

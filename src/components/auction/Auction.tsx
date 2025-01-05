@@ -22,6 +22,7 @@ const Auction = ({ searchTerm }: any) => {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
     const [isFetchingData, setIsFetchingData] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
@@ -73,16 +74,19 @@ const Auction = ({ searchTerm }: any) => {
 
     // Close modal
     const handleCloseModal = () => {
-        setConfirmDelete(false);
-        setDeleteAuctionId(null);
+        if (!isDeleting) {
+            setIsDeleting(false)
+            setConfirmDelete(false);
+            setDeleteAuctionId(null);
+        }
     };
 
     // Confirm deletion
     const handleConfirmDelete = () => {
-        if (deleteAuctionId) {
+        if (deleteAuctionId && !isDeleting) {
+            setIsDeleting(true)
             handleDelete(deleteAuctionId); // Call the delete handler
         }
-        handleCloseModal();
     };
 
     const navigate = useNavigate()
@@ -106,10 +110,10 @@ const Auction = ({ searchTerm }: any) => {
             }
         } catch (error) {
             console.error('Error deleting auction:', error);
+        } finally {
+            handleCloseModal();
         }
     };
-
-
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
@@ -191,6 +195,7 @@ const Auction = ({ searchTerm }: any) => {
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmModal={handleConfirmDelete}
+                isDeleting={isDeleting}
             />
 
         </Box >

@@ -1,7 +1,8 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, CircularProgress } from '@mui/material'
 import React from 'react'
+import theme from '../../theme';
 
-const CustomDialogue = ({ type, title, message, openDialogue, handleCloseModal, handleConfirmModal }: any) => {
+const CustomDialogue = ({ type, title, message, openDialogue, handleCloseModal, handleConfirmModal, isDeleting }: any) => {
     return (
         <Dialog open={openDialogue} onClose={handleCloseModal} >
             <DialogTitle>
@@ -17,9 +18,14 @@ const CustomDialogue = ({ type, title, message, openDialogue, handleCloseModal, 
                 {type !== "addALot" &&
                     <Button
                         variant={'outlined'}
-                        sx={{ textTransform: 'none' }}
+                        sx={{
+                            textTransform: 'none',
+                            width: '95px',
+                            height: '37.47px'
+                        }}
                         onClick={handleCloseModal}
                         color={"primary"}
+
                     >
                         {type === "delete" ? "Cancel" : "No"}
 
@@ -27,12 +33,18 @@ const CustomDialogue = ({ type, title, message, openDialogue, handleCloseModal, 
                 }
                 <Button
                     variant={'contained'}
-                    sx={{ textTransform: 'none', }}
                     onClick={handleConfirmModal}
                     color={type === "delete" ? "error" : "primary"}
                     autoFocus
+                    sx={{
+                        textTransform: 'none',
+                        width: '95px',
+                        height: '37.47px'
+                    }}
                 >
-                    {type === "delete" ? "Delete" : type === "addALot" ? "Continue" : "Yes"}
+                    {isDeleting ? <CircularProgress size={25} sx={{ color: theme.palette.primary.main3 }} /> :
+                        type === "delete" ? "Delete" : type === "addALot" ? "Continue" : "Yes"
+                    }
 
                 </Button>
 

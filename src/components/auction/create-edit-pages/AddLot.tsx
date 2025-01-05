@@ -390,6 +390,8 @@ const AddLot = () => {
                 openDialogue={confirmModal}
                 handleCloseModal={() => setConfirmModal(false)}
                 handleConfirmModal={handleConfirmAddLot}
+                isDeleting={false}
+
             />
 
             {/* Cancel Cofirmation on Cancel Button*/}
@@ -400,6 +402,8 @@ const AddLot = () => {
                 openDialogue={isCancelOpen}
                 handleCloseModal={() => setIsCancelOpen(false)}
                 handleConfirmModal={handleCancelConfirmation}
+                isDeleting={false}
+
             />
 
         </Box >

@@ -337,6 +337,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isSubmitte
                 openDialogue={openConfirmModal}
                 handleCloseModal={() => setOpenConfirmModal(false)}
                 handleConfirmModal={() => handleConfirmSubmission()}
+                isDeleting={false}
+
             />
 
 
@@ -348,6 +350,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isSubmitte
                 openDialogue={openSaveModal}
                 handleCloseModal={() => setOpenSaveModal(false)}
                 handleConfirmModal={() => setOpenSaveModal(false)}
+                isDeleting={false}
+
             />
 
             {/* Cancel Cofirmation on Cancel Button*/}
@@ -358,6 +362,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isSubmitte
                 openDialogue={isCancelOpen}
                 handleCloseModal={() => setIsCancelOpen(false)}
                 handleConfirmModal={handleCancelConfirmation}
+                isDeleting={false}
+
             />
         </Box>
     );

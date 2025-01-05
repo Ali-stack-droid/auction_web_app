@@ -29,6 +29,7 @@ const Lots = ({ searchTerm }: any) => {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteLotId, setDeleteLotId] = useState(0);
     const [isFetchingData, setIsFetchingData] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
@@ -120,17 +121,21 @@ const Lots = ({ searchTerm }: any) => {
 
     // Close modal
     const handleCloseModal = () => {
-        setConfirmDelete(false);
-        setDeleteLotId(0);
+        if (!isDeleting) {
+            setIsDeleting(false)
+            setConfirmDelete(false);
+            setDeleteLotId(0);
+        }
     };
 
     // Confirm deletion
     const handleConfirmDelete = () => {
-        if (deleteLotId > 0) {
+        if (!isDeleting) {
+            setIsDeleting(true)
             handleDelete(deleteLotId); // Call the delete handler
         }
-        handleCloseModal();
     };
+
 
     const navigate = useNavigate();
 
@@ -153,6 +158,8 @@ const Lots = ({ searchTerm }: any) => {
             }
         } catch (error) {
             console.error('Error deleting auction:', error);
+        } finally {
+            handleCloseModal();
         }
     };
 
@@ -233,6 +240,8 @@ const Lots = ({ searchTerm }: any) => {
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmModal={handleConfirmDelete}
+                isDeleting={isDeleting}
+
             />
         </Box>
     );

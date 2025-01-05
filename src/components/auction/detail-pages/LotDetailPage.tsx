@@ -18,7 +18,7 @@ import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import { useNavigate } from "react-router-dom";
 import CustomDialogue from "../../custom-components/CustomDialogue";
 import WinnerModal from "./detail-pages-components/WinnerModal";
-import { getBiddersByLotId, getLotDetails, getLotDetailsById, getWinnerByLotId } from "../../Services/Methods";
+import { deleteLot, getBiddersByLotId, getLotDetails, getLotDetailsById, getWinnerByLotId } from "../../Services/Methods";
 import { ErrorMessage, SuccessMessage } from "../../../utils/ToastMessages";
 import BiddingTable from "./detail-pages-components/BiddingTable";
 import BiddersModal from "./detail-pages-components/BiddersModal";
@@ -35,8 +35,9 @@ const LotDetailPage = () => {
     const [deleteLotId, setDeleteLotId] = useState(0)
 
     const [winnerModal, setWinnerModal] = useState(false)
-    const [isFetchingData, setIsFetchingData] = useState(false)
     const [openBidders, setOpenBidders] = useState(false)
+    const [isFetchingData, setIsFetchingData] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [mainImage, setMainImage] = useState("");
 
@@ -146,6 +147,22 @@ const LotDetailPage = () => {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            const response: any = await deleteLot(deleteLotId);
+            if (response.status === 200) {
+                SuccessMessage('Lot deleted successfully!')
+                navigate(`/auction/lots?aucId=${response.data.AuctionID}`)
+            } else {
+                ErrorMessage('Error deleting lot!')
+            }
+        } catch (error) {
+            console.error('Error deleting auction:', error);
+        } finally {
+            handleCloseModal()
+        }
+    };
+
     // Handle Edit
     const handleEdit = (id: string) => {
         navigate(`/auction/lots/edit/${id}`); // Navigate to the edit route with auction ID
@@ -159,14 +176,19 @@ const LotDetailPage = () => {
 
     // Close modal
     const handleCloseModal = () => {
-        setConfirmDelete(false);
-        setDeleteLotId(0);
+        if (!isDeleting) {
+            setIsDeleting(false)
+            setConfirmDelete(false);
+            setDeleteLotId(0);
+        }
     };
 
     // Confirm deletion
     const handleConfirmDelete = () => {
-        navigate('/auction/lots')
-        handleCloseModal();
+        if (!isDeleting) {
+            setIsDeleting(true)
+            handleDelete(); // Call the delete handler
+        }
     };
 
     const handleWinnerDetails = () => {
@@ -332,6 +354,8 @@ const LotDetailPage = () => {
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmModal={handleConfirmDelete}
+                isDeleting={isDeleting}
+
             />
 
             <WinnerModal open={winnerModal} onClose={() => setWinnerModal(false)} winner={winner} />

@@ -10,8 +10,9 @@ import CustomDialogue from "../../custom-components/CustomDialogue";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AuctionCard from "../auction-components/AuctionCard";
 import BiddingTable from "./detail-pages-components/BiddingTable";
-import { getAuctionDetailById } from "../../Services/Methods";
+import { deleteAuction, getAuctionDetailById } from "../../Services/Methods";
 import PaginationButton from "../auction-components/PaginationButton";
+import { ErrorMessage, SuccessMessage } from "../../../utils/ToastMessages";
 
 const AuctionDetailPage = () => {
     const classes = useDetailStyles();
@@ -28,6 +29,7 @@ const AuctionDetailPage = () => {
     const [showMorePaymentTerms, setShowMorePaymentTerms] = useState(false);
 
     const [isFetchingData, setIsFetchingData] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (!isFetchingData) {
@@ -130,6 +132,22 @@ const AuctionDetailPage = () => {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            const response: any = await deleteAuction(deleteAuctionId);
+            if (response.status === 200) {
+                SuccessMessage('Lot deleted successfully!')
+                navigate('/auction')
+            } else {
+                ErrorMessage('Error deleting lot!')
+            }
+        } catch (error) {
+            console.error('Error deleting auction:', error);
+        } finally {
+            handleCloseModal()
+        }
+    };
+
     const navigate = useNavigate()
 
     // Handle Edit
@@ -140,6 +158,7 @@ const AuctionDetailPage = () => {
     const handleEditLots = (id: string) => {
         navigate(`/auction/lots/edit/${id}`);
     }
+
     // Open confirmation modal
     const handleDeleteAuction = (id: number) => {
         setDeleteAuctionId(id);
@@ -148,14 +167,19 @@ const AuctionDetailPage = () => {
 
     // Close modal
     const handleCloseModal = () => {
-        setConfirmDelete(false);
-        setDeleteAuctionId(0);
+        if (!isDeleting) {
+            setIsDeleting(false)
+            setConfirmDelete(false);
+            setDeleteAuctionId(0);
+        }
     };
 
     // Confirm deletion
     const handleConfirmDelete = () => {
-        navigate('/auction/lots')
-        handleCloseModal();
+        if (!isDeleting) {
+            setIsDeleting(true)
+            handleDelete(); // Call the delete handler
+        }
     };
 
     const handleSeeMoreClick = (type: string) => {
@@ -389,6 +413,8 @@ const AuctionDetailPage = () => {
                 openDialogue={confirmDelete}
                 handleCloseModal={handleCloseModal}
                 handleConfirmModal={handleConfirmDelete}
+                isDeleting={isDeleting}
+
             />
         </Box >
     );
