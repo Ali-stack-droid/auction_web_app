@@ -1,15 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import theme from '../../../../theme';
+import { getCurrentAuctions, moveLotToAuction } from '../../../Services/Methods';
+import { SuccessMessage } from '../../../../utils/ToastMessages';
+import CustomTextField from '../../../custom-components/CustomTextField';
+import { getQueryParam } from '../../../../helper/GetQueryParam';
+import useWinnerModalStyle from './WinnerModalStyles';
+
 import { Dialog, DialogContent, IconButton, Typography, Box, Button, Divider, CircularProgress } from '@mui/material';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
-import useWinnerModalStyle from './WinnerModalStyles';
-import { getCurrentAuctions, moveLotToAuction } from '../../../Services/Methods';
-import CustomTextField from '../../../custom-components/CustomTextField';
-import { SuccessMessage } from '../../../../utils/ToastMessages';
-import theme from '../../../../theme';
-import { getQueryParam } from '../../../../helper/GetQueryParam';
+import { Search as SearchIcon } from '@mui/icons-material';
+
+
 
 const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: any) => {
     const classes = useWinnerModalStyle();
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchedValue, setSearchedValue] = useState('');
 
     const [searchById, setSearchById] = useState('');
     const [searchByName, setSearchByName] = useState('');
@@ -18,6 +25,7 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
 
     const [isFetching, setIsFetching] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
+    const searchRef = useRef<HTMLInputElement>(null);
 
 
     useEffect(() => {
@@ -68,6 +76,19 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
         }
     };
 
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value);
+    };
+
+
+    const handleSearch = () => {
+        const searchValue = searchRef.current?.value || '';
+        setSearchTerm(searchValue);
+
+        console.log('Search Value:', searchValue);
+        // Process the searchValue here
+    };
+
     return (
         <Dialog open={open} onClose={() => setMoveModalOpen(false)} fullWidth maxWidth="md" >
             <Box p={2}>
@@ -90,59 +111,36 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
                 <DialogContent className={classes.modalContent}>
 
                     {/* Search Fields */}
+
                     <Box sx={{
-                        display: 'flex', justifyContent: 'space-between', alignItems: 'start', padding: '16px',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'start', padding: '16px'
                     }}>
-                        <Box display="flex" gap={5}>
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'start'
-                            }}>
-                                <Typography className={classes.label} >
-                                    Search by Auction ID
-                                </Typography>
-                                <CustomTextField
-                                    sx={{ height: "10px" }}
-                                    value={searchById}
-                                    onChange={(e) => {
-                                        setSearchById(e.target.value);
-                                        setSearchByName(''); // Clear the other field
-                                        setSelectedAuction(0)
-                                    }}
-                                    fullWidth
-                                    placeholder='# 123'
-                                />
-                            </Box>
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'start'
-                            }}>
-                                <Typography className={classes.label} >
-                                    Search by Auction Name
-                                </Typography>
-                                <CustomTextField
-                                    sx={{ height: "10px" }}
-                                    value={searchByName}
-                                    onChange={(e) => {
-                                        setSearchByName(e.target.value);
-                                        setSearchById(''); // Clear the other field
-                                        setSelectedAuction(0)
-                                    }}
-                                    fullWidth
-                                    placeholder='Cars Auction'
-                                />
-                            </Box>
+                        <Box className={classes.centerSection}>
+                            <Button
+                                onClick={() => handleMoveLot(selectedAuction)}
+                                variant="contained"
+                                color="primary"
+                                className={classes.filterButton}
+                            >
+                                {isMoving ? <CircularProgress size={25} sx={{ color: theme.palette.primary.main3 }} /> : 'Move Lot'}
+                            </Button>
+                            <CustomTextField
+                                inputRef={searchRef} // Attach the ref here
+                                value={searchedValue}
+                                placeholder="Search by anything"
+                                className={classes.searchField}
+                                onChange={(e: any) => setSearchedValue(e.target.value)}
+                                InputProps={{
+                                    endAdornment: (
+                                        <Button className={classes.searchButton}
+                                            onClick={() => handleSearch()}
+                                        >
+                                            <SearchIcon sx={{ color: theme.palette.primary.main3 }} />
+                                        </Button>
+                                    ),
+                                }}
+                            />
                         </Box>
-                        <Button
-                            onClick={() => handleMoveLot(selectedAuction)}
-                            variant="contained"
-                            color="primary"
-                            className={classes.filterButton}
-                        >
-                            {isMoving ? <CircularProgress size={25} sx={{ color: theme.palette.primary.main3 }} /> : 'Move Lot'}
-                        </Button>
                     </Box>
 
                     {!isFetching && auctionList.length === 0 ?
@@ -160,13 +158,12 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
                             <Box style={{ maxHeight: '300px', overflowY: 'auto', padding: '16px', marginTop: "20px" }}>
                                 {auctionList
                                     .filter((auction: any) => {
-                                        const aucId = getQueryParam('aucId'); // Get the auction ID from query params
-                                        if (aucId && auction.id + "" === aucId + "") return false; // Exclude auctions that don't match aucId
-                                        if (searchById) return auction.id.toString().includes(searchById);
-                                        if (searchByName) return auction.name.toLowerCase().includes(searchByName.toLowerCase());
-                                        return true;
-                                    })
-                                    .map((auction: any) => (
+                                        if (!searchTerm) return true; // Show all if no search term
+                                        const lowerCaseTerm = searchTerm.toLowerCase();
+                                        return (
+                                            auction.id.toString().includes(searchTerm) || // Match ID
+                                            auction.name.toLowerCase().includes(lowerCaseTerm));
+                                    }).map((auction: any) => (
                                         <Box
                                             key={auction.id}
                                             onClick={() => setSelectedAuction(auction.id)}

@@ -176,7 +176,29 @@ const useWinnerModalStyle = makeStyles({
         alignItems: 'center',
         height: '50vh',
         color: theme.palette.primary.main10,
-    }
+    },
+    centerSection: {
+        display: 'flex',
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'space-between',
+        marginRight: '16px',
+        // gap: "40px"
+    },
+    searchField: {
+        height: '40px',
+        width: "50%"
+    },
+    searchButton: {
+        position: 'absolute',
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: theme.palette.primary.main,
+        border: `1px solid ${theme.palette.primary.main6}`,
+        height: '100%',
+        borderRadius: '0 15px 15px 0',
+        right: 0
+    },
 });
 
 export default useWinnerModalStyle;
