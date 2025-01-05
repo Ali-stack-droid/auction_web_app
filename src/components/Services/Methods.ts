@@ -2,6 +2,9 @@ import { getRequest, putRequest, postWithFormRequest } from './index';
 
 export const SignInUser = (payload: LogInPayload) => getRequest(`/users/login?username=${payload.email}&password=${payload?.password}`)
 
+// Dashboard Methods
+export const getDashboardStatistics = () => getRequest('/users/dashboard');
+
 // Auction Methods
 export const createAuction = (payload: FormData) => postWithFormRequest('/auctions/create', payload);
 export const getCurrentAuctions = () => getRequest('/auctions/currentauctions');
@@ -30,3 +33,7 @@ export const placeBid = (payload: any) => postWithFormRequest('/lots/newbid', pa
 // Payment Tracking Methods
 export const getPendingInvoices = () => getRequest('/invoices/pending');
 export const getPaidInvoices = () => getRequest('/invoices/paid');
+
+// Location Methods
+
+export const getCurrentLocations = () => getRequest('/auctions/getcurrentlocations');

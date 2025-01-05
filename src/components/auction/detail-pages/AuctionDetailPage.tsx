@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Typography, Card, CardMedia, Grid, CircularProgress } from "@mui/material";
 import useDetailStyles from "./detail-pages-components/DetailPageStyles";
-import auctionsData from "../lotsData";
 import { getQueryParam } from "../../../helper/GetQueryParam";
 import theme from "../../../theme";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
