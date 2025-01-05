@@ -157,9 +157,8 @@ const Auction = ({ searchTerm }: any) => {
                 locations={locations}
             />
 
-            {!isFetchingData && paginationedData?.length ?
-                <Box>
-                    {/* Auction Cards */}
+            <Box sx={{ minHeight: "500px" }}>
+                {!isFetchingData && paginationedData?.length ?
                     <Fade in={fadeIn} timeout={300}>
                         <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
                             <Grid container spacing={3}>
@@ -187,25 +186,24 @@ const Auction = ({ searchTerm }: any) => {
                             </Grid>
                         </Container>
                     </Fade>
+                    : isFetchingData ?
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '70vh',
+                                width: '100%',
+                            }}
+                        >
+                            <CircularProgress size={70} disableShrink />
+                        </Box>
+                        :
+                        <NoRecordFound />
+                }
+            </Box>
 
-                    <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
-                </Box>
-                : isFetchingData ?
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '70vh',
-                            width: '100%',
-                        }}
-                    >
-                        <CircularProgress size={70} disableShrink />
-                    </Box>
-                    :
-                    <NoRecordFound />
-            }
-
+            <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
             {/* Confirmation Modal */}
             <CustomDialogue
                 title={"Confirm Deletion"}

@@ -186,53 +186,55 @@ const Lots = ({ searchTerm }: any) => {
                 setSelectedLocation={setSelectedLocation}
                 locations={[]}
             />
-            {!isFetchingData && paginationedData?.length ?
-                <Box>
-                    {/* Lot Cards */}
-                    <Fade in={fadeIn} timeout={200}>
-                        <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
-                            <Grid container spacing={3}>
-                                {paginationedData && paginationedData
-                                    .filter((auction: any) => {
-                                        if (!searchTerm) return true; // Show all if no search term
-                                        const lowerCaseTerm = searchTerm.toLowerCase();
-                                        return (
-                                            auction.id.toString().includes(searchTerm) || // Match ID
-                                            auction.name.toLowerCase().includes(lowerCaseTerm) || // Match Name
-                                            auction.details.location.toLowerCase().includes(lowerCaseTerm) // Match Location
-                                        );
-                                    }).map((lot: any) => (
-                                        <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
-                                            <AuctionCard
-                                                headerType={"lots"}
-                                                cardData={lot}
-                                                handleEdit={handleEdit}
-                                                handleDelete={() => handleDeleteLot(lot.id)}
-                                                handleMoveModal={handleMoveModal}
-                                            />
-                                        </Grid>
-                                    ))}
-                            </Grid>
-                        </Container>
-                    </Fade>
-
-                    <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
-                </Box>
-                : isFetchingData ?
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '70vh',
-                            width: '100%',
-                        }}
-                    >
-                        <CircularProgress size={70} disableShrink />
+            <Box sx={{ minHeight: "500px" }}>
+                {!isFetchingData && paginationedData?.length ?
+                    <Box>
+                        <Fade in={fadeIn} timeout={200}>
+                            <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                                <Grid container spacing={3}>
+                                    {paginationedData && paginationedData
+                                        .filter((auction: any) => {
+                                            if (!searchTerm) return true; // Show all if no search term
+                                            const lowerCaseTerm = searchTerm.toLowerCase();
+                                            return (
+                                                auction.id.toString().includes(searchTerm) || // Match ID
+                                                auction.name.toLowerCase().includes(lowerCaseTerm) || // Match Name
+                                                auction.details.location.toLowerCase().includes(lowerCaseTerm) // Match Location
+                                            );
+                                        }).map((lot: any) => (
+                                            <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
+                                                <AuctionCard
+                                                    headerType={"lots"}
+                                                    cardData={lot}
+                                                    handleEdit={handleEdit}
+                                                    handleDelete={() => handleDeleteLot(lot.id)}
+                                                    handleMoveModal={handleMoveModal}
+                                                />
+                                            </Grid>
+                                        ))}
+                                </Grid>
+                            </Container>
+                        </Fade>
                     </Box>
-                    :
-                    <NoRecordFound />
-            }
+                    : isFetchingData ?
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '70vh',
+                                width: '100%',
+                            }}
+                        >
+                            <CircularProgress size={70} disableShrink />
+                        </Box>
+                        :
+                        <NoRecordFound />
+                }
+
+            </Box>
+            <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
+
             {/* Confirmation Modal */}
             <CustomDialogue
                 type={"delete"}

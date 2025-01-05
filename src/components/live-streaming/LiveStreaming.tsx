@@ -4,61 +4,73 @@ import {
     Fade,
     Container,
     Grid,
+    CircularProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionCard from '../auction/auction-components/AuctionCard';
 import AuctionHeader from '../auction/auction-components/AuctionHeader';
-import { liveStreamData } from './liveStreamData';
 import PaginationButton from '../auction/auction-components/PaginationButton';
+import { getCurrentLiveAuctions } from '../Services/Methods';
+import NoRecordFound from '../../utils/NoRecordFound';
 
 
 const LiveStreaming = () => {
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
-    const [filteredData, setFilteredData] = useState(liveStreamData); // Filtered data state
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
     const [isFetchingData, setIsFetchingData] = useState(false);
 
+    const [filteredData, setFilteredData] = useState([]); // Filtered data state
+    const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
 
-    // useEffect(() => {
-    //     if (!isFetchingData) {
-    //         setIsFetchingData(true)
-    //         fetchLiveStreamingData();
-    //     }
-    // }, [isCurrentAuction])
 
-    // const fetchLiveStreamingData = async () => {
-    //     try {
-    //         const response = await getCurrentAuctions()
+    useEffect(() => {
+        if (!isFetchingData) {
+            setIsFetchingData(true)
+            fetchLiveStreamingData();
+        }
+    }, [isCurrentAuction])
 
-    //         // console.log("data: ", response.data);
-    //         if (response.data && response.data.length > 0) {
-    //             const updatedData = response.data.map((item: any) => ({
-    //                 id: item.Id,
-    //                 name: item.Name,
-    //                 image: item.Image,
-    //                 details: {
-    //                     location: `${item.City}, ${item.Country}`,
-    //                     dateRange: `${item.StartDate} to ${item.EndDate}`,
-    //                     lotsAvailable: item.TotalLots // Replace with actual data if available
-    //                 }
-    //             }));
-    //             setFilteredData(updatedData);
-    //             setPaginationedData(updatedData)
-    //         } else {
-    //             setFilteredData([]);
-    //             setPaginationedData([])
-    //         }
-    //         setIsFetchingData(false)
+    const fetchLiveStreamingData = async () => {
+        try {
+            const response = await getCurrentLiveAuctions()
 
-    //     } catch (error) {
-    //         console.error('Error fetching auction data:', error);
-    //         setIsFetchingData(false)
-    //     }
-    // };
+            console.log("data: ", response.data);
+            if (response.data && response.data.length > 0) {
+                const updatedData = response.data.map((item: any) => ({
+                    id: item.Id,
+                    name: item.Name,
+                    image: item.Image,
+                    description: item.Description,
+                    isLive: item.LiveStreaming,
+                    details: {
+                        location: `${item.City}, ${item.Country}`,
+                        dateRange: `${item.StartDate} to ${item.EndDate}`,
+                        lotsAvailable: item.TotalLots // Replace with actual data if available
+                    }
+                }));
+                // Duplicate the updatedData array 5 times
+                const repeatedData: any = Array.from({ length: 5 }, () => [...updatedData]).flat();
+
+                setFilteredData(repeatedData);
+                setFilteredData(repeatedData)
+
+                // setFilteredData(updatedData);
+                // setPaginationedData(updatedData)
+            } else {
+                setFilteredData([]);
+                setPaginationedData([])
+            }
+            setIsFetchingData(false)
+
+        } catch (error) {
+            console.error('Error fetching auction data:', error);
+            setIsFetchingData(false)
+        }
+    };
 
 
     // Open confirmation modal
@@ -101,7 +113,7 @@ const LiveStreaming = () => {
         setFadeIn(false); // Trigger fade-out
         setTimeout(() => {
             setFadeIn(true); // Trigger fade-in after filtering
-            setFilteredData(liveStreamData);
+            // setFilteredData(liveStreamData);
         }, 200);
     }, []);
 
@@ -116,27 +128,45 @@ const LiveStreaming = () => {
                 setSelectedLocation={setSelectedLocation}
                 locations={[]}
             />
-
-            {/* Auction Cards */}
-            <Fade in={fadeIn} timeout={200}>
-                <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
-                    <Grid container spacing={3}>
-                        {filteredData.map((auction: any) => (
-                            <Grid item xs={12} sm={6} md={4} xl={3} key={auction.id}>
-                                <AuctionCard
-                                    headerType={"live"}
-                                    cardData={auction}
-                                    handleEdit={handleEdit}
-                                    handleDelete={() => handleDeleteAuction(auction.id)}
-                                    handleMoveModal={() => { }}
-                                />
+            <Box sx={{ minHeight: "70vh" }}>
+                {!isFetchingData && paginationedData?.length ?
+                    <Fade in={fadeIn} timeout={200}>
+                        <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                            <Grid container spacing={3}>
+                                {paginationedData &&
+                                    paginationedData.map((auction: any) => (
+                                        <Grid item xs={12} sm={6} md={4} xl={3} key={auction.id}>
+                                            <AuctionCard
+                                                headerType={"live"}
+                                                cardData={auction}
+                                                handleEdit={handleEdit}
+                                                handleDelete={() => handleDeleteAuction(auction.id)}
+                                                handleMoveModal={() => { }}
+                                            />
+                                        </Grid>
+                                    ))}
                             </Grid>
-                        ))}
-                    </Grid>
-                </Container>
-            </Fade>
+                        </Container>
+                    </Fade>
 
-            {/* <PaginationButton filteredData={filteredData} setFilteredData={setFilteredData} /> */}
+                    : isFetchingData ?
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '70vh',
+                                width: '100%',
+                            }}
+                        >
+                            <CircularProgress size={70} disableShrink />
+                        </Box>
+                        :
+                        <NoRecordFound />
+                }
+            </Box>
+
+            <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
 
             {/* Confirmation Modal */}
             <CustomDialogue

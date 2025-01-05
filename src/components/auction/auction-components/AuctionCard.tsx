@@ -29,7 +29,7 @@ const AuctionCard = ({
 
     const handleCardMediaClick = () => {
         if (headerType === "live") {
-            navigate(`/live-streaming/details?liveId=${cardData.id}`);
+            navigate(`/live-streaming/details?aucId=${cardData.id}`);
         } else if (headerType === "lots") {
             navigate(`/auction/lots/details?lotId=${cardData.id}`);
         } else {
@@ -38,14 +38,14 @@ const AuctionCard = ({
     };
 
     const handleJoin = (id: number) => {
-        navigate(`/live-streaming/details?liveId=${id}`);
+        navigate(`/live-streaming/details?aucId=${id}`);
     }
 
     const handleNextLot = (id: number) => {
         console.log("Join live stream: ", id)
     }
 
-    const isLiveDetail = headerType === "live" && getQueryParam('liveId');
+    const isLiveDetail = headerType === "live" && getQueryParam('aucId');
 
     const handleViewCatalog = (id: number) => {
         // dispatch(setSelectedAuction(id));
@@ -112,7 +112,7 @@ const AuctionCard = ({
                             size="small"
                             className={headerType === "live" ? classes.unSoldButtonLive : `${classes.soldButton} ${!cardData.sold ? classes.unSoldButton : ''}`}
                         >
-                            {headerType === "live" ? "Live Streaming Auction" : cardData.sold ? "Sold" : "Unsold"}
+                            {headerType === "live" && cardData?.isLive ? "Live Streaming Auction" : cardData.sold ? "Sold" : "Unsold"}
                         </Button>
                 }
 
@@ -124,7 +124,7 @@ const AuctionCard = ({
                     <Tooltip title={cardData.name}>
                         {isLiveDetail ?
                             <Typography className={classes.title} gutterBottom>
-                                {cardData.fullName.length > 100 ? `${cardData.fullName.substring(0, 33)}...` : cardData.fullName}
+                                {cardData.name.length > 100 ? `${cardData.name.substring(0, 33)}...` : cardData.name}
                             </Typography>
                             :
                             <Typography className={classes.title} gutterBottom>
