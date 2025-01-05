@@ -18,13 +18,12 @@ import theme from '../../../theme';
 import CustomDialogue from '../../custom-components/CustomDialogue';
 import { useNavigate } from 'react-router-dom';
 
-const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigation }: any) => {
+const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isSubmittedByLot, setIsSubmittedByLot, setNavigation }: any) => {
     const classes = useCreateAuctionStyles();
 
     const [openConfirmModal, setOpenConfirmModal] = useState(false);
     const [openSaveModal, setOpenSaveModal] = useState(false);
     const [isCancelOpen, setIsCancelOpen] = useState(false);
-
 
     const [formData, setFormData]: any = useState({})
     const [submissionAttempt, setSubmissionAttempt]: any = useState({})
@@ -54,7 +53,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigat
             termsAndConditions: Yup.string().max(500).required('Terms and Conditions are required'),
         }),
         onSubmit: (values) => {
-            if (!isSubmitted) {
+            if (!isSubmitted && !isSubmittedByLot) {
                 setFormData(values)
                 setOpenConfirmModal(true);
             }
@@ -87,7 +86,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigat
             } else {
                 setLocationData(formik.values);
                 setNavigation('lots')
-                setIsSubmitted(true);
+                setIsSubmittedByLot(true);
             }
         });
     }
@@ -307,7 +306,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, setNavigat
                             variant="outlined"
                             onClick={() => handleAddLot()}
                         >
-                            Add a Lot
+                            {isSubmittedByLot ? <CircularProgress size={25} sx={{ color: theme.palette.primary.main }} /> : 'Add a Lot'}
+
                         </Button>
                         <Button
                             className={classes.cancelButton}

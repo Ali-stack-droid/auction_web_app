@@ -17,6 +17,7 @@ const CreatePage = ({ type }: any) => {
 
     // utils
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmittedByLot, setIsSubmittedByLot] = useState(false);
     const [isContinue, setIsContinue] = useState(false);
     const [file, setFile]: any = useState(null);
     const [navigation, setNavigation] = useState("");
@@ -42,7 +43,7 @@ const CreatePage = ({ type }: any) => {
     }, [isContinue]);
 
     useEffect(() => {
-        if (isSubmitted && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
+        if ((isSubmitted || isSubmittedByLot) && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
             const updatedData = {
                 Name: auctionData.auctionName,
                 Type: auctionData.auctionType,
@@ -71,7 +72,7 @@ const CreatePage = ({ type }: any) => {
             };
             createNewAuction(updatedData)
         }
-    }, [isSubmitted])
+    }, [isSubmitted, isSubmittedByLot])
 
 
     const createNewAuction = async (payload: any) => {
@@ -108,6 +109,8 @@ const CreatePage = ({ type }: any) => {
                     setLocationData={setLocationData}
                     isSubmitted={isSubmitted}
                     setIsSubmitted={setIsSubmitted}
+                    isSubmittedByLot={isSubmittedByLot}
+                    setIsSubmittedByLot={setIsSubmittedByLot}
                     setNavigation={setNavigation}
                 />
             ) : (
