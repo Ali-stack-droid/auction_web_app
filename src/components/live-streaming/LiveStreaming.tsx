@@ -114,6 +114,7 @@ const LiveStreaming = () => {
                 onToggle={() => setIsCurrentAuction((prev) => !prev)}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
+                locations={[]}
             />
 
             {/* Auction Cards */}

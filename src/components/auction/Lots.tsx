@@ -184,6 +184,7 @@ const Lots = ({ searchTerm }: any) => {
                 onToggle={handleToggle}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
+                locations={[]}
             />
             {!isFetchingData && paginationedData?.length ?
                 <Box>

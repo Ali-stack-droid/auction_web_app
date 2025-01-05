@@ -10,7 +10,8 @@ const AuctionHeader = ({
     isCurrent,
     onToggle,
     selectedLocation,
-    setSelectedLocation
+    setSelectedLocation,
+    locations
 }: any) => {
     const classes = useAuctionHeaderStyles();
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ const AuctionHeader = ({
                             Filter
                         </Button>
                         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                            {['New York, USA', 'United Kingdom, London', 'Pakistan, Islamabad'].map((location) => (
+                            {locations.map((location: any) => (
                                 <MenuItem
                                     key={location}
                                     onClick={() => handleFilterChange(location)}

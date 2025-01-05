@@ -86,9 +86,6 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
     const handleSearch = () => {
         const searchValue = searchRef.current?.value || '';
         setSearchTerm(searchValue);
-
-        console.log('Search Value:', searchValue);
-        // Process the searchValue here
     };
 
     return (

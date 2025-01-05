@@ -67,7 +67,6 @@ const PaymentTracking = () => {
         }
     }
     const handleViewButton = (ind: number) => {
-        console.log(invoices[ind]);
         setSelectedInvoice(invoices[ind]);
         setViewDetails(true)
     }

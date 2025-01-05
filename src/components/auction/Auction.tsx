@@ -11,36 +11,45 @@ import AuctionCard from './auction-components/AuctionCard';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import PaginationButton from './auction-components/PaginationButton';
-import { deleteAuction, getCurrentAuctions, getPastAuctions } from '../Services/Methods';
+import { deleteAuction, getCurrentAuctions, getCurrentAuctionsByLocation, getCurrentLocations, getPastAuctions, getPastAuctionsByLocation, getPastLocations } from '../Services/Methods';
 import NoRecordFound from '../../utils/NoRecordFound';
 import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 
 const Auction = ({ searchTerm }: any) => {
-    const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
-    const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
+    const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
+    const [locations, setLocations]: any = useState([]); // Filtered data state
 
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true)
             fetchAuctionData();
+
         }
-    }, [isCurrentAuction])
+    }, [isCurrentAuction, selectedLocation])
 
     const fetchAuctionData = async () => {
         try {
-            const response = isCurrentAuction
-                ? await getCurrentAuctions()
-                : await getPastAuctions();
+            // Critical request:
+            let response;
+            if (isCurrentAuction) {
+                response = selectedLocation
+                    ? await getCurrentAuctionsByLocation(selectedLocation)
+                    : await getCurrentAuctions()
+            } else {
+                response = selectedLocation
+                    ? await getPastAuctionsByLocation(selectedLocation)
+                    : await getPastAuctions();
+            }
 
-            // console.log("data: ", response.data);
             if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
@@ -58,10 +67,22 @@ const Auction = ({ searchTerm }: any) => {
                 setFilteredData([]);
                 setPaginationedData([])
             }
-            setIsFetchingData(false)
+
+            const locationResponse = isCurrentAuction
+                ? await getCurrentLocations()
+                : await getPastLocations();
+
+            if (locationResponse.data && locationResponse.data.length > 0) {
+                const updatedLocation = locationResponse.data;
+                setLocations(updatedLocation);
+            } else {
+                setLocations([]);
+            }
+
 
         } catch (error) {
             console.error('Error fetching auction data:', error);
+        } finally {
             setIsFetchingData(false)
         }
     };
@@ -117,15 +138,12 @@ const Auction = ({ searchTerm }: any) => {
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
-        // const newFilteredData = auctionData.filter((auction: any) => {
-        //     const matchesLocation = selectedLocation ? auction.location === selectedLocation : true;
-        //     return matchesLocation;
-        // });
+
         setFadeIn(false); // Trigger fade-out
         setTimeout(() => {
             setFadeIn(true); // Trigger fade-in after filtering
         }, 300);
-    }, [paginationedData, selectedLocation]);
+    }, [paginationedData]);
 
 
     return (
@@ -136,6 +154,7 @@ const Auction = ({ searchTerm }: any) => {
                 onToggle={() => setIsCurrentAuction((prev) => !prev)}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
+                locations={locations}
             />
 
             {!isFetchingData && paginationedData?.length ?
