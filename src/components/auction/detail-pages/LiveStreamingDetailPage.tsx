@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Button, Box, List, ListItem, Card, Avatar, Pagination, CircularProgress, Container, Grid } from '@mui/material';
+import { Typography, Button, Box, List, ListItem, Card, Avatar, Pagination, CircularProgress, Container, Grid, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import AuctionCard from '../auction-components/AuctionCard';
@@ -9,7 +9,7 @@ import PaginationButton from '../auction-components/PaginationButton';
 import useLiveStreamDetailStyles from './detail-pages-components/LiveStreamingDetailStyles';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { getAuctionDetailById, deleteAuction } from '../../Services/Methods';
-
+import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
 
 const LiveStreamingDetailPage = () => {
     const classes = useLiveStreamDetailStyles();
@@ -191,8 +191,11 @@ const LiveStreamingDetailPage = () => {
 
     return (
         <Box p={2}>
-            <Box>
-                <Typography className={classes.title} pb={1}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
+                <IconButton onClick={() => navigate('/live')}>
+                    <KeyboardReturnRoundedIcon />
+                </IconButton>
+                <Typography className={classes.title}>
                     Live Streaming Auction
                 </Typography>
             </Box>

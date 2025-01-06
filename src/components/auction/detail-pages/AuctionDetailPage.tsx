@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Typography, Card, CardMedia, Grid, CircularProgress, Container } from "@mui/material";
+import { Box, Button, Typography, Card, CardMedia, Grid, CircularProgress, Container, IconButton } from "@mui/material";
 import useDetailStyles from "./detail-pages-components/DetailPageStyles";
 import { getQueryParam } from "../../../helper/GetQueryParam";
 import theme from "../../../theme";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomDialogue from "../../custom-components/CustomDialogue";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AuctionCard from "../auction-components/AuctionCard";
@@ -13,9 +13,13 @@ import BiddingTable from "./detail-pages-components/BiddingTable";
 import { deleteAuction, getAuctionDetailById } from "../../Services/Methods";
 import PaginationButton from "../auction-components/PaginationButton";
 import { ErrorMessage, SuccessMessage } from "../../../utils/ToastMessages";
+import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
+
 
 const AuctionDetailPage = () => {
     const classes = useDetailStyles();
+
+    const locationURL = useLocation();
 
     const [auctionDetails, setAuctionDetails]: any = useState([])
     const [paginationedData, setPaginationedData]: any = useState([])
@@ -210,8 +214,11 @@ const AuctionDetailPage = () => {
 
     return (
         <Box p={2}>
-            <Box>
-                <Typography className={classes.title} pb={2}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
+                <IconButton onClick={() => navigate('/auction')}>
+                    <KeyboardReturnRoundedIcon />
+                </IconButton>
+                <Typography className={classes.title}>
                     Auction Details
                 </Typography>
             </Box>

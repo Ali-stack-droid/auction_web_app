@@ -9,23 +9,26 @@ import {
     Avatar,
     Tooltip,
     CircularProgress,
+    IconButton,
 } from "@mui/material";
 import useDetailStyles from "./detail-pages-components/DetailPageStyles";
 import { getQueryParam } from "../../../helper/GetQueryParam";
 import theme from "../../../theme";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomDialogue from "../../custom-components/CustomDialogue";
 import WinnerModal from "./detail-pages-components/WinnerModal";
 import { deleteLot, getBiddersByLotId, getLotDetails, getLotDetailsById, getWinnerByLotId } from "../../Services/Methods";
 import { ErrorMessage, SuccessMessage } from "../../../utils/ToastMessages";
 import BiddingTable from "./detail-pages-components/BiddingTable";
 import BiddersModal from "./detail-pages-components/BiddersModal";
+import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
 
 const LotDetailPage = () => {
     const classes = useDetailStyles();
     const navigate = useNavigate();
+    const locationURL = useLocation();
 
     const [lotDetails, setLotDetails]: any = useState({})
     const [bidders, setBidders]: any = useState([])
@@ -61,6 +64,7 @@ const LotDetailPage = () => {
             if (lot) {
                 const formattedLotDetails = {
                     id: lot.Id,
+                    auctionId: lot.AuctionId,
                     lotNumber: lot.LotNo,
                     name: lot.ShortDescription,
                     description: lot.LongDescription,
@@ -143,7 +147,8 @@ const LotDetailPage = () => {
             };
             setWinner(formattedWinner);
         } catch (err) {
-            console.error(err);
+            setWinner({});
+            // console.error(err);
         }
     };
 
@@ -201,8 +206,11 @@ const LotDetailPage = () => {
 
     return (
         <Box p={2}>
-            <Box>
-                <Typography className={classes.title} pb={2}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
+                <IconButton onClick={() => navigate(`/auction/lots?aucId=${lotDetails.auctionId}`)}>
+                    <KeyboardReturnRoundedIcon />
+                </IconButton>
+                <Typography className={classes.title}>
                     Lot Details
                 </Typography>
             </Box>

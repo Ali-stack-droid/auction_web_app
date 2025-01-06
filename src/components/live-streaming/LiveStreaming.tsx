@@ -40,8 +40,6 @@ const LiveStreaming = () => {
     const fetchLiveStreamingData = async () => {
         try {
             const response = await getCurrentLiveAuctions()
-
-            console.log("data: ", response.data);
             if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
@@ -55,14 +53,9 @@ const LiveStreaming = () => {
                         lotsAvailable: item.TotalLots // Replace with actual data if available
                     }
                 }));
-                // Duplicate the updatedData array 5 times
-                const repeatedData: any = Array.from({ length: 5 }, () => [...updatedData]).flat();
 
-                setFilteredData(repeatedData);
-                setFilteredData(repeatedData)
-
-                // setFilteredData(updatedData);
-                // setPaginationedData(updatedData)
+                setFilteredData(updatedData);
+                setPaginationedData(updatedData)
             } else {
                 setFilteredData([]);
                 setPaginationedData([])

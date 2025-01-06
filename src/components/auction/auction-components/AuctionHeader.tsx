@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, Menu, MenuItem } from '@mui/material';
+import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, Menu, MenuItem, IconButton } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import useAuctionHeaderStyles from './AuctionHeaderStyles';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
+import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
 
 const AuctionHeader = ({
     headerType = 'auction', // Default to 'auction'
@@ -15,6 +16,8 @@ const AuctionHeader = ({
 }: any) => {
     const classes = useAuctionHeaderStyles();
     const navigate = useNavigate();
+    const locationURL = useLocation()
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
@@ -36,12 +39,19 @@ const AuctionHeader = ({
 
     return (
         <Box className={classes.root}>
-            <Typography className={classes.title}>
-                {headerType === 'live' ? "Live Streaming Auctions"
-                    : isCurrent
-                        ? `Current ${headerType === 'lots' ? 'Lots' : 'Auctions'}`
-                        : `Past ${headerType === 'lots' ? 'Lots' : 'Auctions'}`}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {locationURL.pathname === '/auction/lots' &&
+                    <IconButton onClick={() => navigate('/auction')}>
+                        <KeyboardReturnRoundedIcon />
+                    </IconButton>
+                }
+                <Typography className={classes.title}>
+                    {headerType === 'live' ? "Live Streaming Auctions"
+                        : isCurrent
+                            ? `Current ${headerType === 'lots' ? 'Lots' : 'Auctions'}`
+                            : `Past ${headerType === 'lots' ? 'Lots' : 'Auctions'}`}
+                </Typography>
+            </Box>
             <Box className={classes.buttonContainer}>
 
                 {isCurrent && (
