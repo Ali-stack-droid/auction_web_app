@@ -4,9 +4,10 @@ import theme from '../../../theme';
 export const useAuctionCardStyles = makeStyles({
     card: {
         maxWidth: "345px",
-        minHeight: "370px",
+        // minHeight: "370px",
         padding: "15px",
         borderRadius: "15px",
+        // border: '1px solid red'
     },
     liveCard: {
         maxWidth: "100%",
@@ -77,7 +78,7 @@ export const useAuctionCardStyles = makeStyles({
         display: 'flex',
         alignItems: 'start',
         gap: 15,
-        marginTop: "20px"
+        // marginTop: "20px"
     },
     actionButton: {
         textTransform: "none",
