@@ -14,3 +14,34 @@ export const formatDate = (dateString: any) => {
     const year = date.getFullYear();
     return `${month}/${day}/${year} 12:00:00 AM`;
 };
+
+export const formatDateInput = (dateStr: any) => {
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+export const formatTimeInput = (timeStr: string) => {
+
+    // Extract hours, minutes, and period (AM/PM) using regex
+    const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) {
+        console.error("Invalid time format");
+        return '';
+    }
+
+    let [_, hours, minutes, period] = match;
+    let formattedHours = parseInt(hours, 10);
+
+    // Convert hours to 24-hour format
+    if (period.toUpperCase() === "PM" && formattedHours !== 12) {
+        formattedHours += 12;
+    } else if (period.toUpperCase() === "AM" && formattedHours === 12) {
+        formattedHours = 0;
+    }
+
+    const formattedTime = `${String(formattedHours).padStart(2, '0')}:${minutes}`;
+    return formattedTime;
+};

@@ -18,6 +18,7 @@ import CustomDialogue from '../../custom-components/CustomDialogue';
 import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import { getAuctionDetailById } from '../../Services/Methods';
+import { formatDateInput, formatTimeInput } from '../../../utils/Format';
 
 const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) => {
     const classes = useCreateAuctionStyles();
@@ -74,37 +75,6 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
     });
 
 
-    const formatDate = (dateStr: any) => {
-        const date = new Date(dateStr);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
-    const formatTime = (timeStr: string) => {
-
-        // Extract hours, minutes, and period (AM/PM) using regex
-        const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-        if (!match) {
-            console.error("Invalid time format");
-            return '';
-        }
-
-        let [_, hours, minutes, period] = match;
-        let formattedHours = parseInt(hours, 10);
-
-        // Convert hours to 24-hour format
-        if (period.toUpperCase() === "PM" && formattedHours !== 12) {
-            formattedHours += 12;
-        } else if (period.toUpperCase() === "AM" && formattedHours === 12) {
-            formattedHours = 0;
-        }
-
-        const formattedTime = `${String(formattedHours).padStart(2, '0')}:${minutes}`;
-        return formattedTime;
-    };
-
     useEffect(() => {
         const auctionId = getQueryParam('aucId');
         if (auctionId) {
@@ -121,16 +91,16 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                             auctionImage: auction.Image || '',
                             description: auction.Description || '',
                             liveStreaming: auction.LiveStreaming || false,
-                            startDate: auction.StartDate ? formatDate(auction.StartDate) : '',
-                            startTime: auction.StartTime ? formatTime(auction.StartTime) : '',
-                            endDate: auction.EndDate ? formatDate(auction.EndDate) : '',
-                            endTime: auction.StartTime ? formatTime(auction.EndTime) : '',
-                            checkoutDate: auction.CheckoutDate ? formatDate(auction.CheckoutDate) : '',
-                            checkoutTime: auction.CheckoutTime ? formatTime(auction.CheckoutTime) : '',
-                            auctionPreviewStartDate: auction.PrevStartDate ? formatDate(auction.PrevStartDate) : '',
-                            auctionPreviewStartTime: auction.PrevStartTime ? formatTime(auction.PrevStartTime) : '',
-                            auctionPreviewEndDate: auction.PrevEndDate ? formatDate(auction.PrevEndDate) : '',
-                            auctionPreviewEndTime: auction.PrevEndTime ? formatTime(auction.PrevEndTime) : '',
+                            startDate: auction.StartDate ? formatDateInput(auction.StartDate) : '',
+                            startTime: auction.StartTime ? formatTimeInput(auction.StartTime) : '',
+                            endDate: auction.EndDate ? formatDateInput(auction.EndDate) : '',
+                            endTime: auction.StartTime ? formatTimeInput(auction.EndTime) : '',
+                            checkoutDate: auction.CheckoutDate ? formatDateInput(auction.CheckoutDate) : '',
+                            checkoutTime: auction.CheckoutTime ? formatTimeInput(auction.CheckoutTime) : '',
+                            auctionPreviewStartDate: auction.PrevStartDate ? formatDateInput(auction.PrevStartDate) : '',
+                            auctionPreviewStartTime: auction.PrevStartTime ? formatTimeInput(auction.PrevStartTime) : '',
+                            auctionPreviewEndDate: auction.PrevEndDate ? formatDateInput(auction.PrevEndDate) : '',
+                            auctionPreviewEndTime: auction.PrevEndTime ? formatTimeInput(auction.PrevEndTime) : '',
                         };
 
                         // Populate formik fields

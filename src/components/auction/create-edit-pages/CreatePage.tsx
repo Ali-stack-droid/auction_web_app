@@ -4,7 +4,7 @@ import LocationForm from './LocationForm';
 import AddLot from './AddLot';
 import { Box } from '@mui/material';
 import { formatDate, formatTime } from '../../../utils/Format';
-import { createAuction } from '../../Services/Methods';
+import { createAuction, editAuction } from '../../Services/Methods';
 import { toast, ToastContainer } from 'react-toastify';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,7 @@ const CreatePage = ({ type }: any) => {
 
     // utils
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isUpdated, setIsUpdated] = useState(false);
     const [isSubmittedByLot, setIsSubmittedByLot] = useState(false);
     const [isContinue, setIsContinue] = useState(false);
     const [file, setFile]: any = useState(null);
@@ -64,6 +65,38 @@ const CreatePage = ({ type }: any) => {
         }
     }, [isSubmitted, isSubmittedByLot])
 
+    useEffect(() => {
+        if (isUpdated && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
+            const updatedData = {
+                Name: auctionData.auctionName,
+                Type: auctionData.auctionType,
+                Image: "https://example.com/image.jpg",
+                Description: auctionData.description,
+                Notes: "Test Notes",
+                LiveStreaming: auctionData.liveStreaming,
+                StartDate: formatDate(auctionData.startDate),
+                EndDate: formatDate(auctionData.endDate),
+                StartTime: formatTime(auctionData.startTime),
+                EndTime: formatTime(auctionData.endTime),
+                PrevStartDate: formatDate(auctionData.auctionPreviewStartDate),
+                PrevEndDate: formatDate(auctionData.auctionPreviewEndDate),
+                PrevStartTime: formatTime(auctionData.auctionPreviewStartTime),
+                PrevEndTime: formatTime(auctionData.auctionPreviewEndTime),
+                Country: locationData.country,
+                State: locationData.state,
+                ZipCode: locationData.zipCode,
+                City: locationData.city,
+                Address: locationData.address,
+                ShippingMethod: true,
+                PaymentTerms: locationData.paymentTerms,
+                TermsConditions: locationData.termsAndConditions,
+                CreatedAt: formatDate(auctionData.auctionPreviewStartDate),
+                UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
+            };
+            updateAuction(updatedData)
+        }
+    }, [isUpdated])
+
 
     const createNewAuction = async (payload: any) => {
         const formData = new FormData();
@@ -74,6 +107,32 @@ const CreatePage = ({ type }: any) => {
         }
 
         createAuction(formData).then((response) => {
+
+            const newAuctionId = response.data.Id;
+            setIsSubmitted(false)
+
+            if (navigation == "auction") {
+                navigate('/auction')
+            } else {
+                navigate(`/auction/lots/create?aucId=${newAuctionId}`)
+            }
+
+            SuccessMessage('Auction created successfully!');
+
+        }).catch(error => {
+            ErrorMessage('Error creating auction!');
+            setIsSubmitted(false)
+        });
+    }
+
+    const updateAuction = async (payload: any) => {
+        const formData = new FormData();
+        formData.append("payload", JSON.stringify(payload));
+        if (file) {
+            formData.append("file", file);
+            setFile(null)
+        }
+        editAuction(formData).then((response) => {
 
             const newAuctionId = response.data.Id;
             setIsSubmitted(false)
@@ -109,6 +168,8 @@ const CreatePage = ({ type }: any) => {
                     setFile={setFile}
                     setIsContinue={setIsContinue}
                     setAuctionData={setAuctionData}
+                    isUpdated={isUpdated}
+                    setIsUpdated={setIsUpdated}
                 />
             )}
             {/* <ToastContainer /> */}
