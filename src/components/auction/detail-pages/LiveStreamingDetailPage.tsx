@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Button, Box, List, ListItem, Card, Avatar, Pagination, CircularProgress, Container, Grid, IconButton } from '@mui/material';
+import { Typography, Box, List, ListItem, Avatar, CircularProgress, Container, Grid, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import AuctionCard from '../auction-components/AuctionCard';
-import { liveStreamData } from '../../live-streaming/liveStreamData';
-import auctionsData from "../lotsData";
 import PaginationButton from '../auction-components/PaginationButton';
 import useLiveStreamDetailStyles from './detail-pages-components/LiveStreamingDetailStyles';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
