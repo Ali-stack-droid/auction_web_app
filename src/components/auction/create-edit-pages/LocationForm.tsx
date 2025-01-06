@@ -18,8 +18,8 @@ import theme from '../../../theme';
 import CustomDialogue from '../../custom-components/CustomDialogue';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
-import { formatDateInput, formatTimeInput } from '../../../utils/Format';
-import { getAuctionDetailById } from '../../Services/Methods';
+import { getAddressByCity, getAllStates, getAuctionDetailById, getCityByState } from '../../Services/Methods';
+import { ErrorMessage } from '../../../utils/ToastMessages';
 
 const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated, setIsUpdated, isSubmittedByLot, setIsSubmittedByLot, setNavigation }: any) => {
     const classes = useCreateAuctionStyles();
@@ -34,17 +34,28 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
     const [formData, setFormData]: any = useState({})
     const [submissionAttempt, setSubmissionAttempt]: any = useState({})
 
+    // location states
+    const [states, setStates]: any = useState([])
+    const [cities, setCities]: any = useState([])
+    const [addresses, setAddresses]: any = useState([])
+
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [cityOpen, setCityOpen] = useState(false);
+    const [addressOpen, setAddressOpen] = useState(false);
+
+
+
     const navigate = useNavigate();
     const location = useLocation()
 
     const formik = useFormik({
         initialValues: {
-            address: '',
-            city: 'z',
+            address: 'placeholder',
+            city: 'placeholder',
             zipCode: '',
-            state: 'z',
-            country: 'z',
-            buyerPremium: 'z',
+            state: 'placeholder',
+            country: 'placeholder',
+            buyerPremium: 'placeholder',
             paymentTerms: '',
             shippingMethod: 'Shipping',
             termsAndConditions: '',
@@ -81,12 +92,12 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
                     if (auction) {
                         const formattedAuctionDetails = {
-                            address: auction.Address || '',
-                            city: auction.City || 'z',
+                            address: auction.Address || 'placeholder',
+                            city: auction.City || 'placeholder',
                             zipCode: auction.ZipCode || '',
-                            state: auction.State || 'z',
-                            country: auction.Country || 'z',
-                            buyerPremium: auction.BuyerPremium || 'z',
+                            state: auction.State || 'placeholder',
+                            country: auction.Country || 'placeholder',
+                            buyerPremium: auction.BuyerPremium || 'placeholder',
                             paymentTerms: auction.PaymentTerms || '',
                             shippingMethod: auction.ShippingMethod || 'Shipping',
                             termsAndConditions: auction.TermsAndConditions || '',
@@ -118,6 +129,91 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
             }
         }
     }, [submissionAttempt]);
+
+    // Handle states list
+    useEffect(() => {
+        // setIsFetchingData(true);
+        const fetchStates = async () => {
+            try {
+                const response = await getAllStates();
+                const states = response.data;
+
+                if (states.length > 0) {
+                    const updatedStates = states.map((item: any, index: number) => ({
+                        id: index + 1,
+                        state: item.State,
+                        cities: item.Cities,
+                    }));
+                    setStates(updatedStates)
+                } else {
+                    setStates([])
+                }
+            } catch (error) {
+                console.error('Error fetching auction data:', error);
+            } finally {
+                // setIsFetchingData(false);
+            }
+        };
+
+        fetchStates();
+    }, []);
+
+
+    // Handle cities list
+    useEffect(() => {
+        // setIsFetchingData(true);
+        const fetchCitiesByState = async (selectedState: any) => {
+            try {
+                const response = await getCityByState(selectedState);
+                const cities = response.data;
+
+                if (cities.length > 0) {
+                    const updatedCities = cities.map((item: any) => ({
+                        city: item.City,
+                        locations: item.Locations,
+                    }));
+
+                    setCities(updatedCities)
+                } else {
+                    setCities([])
+                }
+            } catch (error) {
+                console.error('Error fetching cities: ', error);
+            } finally {
+                // setIsFetchingData(false);
+            }
+        };
+
+        if (formik.values.state !== "placeholder" && formik.values.state !== "") {
+            fetchCitiesByState(formik.values.state);
+        }
+
+    }, [formik.values.state]);
+
+    // // Handle address list
+    // useEffect(() => {
+    //     // setIsFetchingData(true);
+    //     const fetchAddressByCity = async () => {
+    //         try {
+    //             const response = await getAddressByCity(cities[0].city);
+    //             const addressess = response.data;
+
+    //             if (addressess.length > 0) {
+    //                 setAddresses(addressess)
+    //             } else {
+    //                 setAddresses([])
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching auction data:', error);
+    //         } finally {
+    //             // setIsFetchingData(false);
+    //         }
+    //     };
+
+    //     if (cities[0].city) {
+    //         fetchAddressByCity();
+    //     }
+    // }, []);
 
     const handleConfirmSubmission = () => {
         setLocationData(formData)
@@ -161,81 +257,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                     <Box sx={{ padding: 3, marginBottom: 3, border: '1px solid #E2E8F0', borderRadius: "20px" }}>
                         <Box display="flex" gap={2} mb={2} justifyContent={'space-between'}>
                             <Box flex={1}>
-                                <Typography className={classes.label}>Address</Typography>
-                                <CustomTextField
-                                    fullWidth
-                                    name="address"
-                                    placeholder="Enter Address"
-                                    value={formik.values.address}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.address && Boolean(formik.errors.address)}
-                                    helperText={formik.touched.address && formik.errors.address}
-                                />
-                            </Box>
-                            <Box flex={1}>
-                                <Typography className={classes.label}>City</Typography>
-                                <CustomTextField
-                                    select
-                                    fullWidth
-                                    name="city"
-                                    placeholder='select city'
-                                    value={formik.values.city}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.city && Boolean(formik.errors.city)}
-                                    helperText={formik.touched.city && formik.errors.city}
-                                    sx={{
-                                        '& .MuiSelect-icon': {
-                                            color: '#A0AEC0', // Set the color of the arrow icon
-                                        },
-                                    }}
-                                >
-                                    <MenuItem value="z" sx={{ display: 'none' }}>
-                                        <Typography sx={{ opacity: 0.5 }}>Select City</Typography>
-                                    </MenuItem>
-                                    <MenuItem value="City1">City1</MenuItem>
-                                    <MenuItem value="City2">City2</MenuItem>
-                                </CustomTextField>
-                            </Box>
-                            <Box flex={1}>
-                                <Typography className={classes.label}>Zip Code</Typography>
-                                <CustomTextField
-                                    fullWidth
-                                    name="zipCode"
-                                    placeholder="Enter Zip Code"
-                                    value={formik.values.zipCode}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.zipCode && Boolean(formik.errors.zipCode)}
-                                    helperText={formik.touched.zipCode && formik.errors.zipCode}
-                                />
-                            </Box>
-                        </Box>
-
-                        {/* Second Row */}
-                        <Box display="flex" gap={2} mb={2} justifyContent={'space-between'} maxWidth={"66.1%"}>
-                            <Box flex={1}>
-                                <Typography className={classes.label}>State</Typography>
-                                <CustomTextField
-                                    select
-                                    fullWidth
-                                    name="state"
-                                    value={formik.values.state}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.state && Boolean(formik.errors.state)}
-                                    helperText={formik.touched.state && formik.errors.state}
-                                    sx={{
-                                        '& .MuiSelect-icon': {
-                                            color: '#A0AEC0', // Set the color of the arrow icon
-                                        },
-                                    }}
-                                >
-                                    <MenuItem value="z" sx={{ display: 'none' }}>
-                                        <Typography sx={{ opacity: 0.5 }}>Select State</Typography>
-                                    </MenuItem>
-                                    <MenuItem value="State1">State1</MenuItem>
-                                    <MenuItem value="State2">State2</MenuItem>
-                                </CustomTextField>
-                            </Box>
-                            <Box flex={1}>
                                 <Typography className={classes.label}>Country</Typography>
                                 <CustomTextField
                                     select
@@ -251,12 +272,170 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                         },
                                     }}
                                 >
-                                    <MenuItem value="z" sx={{ display: 'none' }}>
+                                    <MenuItem value="placeholder" sx={{ display: 'none' }}>
                                         <Typography sx={{ opacity: 0.5 }}>Select Country</Typography>
                                     </MenuItem>
-                                    <MenuItem value="Country1">Country1</MenuItem>
-                                    <MenuItem value="Country2">Country2</MenuItem>
+                                    <MenuItem value="Country1">United States (US)</MenuItem>
                                 </CustomTextField>
+                            </Box>
+                            <Box flex={1}>
+                                <Typography className={classes.label}>State</Typography>
+                                <CustomTextField
+                                    select
+                                    fullWidth
+                                    name="state"
+                                    value={formik.values.state}
+                                    onChange={(e) => {
+                                        formik.handleChange(e);
+                                        setDropdownOpen(false); // Close the dropdown after selection
+                                    }}
+                                    error={formik.touched.state && Boolean(formik.errors.state)}
+                                    helperText={formik.touched.state && formik.errors.state}
+                                    SelectProps={{
+                                        open: dropdownOpen,
+                                        onOpen: () => {
+                                            if (formik.values.country === 'placeholder') {
+                                                ErrorMessage('Please select a Country first!')
+                                                setDropdownOpen(false); // Prevent opening
+                                            } else {
+                                                setDropdownOpen(true); // Allow opening
+                                            }
+                                        },
+                                        onClose: () => setDropdownOpen(false), // Close dropdown when user clicks away
+                                    }}
+                                    sx={{
+                                        '& .MuiSelect-icon': {
+                                            color: '#A0AEC0', // Set the color of the arrow icon
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="placeholder" sx={{ display: 'none' }}>
+                                        <Typography sx={{ opacity: 0.5 }}>Select State</Typography>
+                                    </MenuItem>
+                                    {!states.length &&
+                                        <MenuItem value="placeholder" sx={{ pointerEvents: 'none' }}>
+                                            <Typography sx={{ opacity: 0.5 }}> No State Found</Typography>
+                                        </MenuItem>
+                                    }
+                                    {states.map((item: any) => (
+                                        <MenuItem key={item.id} value={item.state}>
+                                            {item.state}
+                                        </MenuItem>
+                                    ))}
+                                </CustomTextField>
+                            </Box>
+                            <Box flex={1}>
+                                <Typography className={classes.label}>City</Typography>
+                                <CustomTextField
+                                    select
+                                    fullWidth
+                                    name="city"
+                                    value={formik.values.city}
+                                    // onChange={formik.handleChange}
+                                    onChange={(e) => {
+                                        formik.handleChange(e);
+                                        setCityOpen(false); // Close the dropdown after selection
+                                    }}
+                                    error={formik.touched.city && Boolean(formik.errors.city)}
+                                    helperText={formik.touched.city && formik.errors.city}
+                                    SelectProps={{
+                                        open: cityOpen,
+                                        onOpen: () => {
+                                            if (formik.values.state === 'placeholder') {
+                                                ErrorMessage('Please select a State first!')
+                                                setCityOpen(false); // Prevent opening
+                                            } else {
+                                                setCityOpen(true); // Allow opening
+                                            }
+                                        },
+                                        onClose: () => setCityOpen(false), // Close dropdown when user clicks away
+                                    }}
+                                    sx={{
+                                        '& .MuiSelect-icon': {
+                                            color: '#A0AEC0', // Set the color of the arrow icon
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="placeholder" sx={{ display: 'none' }}>
+                                        <Typography sx={{ opacity: 0.5 }}>Select City</Typography>
+                                    </MenuItem>
+                                    {!cities.length &&
+                                        <MenuItem value="placeholder" sx={{ pointerEvents: 'none' }}>
+                                            <Typography sx={{ opacity: 0.5 }}> No City Found</Typography>
+                                        </MenuItem>
+                                    }
+                                    {cities.map((item: any, index: number) => (
+                                        <MenuItem value={"city-" + index} >
+                                            {item.city}
+                                        </MenuItem>
+                                    ))}
+                                </CustomTextField>
+                            </Box>
+
+                        </Box>
+
+                        {/* Second Row */}
+                        <Box display="flex" gap={2} mb={2} justifyContent={'space-between'} maxWidth={"66.1%"}>
+                            <Box flex={1}>
+                                <Typography className={classes.label}>Address</Typography>
+                                <CustomTextField
+                                    select
+                                    fullWidth
+                                    name="address"
+                                    value={formik.values.address}
+                                    onChange={(e) => {
+                                        formik.handleChange(e);
+                                        setAddressOpen(false); // Close the dropdown after selection
+                                    }}
+                                    error={formik.touched.address && Boolean(formik.errors.address)}
+                                    helperText={formik.touched.address && formik.errors.address}
+                                    SelectProps={{
+                                        open: addressOpen,
+                                        onOpen: () => {
+                                            if (formik.values.city === 'placeholder') {
+                                                ErrorMessage('Please select a City first!')
+                                                setAddressOpen(false); // Prevent opening
+                                            } else {
+                                                setAddressOpen(true); // Allow opening
+                                            }
+                                        },
+                                        onClose: () => setAddressOpen(false), // Close dropdown when user clicks away
+                                    }}
+                                    sx={{
+                                        '& .MuiSelect-icon': {
+                                            color: '#A0AEC0', // Set the color of the arrow icon
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="placeholder" sx={{ display: 'none', pointerEvents: 'none' }}>
+                                        <Typography sx={{ opacity: 0.5 }}>{addresses.length ? "Select Address" : "No Address Found"}</Typography>
+                                    </MenuItem>
+                                    {!addresses.length &&
+                                        <MenuItem value="placeholder" sx={{ pointerEvents: 'none' }}>
+                                            <Typography sx={{ opacity: 0.5 }}> No Address Found</Typography>
+                                        </MenuItem>
+                                    }
+                                    {addresses.map((address: any, index: number) => (
+                                        <MenuItem value={"address-" + index}>
+                                            {address}
+                                        </MenuItem>
+                                    ))}
+                                </CustomTextField>
+
+
+
+                            </Box>
+                            <Box flex={1}>
+                                <Typography className={classes.label}>Zip Code</Typography>
+                                <CustomTextField
+                                    fullWidth
+                                    name="zipCode"
+                                    placeholder="Enter Zip Code"
+                                    value={formik.values.zipCode}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.zipCode && Boolean(formik.errors.zipCode)}
+                                    helperText={formik.touched.zipCode && formik.errors.zipCode}
+                                />
                             </Box>
                         </Box>
 
@@ -278,7 +457,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                         },
                                     }}
                                 >
-                                    <MenuItem value="z" sx={{ display: 'none' }}>
+                                    <MenuItem value="placeholder" sx={{ display: 'none' }}>
                                         <Typography sx={{ opacity: 0.5 }}>Select Percentage</Typography>
                                     </MenuItem>
                                     {[0, 5, 10, 15, 20, 25].map((value) => (

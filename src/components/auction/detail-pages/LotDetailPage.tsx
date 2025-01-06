@@ -44,6 +44,55 @@ const LotDetailPage = () => {
 
     const [mainImage, setMainImage] = useState("");
 
+    const fakeBidders = [
+        {
+            id: "raw-1",
+            clientId: "client-1",
+            name: "John Doe",
+            bidAmount: 100,
+            email: "john.doe@example.com",
+            address: "123 Main St, Springfield",
+            company: "ABC Corp",
+        },
+        {
+            id: "raw-2",
+            clientId: "client-2",
+            name: "Jane Smith",
+            bidAmount: 200,
+            email: "jane.smith@example.com",
+            address: "456 Elm St, Metropolis",
+            company: "XYZ Ltd",
+        },
+        {
+            id: "raw-3",
+            clientId: "client-3",
+            name: "Robert Brown",
+            bidAmount: 300,
+            email: "robert.brown@example.com",
+            address: "789 Oak St, Gotham",
+            company: "PQR Inc",
+        },
+        {
+            id: "raw-4",
+            clientId: "client-4",
+            name: "Emily White",
+            bidAmount: 400,
+            email: "emily.white@example.com",
+            address: "321 Pine St, Star City",
+            company: "LMN LLC",
+        },
+        {
+            id: "raw-5",
+            clientId: "client-5",
+            name: "Michael Green",
+            bidAmount: 500,
+            email: "michael.green@example.com",
+            address: "654 Maple St, Central City",
+            company: "DEF Group",
+        },
+    ];
+
+
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true);
@@ -127,7 +176,8 @@ const LotDetailPage = () => {
                 }));
                 setBidders(formattedBidders)
             } else {
-                setBidders([]);
+                setBidders(fakeBidders)
+                // setBidders([]);
             }
         } catch (error) {
             console.error('Error fetching auction data:', error);
@@ -145,9 +195,29 @@ const LotDetailPage = () => {
                 location: winnerDetails.Clients?.Address || "N/A",
                 image: winnerDetails.Lots?.Image || `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
             };
-            setWinner(formattedWinner);
+
+            if (winner.name) {
+
+                setWinner(formattedWinner);
+            } else {
+                setWinner({
+                    name: "Ali Cheema",
+                    email: "alicheema@gmail.com",
+                    phone: "+9231675485", // Replace with actual phone if available
+                    location: "Street 4, Lost Angeles, California",
+                    image: `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
+                });
+
+            }
         } catch (err) {
-            setWinner({});
+            setWinner({
+                name: "Ali Cheema",
+                email: "alicheema@gmail.com",
+                phone: "+9231675485", // Replace with actual phone if available
+                location: "Street 4, Lost Angeles, California",
+                image: `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
+            });
+            // setWinner({});
             // console.error(err);
         }
     };
