@@ -1,0 +1,255 @@
+import { useState, useEffect } from 'react';
+import {
+    Box,
+    Fade,
+    Container,
+    Grid,
+    CircularProgress,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import CustomDialogue from '../custom-components/CustomDialogue';
+import { deleteLot, getInventoryLots } from '../Services/Methods';
+
+import NoRecordFound from '../../utils/NoRecordFound';
+import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
+import AuctionCard from '../auction/auction-components/AuctionCard';
+import AuctionHeader from '../auction/auction-components/AuctionHeader';
+import PaginationButton from '../auction/auction-components/PaginationButton';
+
+
+const Lots = ({ searchTerm }: any) => {
+    const [isCurrentLot, setIsCurrentLot] = useState(true); // Toggle between Current and Past Lots
+    const [filterLots, setFilterLots] = useState('all');
+    const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
+
+    const [fadeIn, setFadeIn] = useState(false); // Fade control state
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [deleteLotId, setDeleteLotId] = useState(0);
+    const [isFetchingData, setIsFetchingData] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
+    const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
+    // const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
+
+    useEffect(() => {
+        if (!isFetchingData) {
+            setIsFetchingData(true)
+            fetchLotsData();
+        }
+    }, [filterLots])
+
+    const fetchLotsData = async () => {
+        try {
+            const response = await getInventoryLots();
+
+            if (response.data && response.data.length > 0) {
+                const updatedData = response.data.map((item: any) => ({
+                    id: item.Id,
+                    lotNumber: item.LotNo,
+                    name: item.ShortDescription,
+                    description: item.LongDescription,
+                    countDown: "N/A",
+                    location: "N/A",
+                    image: item.Image,
+                    type: "current",
+                    highestBid: item.BidStartAmount,
+                    sold: item.IsSold,
+                    isPast: item.IsPast,
+                    details: {
+                        description: item.LongDescription,
+                        date: `${item.StartDate} to ${item.EndDate}`,
+                        time: `${item.StartTime} to ${item.EndTime}`,
+                        orderNumber: item.OrderNo,
+                        lot: item.LotNo,
+                        category: item.Category,
+                        subCategory: item.SubCategory,
+                        winner: {
+                            email: "N/A", // Replace with actual data if available
+                            phone: "N/A", // Replace with actual data if available
+                            location: "N/A", // Replace with actual data if available
+                        },
+                    },
+                }));
+
+                // Filter data based on isCurrentLot condition
+                let latestData = [];
+
+                if (filterLots !== 'all') {
+                    latestData = updatedData.filter((lot: any) => {
+                        if (filterLots === 'current') {
+                            return !lot.isPast; // Keep only current lots
+                        } else {
+                            return lot.isPast; // Keep only past lots
+                        }
+                    });
+                    setFilteredData(latestData);
+                    setPaginationedData(latestData);
+                } else {
+                    setFilteredData(updatedData);
+                    setPaginationedData(updatedData);
+                }
+
+            } else {
+                setFilteredData([]);
+                setPaginationedData([]);
+            }
+            setIsFetchingData(false);
+        } catch (error) {
+            console.error('Error fetching auction data:', error);
+            setIsFetchingData(false);
+        }
+    };
+
+
+    // Filtered Data based on `type` and `location`
+    useEffect(() => {
+        // const newFilteredData = lotsData.filter((lot) => {
+        //     const matchesLocation = selectedLocation ? lot.location === selectedLocation : true;
+        //     return matchesLocation;
+        // });
+        setFadeIn(false); // Trigger fade-out
+        setTimeout(() => {
+            setFadeIn(true); // Trigger fade-in after filtering
+            // setFilteredData(filteredData);
+            // setPaginationedData(filteredData)
+        }, 200);
+    }, [isCurrentLot, selectedLocation, paginationedData]);
+
+    // Open confirmation modal
+    const handleDeleteLot = (id: number) => {
+        setDeleteLotId(id);
+        setConfirmDelete(true);
+    };
+
+    // Close modal
+    const handleCloseModal = () => {
+        if (!isDeleting) {
+            setIsDeleting(false)
+            setConfirmDelete(false);
+            setDeleteLotId(0);
+        }
+    };
+
+    // Confirm deletion
+    const handleConfirmDelete = () => {
+        if (!isDeleting) {
+            setIsDeleting(true)
+            handleDelete(deleteLotId); // Call the delete handler
+        }
+    };
+
+
+    const navigate = useNavigate();
+
+    // Handle Edit
+    const handleEdit = (id: number) => {
+        navigate(`edit/${id}`); // Navigate to the edit route with lot ID
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            // Call the delete API
+            const response: any = await deleteLot(id);
+            if (response.status === 200) {
+                SuccessMessage('Lot deleted successfully!')
+                // Update state with filtered data if API call is successful
+                const updatedData = filteredData.filter((lot: any) => lot.id !== id); // Remove lot by ID
+                setFilteredData(updatedData); // Update state with filtered data
+            } else {
+                ErrorMessage('Error deleting lot!')
+            }
+        } catch (error) {
+            console.error('Error deleting auction:', error);
+        } finally {
+            handleCloseModal();
+        }
+    };
+
+    const handleMoveModal = (movedLotId: number) => {
+        if (movedLotId > 0) {
+            const afterMovedData = paginationedData.filter((item: any) => item.id !== movedLotId)
+            setFilteredData(afterMovedData);
+        }
+    }
+
+    const handleToggle = (e: any) => {
+        setFilterLots(e.target.value)
+    }
+
+    return (
+        <Box sx={{ padding: 2 }}>
+            <AuctionHeader
+                headerType={"inventory"}
+                isCurrent={isCurrentLot}
+                onToggle={handleToggle}
+                selectedLocation={selectedLocation}
+                setSelectedLocation={setSelectedLocation}
+                locations={[]}
+                filterLots={filterLots}
+            />
+            <Box sx={{ minHeight: "500px" }}>
+                {!isFetchingData && paginationedData?.length ?
+                    <Box>
+                        <Fade in={fadeIn} timeout={200}>
+                            <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+                                <Grid container spacing={3}>
+                                    {paginationedData && paginationedData
+                                        .filter((auction: any) => {
+                                            if (!searchTerm) return true; // Show all if no search term
+                                            const lowerCaseTerm = searchTerm.toLowerCase();
+                                            return (
+                                                auction.id.toString().includes(searchTerm) || // Match ID
+                                                auction.name.toLowerCase().includes(lowerCaseTerm) || // Match Name
+                                                auction.details.location.toLowerCase().includes(lowerCaseTerm) // Match Location
+                                            );
+                                        }).map((lot: any) => (
+                                            <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
+                                                <AuctionCard
+                                                    headerType={"lots"}
+                                                    cardData={lot}
+                                                    handleEdit={handleEdit}
+                                                    handleDelete={() => handleDeleteLot(lot.id)}
+                                                    handleMoveModal={handleMoveModal}
+                                                />
+                                            </Grid>
+                                        ))}
+                                </Grid>
+                            </Container>
+                        </Fade>
+                    </Box>
+                    : isFetchingData ?
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '70vh',
+                                width: '100%',
+                            }}
+                        >
+                            <CircularProgress size={70} disableShrink />
+                        </Box>
+                        :
+                        <NoRecordFound />
+                }
+
+            </Box>
+            <PaginationButton filteredData={filteredData} setPaginationedData={setPaginationedData} />
+
+            {/* Confirmation Modal */}
+            <CustomDialogue
+                type={"delete"}
+                title={"Confirm Deletion"}
+                message={"Are you sure you want to delete this auction? This action cannot be undone."}
+                openDialogue={confirmDelete}
+                handleCloseModal={handleCloseModal}
+                handleConfirmModal={handleConfirmDelete}
+                isDeleting={isDeleting}
+
+            />
+        </Box>
+    );
+};
+
+export default Lots;
