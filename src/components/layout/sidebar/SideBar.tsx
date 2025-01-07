@@ -8,6 +8,7 @@ import OndemandVideoRoundedIcon from '@mui/icons-material/OndemandVideoRounded';
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import CustomNavLink from '../../custom-components/CustomNavLink';
+import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 
 const SideBar = () => {
     const classes = useSideBarStyles();
@@ -19,6 +20,7 @@ const SideBar = () => {
         { label: 'Auction', path: '/auction', icon: <FestivalRoundedIcon /> },
         { label: 'Live Streaming', path: '/live', icon: <OndemandVideoRoundedIcon /> },
         { label: 'Payment Tracking', path: '/payment', icon: <PriceChangeRoundedIcon /> },
+        { label: 'Inventory', path: '/inventory', icon: <Inventory2RoundedIcon /> },
         { label: 'Logout', path: '/logout', icon: <LogoutRoundedIcon /> },
     ];
 

@@ -46,3 +46,6 @@ export const getAddressByCity = (city: any) => getRequest(`/auctions/getaddressb
 
 // Live Streaming Methods
 export const getCurrentLiveAuctions = () => getRequest('/auctions/currentliveauctions');
+
+// Inventory methods /lots/lotinventory
+export const getInventoryLots = () => getRequest('/lots/lotinventory');

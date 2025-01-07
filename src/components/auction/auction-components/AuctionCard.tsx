@@ -1,5 +1,5 @@
 import { Card, CardMedia, Typography, Button, Tooltip, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuctionCardStyles } from './AuctionStyles';
 import LotDetails from './card-details-components/LotDetails';
 import AuctionDetails from './card-details-components/AuctionDetails';
@@ -18,6 +18,7 @@ const AuctionCard = ({
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [select, setSelect] = useState(false)
     const [moveLotId, setMoveLotId] = useState(0)
@@ -31,6 +32,9 @@ const AuctionCard = ({
         if (headerType === "live") {
             navigate(`/live-streaming/details?aucId=${cardData.id}`);
         } else if (headerType === "lots") {
+            if (location.pathname === "/inventory") {
+                localStorage.setItem('inventory', 'true');
+            }
             navigate(`/auction/lots/details?lotId=${cardData.id}`);
         } else {
             navigate(`/auction/details?aucId=${cardData.id}`);
@@ -105,7 +109,7 @@ const AuctionCard = ({
                                 </Button>
                             </Box>
                         </Box>
-                        : (headerType === "lots" || headerType === "live") &&
+                        : ((headerType === "lots" && cardData.isPast) || headerType === "live" || headerType === "inventory") &&
 
                         <Button
                             variant="contained"

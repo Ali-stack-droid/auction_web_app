@@ -42,6 +42,14 @@ const useAuctionHeaderStyles = makeStyles((theme: any) => ({
         minWidth: '260px',
         maxWidth: '260px',
     },
+    filterDropDown: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '40px',
+        minWidth: '260px',
+        maxWidth: '260px',
+    },
     toggleButton: {
         textTransform: 'none',
         transition: 'background 0.25s ease-in-out, color 0.3s ease-in-out, font-size 0.25s ease-in-out',

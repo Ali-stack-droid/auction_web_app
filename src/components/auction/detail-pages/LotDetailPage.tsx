@@ -274,10 +274,22 @@ const LotDetailPage = () => {
         setMainImage(selectedImage);
     };
 
+    const handleBackClick = () => {
+        const isFromInventory = localStorage.getItem('inventory');
+        alert(isFromInventory)
+
+        if (isFromInventory) {
+            localStorage.removeItem('inventory');
+            navigate(`/inventory`)
+        } else {
+            navigate(`/auction/lots?aucId=${lotDetails.auctionId}`)
+        }
+    }
+
     return (
         <Box p={2}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
-                <IconButton onClick={() => navigate(`/auction/lots?aucId=${lotDetails.auctionId}`)}>
+                <IconButton onClick={handleBackClick}>
                     <KeyboardReturnRoundedIcon />
                 </IconButton>
                 <Typography className={classes.title}>

@@ -11,6 +11,8 @@ import CreatePage from '../components/auction/create-edit-pages/CreatePage';
 import LiveStreamingDetailPage from '../components/auction/detail-pages/LiveStreamingDetailPage';
 import { ToastContainer } from 'react-toastify';
 import AddLot from '../components/auction/create-edit-pages/AddLot';
+import Inventory from '../components/inventory/Inventory';
+
 // import AuctionRoutes from '../components/auction/routes/AuctionRoutes';
 
 // Page Components
@@ -127,7 +129,6 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <LiveStreamingDetailPage />
-                                    {/* <h1>Sorry! This page is under development.</h1> */}
                                 </ProtectedRoute>
                             }
                         />
@@ -144,6 +145,14 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                                     <PaymentTracking />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/inventory"
+                            element={
+                                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                    <Inventory />
                                 </ProtectedRoute>
                             }
                         />

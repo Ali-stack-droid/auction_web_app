@@ -13,9 +13,6 @@ import AuctionCard from './auction-components/AuctionCard';
 import PaginationButton from './auction-components/PaginationButton';
 import { deleteLot, getLotsByAuctionId } from '../Services/Methods';
 
-// redux imports
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 import NoRecordFound from '../../utils/NoRecordFound';
 import { getQueryParam } from '../../helper/GetQueryParam';
 import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';

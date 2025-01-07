@@ -5,6 +5,7 @@ import useAuctionHeaderStyles from './AuctionHeaderStyles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
+import CustomTextField from '../../custom-components/CustomTextField';
 
 const AuctionHeader = ({
     headerType = 'auction', // Default to 'auction'
@@ -12,7 +13,8 @@ const AuctionHeader = ({
     onToggle,
     selectedLocation,
     setSelectedLocation,
-    locations
+    locations,
+    filterLots
 }: any) => {
     const classes = useAuctionHeaderStyles();
     const navigate = useNavigate();
@@ -41,20 +43,21 @@ const AuctionHeader = ({
         <Box className={classes.root}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {locationURL.pathname === '/auction/lots' &&
-                    <IconButton onClick={() => navigate('/auction')}>
+                    <IconButton onClick={() => headerType === "inventory" ? navigate('/inventory') : navigate('/auction')}>
                         <KeyboardReturnRoundedIcon />
                     </IconButton>
                 }
                 <Typography className={classes.title}>
                     {headerType === 'live' ? "Live Streaming Auctions"
-                        : isCurrent
-                            ? `Current ${headerType === 'lots' ? 'Lots' : 'Auctions'}`
-                            : `Past ${headerType === 'lots' ? 'Lots' : 'Auctions'}`}
+                        : headerType === 'inventory' ? "Inventory"
+                            : isCurrent
+                                ? `Current ${headerType === 'lots' ? 'Lots' : 'Auctions'}`
+                                : `Past ${headerType === 'lots' ? 'Lots' : 'Auctions'}`}
                 </Typography>
             </Box>
             <Box className={classes.buttonContainer}>
 
-                {isCurrent && (
+                {isCurrent && headerType !== "inventory" && (
                     <Button variant={headerType === "live" ? "contained" : "outlined"}
                         className={headerType === "live" ? classes.addAuctionButtonLive : classes.addAuctionButton} onClick={handleAddClick}
                     >
@@ -62,29 +65,51 @@ const AuctionHeader = ({
                     </Button>
                 )}
 
-                {headerType !== "live" &&
+                {headerType !== "live" && headerType === "inventory" &&
                     <React.Fragment>
-                        <Box className={classes.toggleContainer}>
-                            <ToggleButtonGroup
-                                value={isCurrent ? 'current' : 'past'}
-                                exclusive
-                                onChange={onToggle}
-                                sx={{ maxHeight: '30px' }}
-                            >
-                                <ToggleButton
-                                    value="current"
-                                    className={`${classes.toggleButton} ${isCurrent ? 'current' : 'past'}`}
+                        {headerType !== "inventory" ?
+                            <Box className={classes.toggleContainer}>
+                                <ToggleButtonGroup
+                                    value={isCurrent ? 'current' : 'past'}
+                                    exclusive
+                                    onChange={onToggle}
+                                    sx={{ maxHeight: '30px' }}
                                 >
-                                    Current {headerType === 'lots' ? 'Lots' : 'Auctions'}
-                                </ToggleButton>
-                                <ToggleButton
-                                    value="past"
-                                    className={`${classes.toggleButton} ${!isCurrent ? 'current' : 'past'}`}
+                                    <ToggleButton
+                                        value="current"
+                                        className={`${classes.toggleButton} ${isCurrent ? 'current' : 'past'}`}
+                                    >
+                                        Current {headerType === 'lots' ? 'Lots' : 'Auctions'}
+                                    </ToggleButton>
+                                    <ToggleButton
+                                        value="past"
+                                        className={`${classes.toggleButton} ${!isCurrent ? 'current' : 'past'}`}
+                                    >
+                                        Past {headerType === 'lots' ? 'Lots' : 'Auctions'}
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            </Box>
+                            :
+                            <Box flex={1}>
+                                <CustomTextField
+                                    select
+                                    className={classes.filterDropDown}
+                                    fullWidth
+                                    value={filterLots}
+                                    onChange={onToggle}
+                                    sx={{
+                                        '& .MuiSelect-icon': {
+                                            color: '#A0AEC0', // Set the color of the arrow icon
+                                        },
+                                    }}
                                 >
-                                    Past {headerType === 'lots' ? 'Lots' : 'Auctions'}
-                                </ToggleButton>
-                            </ToggleButtonGroup>
-                        </Box>
+                                    <MenuItem value="all">All Lots</MenuItem>
+                                    <MenuItem value="current">Current Lots</MenuItem>
+                                    <MenuItem value="past">Past Lots</MenuItem>
+                                </CustomTextField>
+                            </Box>
+                        }
+
                         <Button
                             variant="contained"
                             className={classes.filterButton}

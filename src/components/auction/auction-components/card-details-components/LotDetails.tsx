@@ -47,9 +47,8 @@ const LotDetails = ({ lotData }: any) => {
 
     return (
         <Box className={classes.lotContainer}>
-            <Typography fontSize={12} width={"70%"} height={'50px'}>
-                {lotData.description.length > 43 ? `${lotData.description.substring(0, 100)}...` : lotData.description}
-
+            <Typography fontSize={12} width={"70%"} height={'30px'}>
+                {lotData.description.length > 45 ? `${lotData.description.substring(0, 60)}...` : lotData.description}
             </Typography>
             <Box display={'flex'} justifyContent={"space-between"} alignItems={"center"} flexWrap={'wrap'} >
                 <Box display={"flex"} flex={0.8} whiteSpace={'nowrap'}>

@@ -188,7 +188,7 @@ export const useAuctionDetailStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: "space-between",
-        gap: 30,
+        gap: 20,
     },
     row: {
         display: 'flex',
