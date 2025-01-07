@@ -32,10 +32,10 @@ const LotDetails = ({ lotData }: any) => {
                 const seconds = Math.floor((remainingTime / 1000) % 60);
 
                 setCountdown(
-                    `${days}d"${hours}h ${minutes}m ${seconds}s`
+                    `${days}d ${hours}h ${minutes}m ${seconds}s`
                 );
             } else {
-                setCountdown('0d 0h 0m 0s'); // Auction ended
+                setCountdown(''); // Auction ended
             }
         };
 
@@ -55,12 +55,20 @@ const LotDetails = ({ lotData }: any) => {
                     <Typography color={theme.palette.primary.main9} fontWeight={500}>Lot Number</Typography>
                     <Typography ml={0.5} color={theme.palette.primary.main2}>: #&nbsp;{lotData.lotNumber}</Typography>
                 </Box>
-                <Box display={"flex"} flex={1} >
-                    <Typography color={theme.palette.primary.main9} fontWeight={500} whiteSpace={"nowrap"}>Count Down</Typography>
-                    <Typography ml={0.5} letterSpacing={3} color={theme.palette.primary.main2} whiteSpace={'nowrap'}>
-                        :&nbsp;{countdown}
-                    </Typography>
-                </Box>
+                {countdown !== "" ?
+                    <Box display={"flex"} flex={1} >
+                        <Typography color={theme.palette.primary.main9} fontWeight={500} whiteSpace={"nowrap"}>Count Down</Typography>
+                        <Typography ml={0.5} letterSpacing={3} color={theme.palette.primary.main2} whiteSpace={'nowrap'}>
+                            :&nbsp;{countdown}
+                        </Typography>
+                    </Box>
+                    :
+                    <Box display={"flex"} flex={0.7} >
+                        <Typography color={theme.palette.secondary.main} whiteSpace={'nowrap'}>
+                            Lot Ended
+                        </Typography>
+                    </Box>
+                }
             </Box>
         </Box>
     );

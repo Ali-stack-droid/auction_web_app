@@ -276,8 +276,6 @@ const LotDetailPage = () => {
 
     const handleBackClick = () => {
         const isFromInventory = localStorage.getItem('inventory');
-        alert(isFromInventory)
-
         if (isFromInventory) {
             localStorage.removeItem('inventory');
             navigate(`/inventory`)
