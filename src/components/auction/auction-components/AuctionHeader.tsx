@@ -65,7 +65,7 @@ const AuctionHeader = ({
                     </Button>
                 )}
 
-                {headerType !== "live" && headerType === "inventory" &&
+                {headerType !== "live" &&
                     <React.Fragment>
                         {headerType !== "inventory" ?
                             <Box className={classes.toggleContainer}>
