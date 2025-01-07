@@ -143,10 +143,10 @@ const CreatePage = ({ type }: any) => {
                 navigate(`/auction/lots/create?aucId=${newAuctionId}`)
             }
 
-            SuccessMessage('Auction created successfully!');
+            SuccessMessage('Auction updated successfully!');
 
         }).catch(error => {
-            ErrorMessage('Error creating auction!');
+            ErrorMessage('Error updating auction!');
             setIsSubmitted(false)
         });
     }
