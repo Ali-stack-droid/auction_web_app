@@ -240,7 +240,7 @@ const LotDetailPage = () => {
 
     // Handle Edit
     const handleEdit = (id: string) => {
-        navigate(`/auction/lots/edit/${id}`); // Navigate to the edit route with auction ID
+        navigate(`/auction/lots/edit?lotId=${id}`); // Navigate to the edit route with auction ID
     };
 
     // Open confirmation modal

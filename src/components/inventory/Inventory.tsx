@@ -144,7 +144,7 @@ const Lots = ({ searchTerm }: any) => {
 
     // Handle Edit
     const handleEdit = (id: number) => {
-        navigate(`edit/${id}`); // Navigate to the edit route with lot ID
+        // navigate(`edit/${id}`); // Navigate to the edit route with lot ID
     };
 
     const handleDelete = async (id: number) => {

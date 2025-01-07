@@ -154,7 +154,7 @@ const LiveStreamingDetailPage = () => {
     };
 
     const handleEditLots = (id: string) => {
-        navigate(`/auction/lots/edit/${id}`);
+        navigate(`/auction/lots/edit?lotId=${id}`);
     }
 
     // Open confirmation modal

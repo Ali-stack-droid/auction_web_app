@@ -115,7 +115,7 @@ const LiveStreaming = () => {
 
     // Handle Edit
     const handleEdit = (id: string) => {
-        navigate(`/auction/edit/${id}`); // Navigate to the edit route with auction ID
+        navigate(`/auction/edit?aucId=${id}`);
     };
 
     // Filtered Data based on `type` and `location`

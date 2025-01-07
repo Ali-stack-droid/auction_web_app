@@ -168,12 +168,12 @@ const AuctionDetailPage = () => {
 
     // Handle Edit
     const handleEdit = (id: string) => {
-        navigate(`/auction/edit/${id}`);
+        navigate(`/auction/edit?aucId=${id}`);
     };
 
-    const handleEditLots = (id: string) => {
-        navigate(`/auction/lots/edit/${id}`);
-    }
+    const handleEditLots = (id: number) => {
+        navigate(`/auction/lots/edit?lotId=${id}`);
+    };
 
     // Open confirmation modal
     const handleDeleteAuction = (id: number) => {
