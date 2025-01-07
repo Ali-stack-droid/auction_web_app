@@ -106,6 +106,10 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                         // Populate formik fields
                         formik.setValues(formattedAuctionDetails);
 
+                        // POPULATE IMAGE::
+
+                        // console.log(typeof auction.Image, ' image: ', auction.Image)
+
                         // Handle populate image 
                         // if (typeof auction.Image === 'string' && auction.Image.startsWith('http')) {
                         //     setFile(auction.Image);
