@@ -36,7 +36,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
         initialValues: {
             auctionId: '',
             auctionName: '',
-            auctionType: 'Online Auction',
+            auctionType: 'placeholder',
             auctionImage: '',
             description: '',
             liveStreaming: false,
@@ -87,7 +87,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                         const formattedAuctionDetails = {
                             auctionId: auction.Id || '',
                             auctionName: auction.Name || '',
-                            auctionType: auction.Type,
+                            auctionType: auction.Type === "Online Auction" || auction.Type === "On site Auction" ? auction.type : "placeholder",
                             auctionImage: auction.Image || '',
                             description: auction.Description || '',
                             liveStreaming: auction.LiveStreaming || false,
@@ -202,6 +202,9 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                                         },
                                     }}
                                 >
+                                    <MenuItem value="placeholder" sx={{ display: 'none' }}>
+                                        <Typography sx={{ opacity: 0.5 }}>Select Auction Type</Typography>
+                                    </MenuItem>
                                     <MenuItem value="Online Auction">Online Auction</MenuItem>
                                     <MenuItem value="On site Auction">On site Auction</MenuItem>
                                 </CustomTextField>

@@ -15,12 +15,22 @@ export const formatDate = (dateString: any) => {
     return `${month}/${day}/${year} 12:00:00 AM`;
 };
 
-export const formatDateInput = (dateStr: any) => {
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+export const formatDateInput = (dateStr: string) => {
+    // Split the input string into day, month, and year
+    const [day, month, year] = dateStr.split('-');
+
+    // Construct a valid date string in the format 'YYYY-MM-DD'
+    const validDateStr = `${year}-${month}-${day}`;
+
+    // Create a new Date object
+    const date = new Date(validDateStr);
+
+    // Format the date back to 'YYYY-MM-DD'
+    const formattedYear = date.getFullYear();
+    const formattedMonth = String(date.getMonth() + 1).padStart(2, '0');
+    const formattedDay = String(date.getDate()).padStart(2, '0');
+
+    return `${formattedYear}-${formattedMonth}-${formattedDay}`;
 };
 
 export const formatTimeInput = (timeStr: string) => {
