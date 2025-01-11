@@ -65,14 +65,17 @@ const Carousel = () => {
         <Box
             className={classes.container}
             style={{
-                height: isMobile ? '300px' : '70%',
+                height: isMobile ? '300px' : '90%',
             }}
         >
-            <Fade in={fadeIn} timeout={1000}>
-                <Typography variant="h4" className={classes.text}>
-                    {items[currentIndex].text}
-                </Typography>
-            </Fade>
+            {/* Logo */}
+            <Box className={classes.logo}>
+                <img
+                    src={`${process.env.PUBLIC_URL}/assets/svgs/logo.svg`}
+                    alt="Parker's Auction"
+                    style={{ width: '30%', }}
+                />
+            </Box>
             <Fade in={fadeIn} timeout={1000}>
                 <Box className={classes.imageWrapper}>
                     <Box

@@ -12,6 +12,13 @@ export const useCarousalStyles = makeStyles({
     text: {
         marginBottom: 16,
     },
+    logo: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: "100%",
+        padding: "20px 0",
+    },
     imageWrapper: {
         textAlign: 'center',
         width: '100%',
