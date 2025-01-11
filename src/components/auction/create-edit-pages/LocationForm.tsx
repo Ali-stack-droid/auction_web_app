@@ -96,7 +96,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                             city: auction.City || 'placeholder',
                             zipCode: auction.ZipCode || '',
                             state: auction.State || 'placeholder',
-                            country: auction.Country || 'placeholder',
+                            country: auction.Country === "United States (US)" ? auction.Country : 'placeholder',
                             buyerPremium: auction.BuyerPremium || 'placeholder',
                             paymentTerms: auction.PaymentTerms || '',
                             shippingMethod: auction.ShippingMethod || 'Shipping',
@@ -105,6 +105,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
                         // Populate formik fields
                         formik.setValues(formattedAuctionDetails);
+
                     } else {
                         console.error('Auction data not found');
                     }
