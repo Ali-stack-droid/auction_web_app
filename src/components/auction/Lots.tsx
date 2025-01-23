@@ -11,7 +11,7 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import AuctionCard from './auction-components/AuctionCard';
 import PaginationButton from './auction-components/PaginationButton';
-import { deleteLot, getLotsByAuctionId } from '../Services/Methods';
+import { deleteLot, getFeaturedLots, getLotsByAuctionId } from '../Services/Methods';
 
 import NoRecordFound from '../../utils/NoRecordFound';
 import { getQueryParam } from '../../helper/GetQueryParam';
@@ -27,6 +27,7 @@ const Lots = ({ searchTerm }: any) => {
     const [deleteLotId, setDeleteLotId] = useState(0);
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [featuredCount, setFeaturedCount] = useState(0);
 
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
@@ -39,6 +40,23 @@ const Lots = ({ searchTerm }: any) => {
         }
     }, [isCurrentLot])
 
+    useEffect(() => {
+
+        const fetchFeaturedLots = async () => {
+
+            try {
+                const response = await getFeaturedLots();
+                if (response.data) {
+                    setFeaturedCount(response.data.length)
+                }
+            } catch (error) {
+                console.error('Error in fetching geatured count:', error);
+                setFeaturedCount(0)
+            }
+        };
+        fetchFeaturedLots()
+    }, [])
+
     const fetchLotsData = async () => {
         try {
             const selectedAuction = getQueryParam('aucId');
@@ -50,6 +68,7 @@ const Lots = ({ searchTerm }: any) => {
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
                     description: item.LongDescription,
+                    isFeatured: item.IsFeatured,
                     countDown: "N/A",
                     location: "N/A",
                     image: item.Image,

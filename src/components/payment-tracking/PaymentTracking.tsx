@@ -112,7 +112,7 @@ const PaymentTracking = () => {
                                 <TableCell sx={{ color: "white" }}>Deadline</TableCell>
                                 <TableCell sx={{ color: "white" }}>Details</TableCell>
                                 <TableCell sx={{ color: "white" }}>Status</TableCell>
-                                {paidInvoice && <TableCell sx={{ color: "white" }}>Action</TableCell>}
+                                {!paidInvoice && <TableCell sx={{ color: "white" }}>Action</TableCell>}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -127,7 +127,7 @@ const PaymentTracking = () => {
                                         <Button variant={'contained'} className={classes.viewButton} onClick={() => handleViewButton(index)}>View</Button>
                                     </TableCell>
                                     <TableCell>
-                                        {!paidInvoice ?
+                                        {paidInvoice ?
                                             <Button variant={'contained'} className={`${classes.status} ${'active'}`}>
                                                 Paid
                                             </Button>
