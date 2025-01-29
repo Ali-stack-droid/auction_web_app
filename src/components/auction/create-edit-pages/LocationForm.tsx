@@ -191,30 +191,31 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
     }, [formik.values.state]);
 
-    // // Handle address list
-    // useEffect(() => {
-    //     // setIsFetchingData(true);
-    //     const fetchAddressByCity = async () => {
-    //         try {
-    //             const response = await getAddressByCity(cities[0].city);
-    //             const addressess = response.data;
+    // Handle address list
+    useEffect(() => {
+        // setIsFetchingData(true);
+        const fetchAddressByCity = async (selectedCity: any) => {
+            try {
+                const response = await getAddressByCity(selectedCity);
+                const addressess = response.data;
 
-    //             if (addressess.length > 0) {
-    //                 setAddresses(addressess)
-    //             } else {
-    //                 setAddresses([])
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching auction data:', error);
-    //         } finally {
-    //             // setIsFetchingData(false);
-    //         }
-    //     };
+                if (addressess.length > 0) {
+                    setAddresses(addressess)
+                } else {
+                    setAddresses([])
+                }
+            } catch (error) {
+                console.error('Error fetching auction data:', error);
+            } finally {
+                // setIsFetchingData(false);
+            }
+        };
 
-    //     if (cities[0].city) {
-    //         fetchAddressByCity();
-    //     }
-    // }, []);
+        if (formik.values.city !== "placeholder" && formik.values.city !== "") {
+            fetchAddressByCity(formik.values.city);
+        }
+
+    }, [formik.values.city, cities]);
 
     const handleConfirmSubmission = () => {
         setLocationData(formData)
@@ -319,8 +320,10 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                         </MenuItem>
                                     }
                                     {states.map((item: any) => (
+
                                         <MenuItem key={item.id} value={item.state}>
                                             {item.state}
+                                            {dropdownOpen && <Typography component="span" sx={{ opacity: 0.5, ml: 1 }}>({item.cities})</Typography>}
                                         </MenuItem>
                                     ))}
                                 </CustomTextField>
@@ -368,6 +371,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                     {cities.map((item: any, index: number) => (
                                         <MenuItem value={"city-" + index} >
                                             {item.city}
+                                            {cityOpen && <Typography component="span" sx={{ opacity: 0.5, ml: 1 }}>({item.locations})</Typography>}
                                         </MenuItem>
                                     ))}
                                 </CustomTextField>
