@@ -1,4 +1,4 @@
-import { getRequest, putRequest, postWithFormRequest } from './index';
+import { getRequest, putRequest, postWithFormRequest, postRequest } from './index';
 
 export const SignInUser = (payload: LogInPayload) => getRequest(`/users/login?username=${payload.email}&password=${payload?.password}`)
 
@@ -25,6 +25,9 @@ export const getLotDetails = (id: any) => getRequest(`/lots/lotdetails?id=${id}`
 export const moveLotToAuction = (lotId: any, newAuctionId: any) => putRequest(`/lots/movelot?id=${lotId}&newauctionid=${newAuctionId}`);
 export const getLotWinner = (id: any) => getRequest(`/lots/lotwinner?id=${id}`);
 export const getBiddersByLotId = (id: any) => getRequest(`/lots/biddersbylot?id=${id}`);
+export const getFeaturedLots = () => getRequest('/lots/featuredlisting')
+export const setFeaturedLots = (id: any) => getRequest(`/lots/featured?id=${id}`)
+
 
 // Bidding Methods
 export const placeBid = (payload: any) => postWithFormRequest('/lots/newbid', payload);

@@ -8,6 +8,8 @@ import { getQueryParam } from '../../../helper/GetQueryParam';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
+import { setFeaturedLots } from '../../Services/Methods';
+import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
 
 const AuctionCard = ({
     headerType,
@@ -52,13 +54,26 @@ const AuctionCard = ({
     const isLiveDetail = headerType === "live" && getQueryParam('aucId');
 
     const handleViewCatalog = (id: number) => {
-        // dispatch(setSelectedAuction(id));
         navigate(`/auction/lots?aucId=${id}`)
     }
 
     const handleMoveLot = (id: number) => {
         setMoveLotId(id)
         setMoveModalOpen(true);
+    }
+
+    const handleFeaturedLot = async (id: any) => {
+        try {
+            const response = await setFeaturedLots(id);
+
+            if (response) {
+                SuccessMessage('Lot featured successfully!')
+            }
+        }
+        catch {
+            ErrorMessage('Error featured lot!')
+        }
+
     }
 
     return (
@@ -206,7 +221,11 @@ const AuctionCard = ({
                                 <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleMoveLot(cardData.id)}>
                                     Move
                                 </Button>
-                                : null
+                                : headerType === "lots" ?
+                                    <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleFeaturedLot(cardData.id)}>
+                                        Featured
+                                    </Button>
+                                    : null
                     }
                 </Box>
             </Box>
