@@ -27,7 +27,7 @@ const Lots = ({ searchTerm }: any) => {
     const [deleteLotId, setDeleteLotId] = useState(0);
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [featuredCount, setFeaturedCount] = useState(0);
+    const [featuredLots, setFeaturedLots] = useState([]);
 
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
@@ -46,12 +46,12 @@ const Lots = ({ searchTerm }: any) => {
 
             try {
                 const response = await getFeaturedLots();
-                if (response.data) {
-                    setFeaturedCount(response.data.length)
+                if (response.data > 0) {
+                    setFeaturedLots(response.data)
                 }
             } catch (error) {
                 console.error('Error in fetching geatured count:', error);
-                setFeaturedCount(0)
+                setFeaturedLots([])
             }
         };
         fetchFeaturedLots()
@@ -217,6 +217,8 @@ const Lots = ({ searchTerm }: any) => {
                                                 auction.name.toLowerCase().includes(lowerCaseTerm) || // Match Name
                                                 auction.details.location.toLowerCase().includes(lowerCaseTerm) // Match Location
                                             );
+                                        }).sort((a: any, b: any) => {
+                                            return (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0);
                                         }).map((lot: any) => (
                                             <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
                                                 <AuctionCard

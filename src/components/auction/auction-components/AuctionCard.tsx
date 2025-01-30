@@ -26,6 +26,9 @@ const AuctionCard = ({
     const [moveLotId, setMoveLotId] = useState(0)
 
     const [moveModalOpen, setMoveModalOpen] = useState(false)
+    const [isFeatured, setIsFeatured] = useState(cardData.isFeatured)
+    // const isFeatured = cardData.isFeatured;
+
     // const [moveDialogue, setMoveDialogue] = useState(false)
 
     const dispatch = useDispatch();
@@ -65,13 +68,13 @@ const AuctionCard = ({
     const handleFeaturedLot = async (id: any) => {
         try {
             const response = await setFeaturedLots(id);
-
             if (response) {
                 SuccessMessage('Lot featured successfully!')
+                setIsFeatured(!isFeatured)
             }
         }
         catch {
-            ErrorMessage('Error featured lot!')
+            ErrorMessage('Only 3 lots can be fetured. Please unfeature a lot first!')
         }
 
     }
@@ -222,9 +225,11 @@ const AuctionCard = ({
                                     Move
                                 </Button>
                                 : headerType === "lots" ?
-                                    <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleFeaturedLot(cardData.id)}>
-                                        Featured
-                                    </Button>
+                                    <Tooltip title={isFeatured ? "Click to unfeature" : "Click to feature"}>
+                                        <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleFeaturedLot(cardData.id)}>
+                                            {isFeatured ? "Featured" : "Unfeatured"}
+                                        </Button>
+                                    </Tooltip>
                                     : null
                     }
                 </Box>
