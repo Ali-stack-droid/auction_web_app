@@ -1,4 +1,4 @@
-import { Card, CardMedia, Typography, Button, Tooltip, Box } from '@mui/material';
+import { Card, CardMedia, Typography, Button, Tooltip, Box, FormControlLabel, Switch } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuctionCardStyles } from './AuctionStyles';
 import LotDetails from './card-details-components/LotDetails';
@@ -69,7 +69,10 @@ const AuctionCard = ({
         try {
             const response = await setFeaturedLots(id);
             if (response) {
-                SuccessMessage('Lot featured successfully!')
+                response.data = "Selected Lot Unfeatured""?
+                SuccessMessage('Lot featured successfully!'):
+                SuccessMessage('Lot unfeatured successfully!')
+
                 setIsFeatured(!isFeatured)
             }
         }
@@ -226,9 +229,16 @@ const AuctionCard = ({
                                 </Button>
                                 : headerType === "lots" ?
                                     <Tooltip title={isFeatured ? "Click to unfeature" : "Click to feature"}>
-                                        <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleFeaturedLot(cardData.id)}>
+                                        {/* <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleFeaturedLot(cardData.id)}>
                                             {isFeatured ? "Featured" : "Unfeatured"}
-                                        </Button>
+                                        </Button> */}
+                                        <FormControlLabel
+                                            control={
+                                                <Switch checked={isFeatured}
+                                                    onChange={() => handleFeaturedLot(cardData.id)} />
+                                            }
+                                            label={isFeatured ? "Featured" : "Unfeatured"}
+                                        />
                                     </Tooltip>
                                     : null
                     }
