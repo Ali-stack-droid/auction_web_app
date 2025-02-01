@@ -67,7 +67,7 @@ const AuctionDetailPage = () => {
                     previewDateRange: `${auction.PrevStartDate} to ${auction.PrevEndDate}`,
                     previewTimeRange: `${auction.PrevStartTime} to ${auction.PrevEndTime}`,
 
-                    description: auction.Description,
+                    description: auction.ShortDescription,
                     notes: auction.Notes,
 
                     liveStreaming: auction.LiveStreaming,

@@ -227,7 +227,7 @@ const AuctionCard = ({
                                 <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleMoveLot(cardData.id)}>
                                     Move
                                 </Button>
-                                : headerType === "lots" ?
+                                : headerType === "lots" && !cardData?.isPast ?
                                     <Tooltip title={isFeatured ? "Click to unfeature" : "Click to feature"}>
                                         {/* <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleFeaturedLot(cardData.id)}>
                                             {isFeatured ? "Featured" : "Unfeatured"}
