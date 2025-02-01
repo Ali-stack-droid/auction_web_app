@@ -69,9 +69,9 @@ const AuctionCard = ({
         try {
             const response = await setFeaturedLots(id);
             if (response) {
-                response.data = "Selected Lot Unfeatured""?
-                SuccessMessage('Lot featured successfully!'):
-                SuccessMessage('Lot unfeatured successfully!')
+                response.data = "Selected Lot Unfeatured" ?
+                    SuccessMessage('Lot featured successfully!') :
+                    SuccessMessage('Lot unfeatured successfully!')
 
                 setIsFeatured(!isFeatured)
             }
