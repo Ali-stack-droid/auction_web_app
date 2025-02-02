@@ -188,10 +188,10 @@ const LotDetailPage = () => {
             const response = await getWinnerByLotId(getQueryParam('lotId'));
             const winnerDetails = response.data;
             const formattedWinner = {
-                name: winnerDetails.Clients?.Name || "N/A",
-                email: winnerDetails.Clients?.Email || "N/A",
-                phone: winnerDetails.Clients?.Phone || "N/A", // Replace with actual phone if available
-                location: winnerDetails.Clients?.Address || "N/A",
+                name: winnerDetails.Clients?.Name || "",
+                email: winnerDetails.Clients?.Email || "",
+                phone: winnerDetails.Clients?.Phone || "", // Replace with actual phone if available
+                location: winnerDetails.Clients?.Address || "",
                 image: winnerDetails.Lots?.Image || `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
             };
 
