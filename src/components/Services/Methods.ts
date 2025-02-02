@@ -43,9 +43,10 @@ export const getPastLocations = () => getRequest('/auctions/getpastlocations');
 export const getCurrentAuctionsByLocation = (location: any) => getRequest(`/auctions/currentlocationauctions?loc=${location}`);
 export const getPastAuctionsByLocation = (location: any) => getRequest(`/auctions/pastlocationauctions?loc=${location}`);
 
-export const getAllStates = () => getRequest('auctions/getstate');
-export const getCityByState = (state: any) => getRequest(`/auctions/getcitiesbystate?state=${state}`);
-export const getAddressByCity = (city: any) => getRequest(`/auctions/getaddressbycity?city=${city}`);
+export const getCountries = () => getRequest('/locations/getcountries');
+export const getStatesByCountry = (id: any) => getRequest(`/locations/getstatesbycountry?id=${id}`);
+export const getCitiesByState = (state: any) => getRequest(`/locations/getcitiesbystate?id=${state}`);
+export const getAddressByCity = (city: any) => getRequest(`/auctions/getaddressbycity?id=${city}`);
 
 // Live Streaming Methods
 export const getCurrentLiveAuctions = () => getRequest('/auctions/currentliveauctions');

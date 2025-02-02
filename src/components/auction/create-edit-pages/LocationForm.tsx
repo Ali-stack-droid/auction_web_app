@@ -18,7 +18,7 @@ import theme from '../../../theme';
 import CustomDialogue from '../../custom-components/CustomDialogue';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
-import { getAddressByCity, getAllStates, getAuctionDetailById, getCityByState } from '../../Services/Methods';
+import { getCountries, getStatesByCountry, getCitiesByState, getAddressByCity, getAuctionDetailById } from '../../Services/Methods';
 import { ErrorMessage } from '../../../utils/ToastMessages';
 
 const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated, setIsUpdated, isSubmittedByLot, setIsSubmittedByLot, setNavigation }: any) => {
@@ -26,24 +26,27 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
     const [openConfirmModal, setOpenConfirmModal] = useState(false);
     const [isCancelOpen, setIsCancelOpen] = useState(false);
-
     const [openSaveModal, setOpenSaveModal] = useState(false);
-    const [openUpdateMmodal, setOpenUpdateModal] = useState(false);
 
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [formData, setFormData]: any = useState({})
     const [submissionAttempt, setSubmissionAttempt]: any = useState({})
 
     // location states
-    const [states, setStates]: any = useState([])
-    const [cities, setCities]: any = useState([])
-    const [addresses, setAddresses]: any = useState([])
+    const [countries, setCountries]: any = useState([]);
+    const [states, setStates]: any = useState([]);
+    const [cities, setCities]: any = useState([]);
+    const [addresses, setAddresses]: any = useState([]);
 
+    const [countryId, setCountryId]: any = useState(0);
+    const [stateId, setStateId]: any = useState(0);
+    const [cityId, setCityId]: any = useState(0);
+    const [addressId, setAddressId]: any = useState(0);
+
+    const [fetchingLocation, setIsFetchingLocation] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [cityOpen, setCityOpen] = useState(false);
     const [addressOpen, setAddressOpen] = useState(false);
-
-
 
     const navigate = useNavigate();
     const location = useLocation()
@@ -81,6 +84,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
         }
     });
 
+
+
     useEffect(() => {
         const auctionId = getQueryParam('aucId');
         if (auctionId) {
@@ -96,7 +101,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                             city: auction.City || 'placeholder',
                             zipCode: auction.ZipCode || '',
                             state: auction.State || 'placeholder',
-                            country: auction.Country === "United States (US)" ? auction.Country : 'placeholder',
+                            country: auction.Country || 'placeholder',
                             buyerPremium: auction.BuyerPremium || 'placeholder',
                             paymentTerms: auction.PaymentTerms || '',
                             shippingMethod: auction.ShippingMethod || 'Shipping',
@@ -131,49 +136,78 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
         }
     }, [submissionAttempt]);
 
-    // Handle states list
+    // Handle country list
     useEffect(() => {
-        // setIsFetchingData(true);
-        const fetchStates = async () => {
+        setIsFetchingLocation(true);
+        const fetchCountries = async () => {
             try {
-                const response = await getAllStates();
+                const response = await getCountries();
                 const states = response.data;
 
                 if (states.length > 0) {
-                    const updatedStates = states.map((item: any, index: number) => ({
-                        id: index + 1,
-                        state: item.State,
-                        cities: item.Cities,
+                    const updatedStates = states.map((item: any) => ({
+                        id: item.Id,
+                        name: item.Name,
+                    }));
+                    setCountries(updatedStates)
+                } else {
+                    setCountries([])
+                }
+            } catch (error) {
+                console.error('Error fetching auction data:', error);
+            } finally {
+                setIsFetchingLocation(false);
+            }
+        };
+
+        fetchCountries();
+    }, []);
+
+    // Handle states list
+    useEffect(() => {
+        setIsFetchingLocation(true);
+        const fetchStates = async () => {
+            try {
+                const response = await getStatesByCountry(countryId);
+                const states = response.data;
+
+                if (states.length > 0) {
+                    const updatedStates = states.map((item: any) => ({
+                        id: item.Id,
+                        name: item.Name,
+                        countryId: item.CountryID,
+                        countries: item.Countries,
                     }));
                     setStates(updatedStates)
                 } else {
                     setStates([])
                 }
             } catch (error) {
-                console.error('Error fetching auction data:', error);
+                console.error('Error fetching countries:', error);
             } finally {
-                // setIsFetchingData(false);
+                setIsFetchingLocation(false);
             }
         };
 
-        fetchStates();
-    }, []);
-
+        if (formik.values.country !== "placeholder" && formik.values.country !== "" && countryId !== 0) {
+            fetchStates();
+        }
+    }, [countryId]);
 
     // Handle cities list
     useEffect(() => {
-        // setIsFetchingData(true);
-        const fetchCitiesByState = async (selectedState: any) => {
+        setIsFetchingLocation(true);
+        const fetchCitiesByState = async () => {
             try {
-                const response = await getCityByState(selectedState);
+                const response = await getCitiesByState(stateId);
                 const cities = response.data;
-
                 if (cities.length > 0) {
                     const updatedCities = cities.map((item: any) => ({
-                        city: item.City,
-                        locations: item.Locations,
+                        id: item.Id,
+                        name: item.Name,
+                        stateId: item.StateID,
+                        states: item.States,
                     }));
-
                     setCities(updatedCities)
                 } else {
                     setCities([])
@@ -181,23 +215,25 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
             } catch (error) {
                 console.error('Error fetching cities: ', error);
             } finally {
-                // setIsFetchingData(false);
+                setIsFetchingLocation(false);
             }
         };
 
-        if (formik.values.state !== "placeholder" && formik.values.state !== "") {
-            fetchCitiesByState(formik.values.state);
+        if (formik.values.state !== "placeholder" && formik.values.state !== "" && stateId !== 0) {
+            fetchCitiesByState();
         }
 
-    }, [formik.values.state]);
+    }, [stateId]);
 
     // Handle address list
     useEffect(() => {
-        // setIsFetchingData(true);
-        const fetchAddressByCity = async (selectedCity: any) => {
+        const fetchAddressByCity = async () => {
+            setIsFetchingLocation(true);
             try {
-                const response = await getAddressByCity(selectedCity);
+                const response = await getAddressByCity(cityId);
                 const addressess = response.data;
+
+                console.log(addressess)
 
                 if (addressess.length > 0) {
                     setAddresses(addressess)
@@ -207,15 +243,15 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
             } catch (error) {
                 console.error('Error fetching auction data:', error);
             } finally {
-                // setIsFetchingData(false);
+                setIsFetchingLocation(false);
             }
         };
 
-        if (formik.values.city !== "placeholder" && formik.values.city !== "") {
-            fetchAddressByCity(formik.values.city);
+        if (formik.values.city !== "placeholder" && formik.values.city !== "" && cityId !== 0) {
+            fetchAddressByCity();
         }
 
-    }, [formik.values.city, cities]);
+    }, [cityId]);
 
     const handleConfirmSubmission = () => {
         setLocationData(formData)
@@ -273,11 +309,25 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                             color: '#A0AEC0', // Set the color of the arrow icon
                                         },
                                     }}
+
                                 >
                                     <MenuItem value="placeholder" sx={{ display: 'none' }}>
                                         <Typography sx={{ opacity: 0.5 }}>Select Country</Typography>
                                     </MenuItem>
-                                    <MenuItem value="Country1">United States (US)</MenuItem>
+                                    {/* <MenuItem value="Country1">United States (US)</MenuItem> */}
+                                    {!countries.length &&
+                                        <MenuItem value="placeholder" sx={{ pointerEvents: 'none' }}>
+                                            <Typography sx={{ opacity: 0.5 }}> No Country Found</Typography>
+                                        </MenuItem>
+                                    }
+                                    {countries.map((item: any) => (
+
+                                        <MenuItem key={item.id} value={item.name} onClick={() => setCountryId(item.id)}>
+                                            {item.name}
+                                            {/* {countryDropDownOpen && <Typography component="span" sx={{ opacity: 0.5, ml: 1 }}>({item.cities})</Typography>} */}
+                                        </MenuItem>
+                                    ))}
+
                                 </CustomTextField>
                             </Box>
                             <Box flex={1}>
@@ -289,7 +339,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                     value={formik.values.state}
                                     onChange={(e) => {
                                         formik.handleChange(e);
-                                        setDropdownOpen(false); // Close the dropdown after selection
+                                        setDropdownOpen(false);
                                     }}
                                     error={formik.touched.state && Boolean(formik.errors.state)}
                                     helperText={formik.touched.state && formik.errors.state}
@@ -309,6 +359,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                         '& .MuiSelect-icon': {
                                             color: '#A0AEC0', // Set the color of the arrow icon
                                         },
+
                                     }}
                                 >
                                     <MenuItem value="placeholder" sx={{ display: 'none' }}>
@@ -320,10 +371,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                         </MenuItem>
                                     }
                                     {states.map((item: any) => (
-
-                                        <MenuItem key={item.id} value={item.state}>
-                                            {item.state}
-                                            {dropdownOpen && <Typography component="span" sx={{ opacity: 0.5, ml: 1 }}>({item.cities})</Typography>}
+                                        <MenuItem key={item.id} value={item.name} onClick={() => setStateId(item.id)}>
+                                            {item.name}
                                         </MenuItem>
                                     ))}
                                 </CustomTextField>
@@ -369,9 +418,9 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                         </MenuItem>
                                     }
                                     {cities.map((item: any, index: number) => (
-                                        <MenuItem value={"city-" + index} >
-                                            {item.city}
-                                            {cityOpen && <Typography component="span" sx={{ opacity: 0.5, ml: 1 }}>({item.locations})</Typography>}
+                                        <MenuItem value={"city-" + index} onClick={() => setCityId(item.id)} >
+                                            {item.name}
+                                            {/* {cityOpen && <Typography component="span" sx={{ opacity: 0.5, ml: 1 }}>({item.locations})</Typography>} */}
                                         </MenuItem>
                                     ))}
                                 </CustomTextField>
@@ -421,14 +470,11 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                         </MenuItem>
                                     }
                                     {addresses.map((address: any, index: number) => (
-                                        <MenuItem value={"address-" + index}>
+                                        <MenuItem value={"address-" + index} >
                                             {address}
                                         </MenuItem>
                                     ))}
                                 </CustomTextField>
-
-
-
                             </Box>
                             <Box flex={1}>
                                 <Typography className={classes.label}>Zip Code</Typography>
