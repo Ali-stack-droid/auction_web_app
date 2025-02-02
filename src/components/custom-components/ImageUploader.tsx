@@ -3,24 +3,33 @@ import { useDropzone } from 'react-dropzone'; // Import dropzone hook
 import { Box, Typography, Button, Paper } from '@mui/material';
 import theme from '../../theme';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
+import { ErrorMessage } from '../../utils/ToastMessages';
 
 const ImageUploader = ({ file, setFile }: any) => {
 
     const [borderColor, setBorderColor] = useState(theme.palette.primary.main4); // Default border color
 
-    const [fileSize, setFileSize] = useState(null);
-    const onDrop = (acceptedFiles: any) => {
+    const [fileSize, setFileSize] = useState(0);
 
-        if (acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            setFile(file);
-            setFileSize(file.size);
+    const onDrop = (acceptedFiles: File[]) => {
+        const allowedExtensions = ['.jpg', '.png'];
+
+        const filteredFiles = acceptedFiles.filter((file) => {
+            const ext = file.name.split('.').pop()?.toLowerCase();
+            return ext && allowedExtensions.includes(`.${ext}`);
+        });
+
+        if (filteredFiles.length > 0) {
+            setFile(filteredFiles[0]);
+            setFileSize(filteredFiles[0].size);
+        } else {
+            ErrorMessage('Only JPG and PNG files are allowed.');
         }
     };
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
-        accept: '.jpg, .jpeg' as any, // Accept only JPG/JPEG files
+        accept: { 'image/jpeg': ['.jpg'], 'image/png': ['.png'] }, // Keep MIME types but don't rely on them
         maxSize: 25 * 1024 * 1024, // Max file size 25MB
         onDragEnter: () => setBorderColor(theme.palette.primary.main), // Blue border when dragging
         onDragLeave: () => setBorderColor(theme.palette.primary.main4), // Reset border color
@@ -68,7 +77,7 @@ const ImageUploader = ({ file, setFile }: any) => {
                     <Box>
                         <PublishRoundedIcon sx={{ color: theme.palette.primary.main }} />
                         <Typography sx={{ fontSize: "12px", color: theme.palette.primary.main1 }}>
-                            Drag and drop your JPG images here.
+                            Drag and drop your JPG or PNG images here.
                         </Typography>
                         <Button variant="contained" sx={{ fontSize: "12px", mt: 1, textTransform: 'none' }}>Upload JPG Files Here</Button>
                         <Typography sx={{ fontSize: "12px", color: theme.palette.primary.main1, fontWeight: 600 }} mt={1}>
