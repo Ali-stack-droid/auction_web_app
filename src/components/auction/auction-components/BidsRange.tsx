@@ -6,10 +6,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const BidsRange = ({ formik }: any) => {
     const classes = useCreateAuctionStyles();
+
     const handleAddRange = () => {
+        const lastRange = formik.values.bidsRange[formik.values.bidsRange.length - 1];
+        const newStartAmount = lastRange ? parseInt(lastRange.endAmount) + 1 : 1;
+
         formik.setFieldValue('bidsRange', [
             ...formik.values.bidsRange,
-            { startAmount: '', endAmount: '', bidRangeAmount: '' },
+            { startAmount: newStartAmount, endAmount: '', bidRangeAmount: '' },
         ]);
     };
 
@@ -18,29 +22,37 @@ const BidsRange = ({ formik }: any) => {
         formik.setFieldValue('bidsRange', updatedRanges);
     };
 
-    // const handleRangeChange = (index: number, field: string, value: string) => {
-    //     const updatedRanges = formik.values.bidsRange.map((range: any, i: any) =>
-    //         i === index ? { ...range, [field]: value } : range
-    //     );
-    //     formik.setFieldValue('bidsRange', updatedRanges);
-    // };
-
     const handleRangeChange = (index: number, field: string, value: string) => {
         if (field === 'startAmount') {
             const newEndAmount = parseInt(value) + 1;
             formik.setFieldValue(`bidsRange[${index}].endAmount`, newEndAmount);
             formik.setFieldValue(`bidsRange[${index}].${field}`, value);
+            // if (value > formik.values.bidsRange[index + 1]?.startAmount
+            //     // ||value > formik.values.bidsRange[index - 1]?.endAmount
+            // ) {
+            //     console.log(formik.values.bidsRange[index + 1]?.startAmount)
+            //     let ind = index + 1;
+            //     while (ind < formik.values.bidsRange.length) {
+            //         console.log(ind)
+            //         formik.setFieldValue(`bidsRange[${ind}].startAmount`, newEndAmount + 1);
+            //         ind++;
+            //     }
+            // }
         } else if (field === 'endAmount') {
-            if (parseInt(value) > formik.values.bidsRange[index].startAmount) {
-                formik.setFieldValue(`bidsRange[${index}].endAmount`, value);
+            // if (parseInt(value) > formik.values.bidsRange[index].startAmount) {
+            formik.setFieldValue(`bidsRange[${index}].endAmount`, value);
+            if (index < formik.values.bidsRange.length - 1) {
+                formik.setFieldValue(`bidsRange[${index + 1}].startAmount`, parseInt(value) + 1);
             }
-        } else
+            // }
+        } else {
             formik.setFieldValue(`bidsRange[${index}].${field}`, value);
+        }
     };
 
     return (
         <Box display="flex" flexDirection="column" gap={2} mb={2}>
-            {formik.values.bidsRange.map((range: any, index: any) => (
+            {formik.values.bidsRange.map((range: any, index: number) => (
                 <Box key={"bid-range" + index} display="flex" alignItems="center" gap={2} mb={2}>
 
                     <Box flex={1}>
@@ -61,6 +73,7 @@ const BidsRange = ({ formik }: any) => {
                                 formik.touched.bidsRange?.[index]?.startAmount &&
                                 formik.errors.bidsRange?.[index]?.startAmount
                             }
+                            inputProps={{ readOnly: index > 0, tabIndex: index > 0 ? -1 : 0 }} // Prevent focus but keep value editable
                         />
                     </Box>
                     <Box flex={1} mx={2}>
@@ -73,6 +86,11 @@ const BidsRange = ({ formik }: any) => {
                             placeholder="End Amount"
                             value={range.endAmount}
                             onChange={(e) => handleRangeChange(index, 'endAmount', e.target.value)}
+                            onBlur={(e) => {
+                                if (parseInt(e.target.value) <= parseInt(range.startAmount)) {
+                                    formik.setFieldValue(`bidsRange[${index}].endAmount`, "");
+                                }
+                            }}
                             error={
                                 formik.touched.bidsRange?.[index]?.endAmount &&
                                 Boolean(formik.errors.bidsRange?.[index]?.endAmount)
