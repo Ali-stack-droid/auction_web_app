@@ -23,6 +23,7 @@ const AddLot = () => {
     const [confirmModal, setConfirmModal] = useState(false);
     const [submissionAttempt, setSubmissionAttempt] = useState(false);
     const [isCancelOpen, setIsCancelOpen] = useState(false);
+    const [saveModal, setSaveModal] = useState(false);
 
     const classes = useCreateAuctionStyles();
     const navigate = useNavigate();
@@ -152,6 +153,12 @@ const AddLot = () => {
     const handleCancelConfirmation = () => {
         formik.resetForm();
         navigate('/auction');
+    }
+
+
+    const handleSaveLot = () => {
+        setSubmissionAttempt(!submissionAttempt)
+        setSaveModal(false)
     }
 
     return (
@@ -375,9 +382,13 @@ const AddLot = () => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            onClick={() => setSubmissionAttempt(!submissionAttempt)}
+                            onClick={() => {
+                                if (Object.keys(formik.errors).length === 0) {
+                                    setSaveModal(true);
+                                }
+                            }}
                         >
-                            Save
+                            Confirm
                         </Button>
                     </Box>
                 </Box>
@@ -402,6 +413,17 @@ const AddLot = () => {
                 openDialogue={isCancelOpen}
                 handleCloseModal={() => setIsCancelOpen(false)}
                 handleConfirmModal={handleCancelConfirmation}
+                isDeleting={false}
+
+            />
+
+            <CustomDialogue
+                type={"continue"}
+                title={"Add another Lot?"}
+                message={"Do you wish to add another lot?"}
+                openDialogue={saveModal}
+                handleCloseModal={() => navigate('/auction')}
+                handleConfirmModal={handleSaveLot}
                 isDeleting={false}
 
             />
