@@ -176,8 +176,7 @@ const LotDetailPage = () => {
                 }));
                 setBidders(formattedBidders)
             } else {
-                setBidders(fakeBidders)
-                // setBidders([]);
+                setBidders([]);
             }
         } catch (error) {
             console.error('Error fetching auction data:', error);
