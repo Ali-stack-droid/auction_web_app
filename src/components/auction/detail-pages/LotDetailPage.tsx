@@ -196,26 +196,13 @@ const LotDetailPage = () => {
             };
 
             if (winner.name) {
-
                 setWinner(formattedWinner);
             } else {
-                setWinner({
-                    name: "Ali Cheema",
-                    email: "alicheema@gmail.com",
-                    phone: "+9231675485", // Replace with actual phone if available
-                    location: "Street 4, Lost Angeles, California",
-                    image: `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
-                });
+                setWinner({});
 
             }
         } catch (err) {
-            setWinner({
-                name: "Ali Cheema",
-                email: "alicheema@gmail.com",
-                phone: "+9231675485", // Replace with actual phone if available
-                location: "Street 4, Lost Angeles, California",
-                image: `${process.env.PUBLIC_URL}/assets/pngs/winner.png`,
-            });
+            setWinner({});
             // setWinner({});
             // console.error(err);
         }
