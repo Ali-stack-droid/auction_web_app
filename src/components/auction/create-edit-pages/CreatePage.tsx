@@ -153,7 +153,7 @@ const CreatePage = ({ type }: any) => {
 
     return (
         <Box sx={{ padding: 2 }}>
-            {!isContinue ? (
+            {isContinue ? (
                 <LocationForm
                     setLocationData={setLocationData}
                     isSubmitted={isSubmitted}
