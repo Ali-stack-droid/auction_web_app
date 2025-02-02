@@ -157,7 +157,7 @@ const AddLot = () => {
     return (
         <Box p={2}>
 
-            <Typography className={classes.title}>Create New Auction</Typography>
+            <Typography className={classes.title}>Create New Lot</Typography>
             <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingBottom: 3 }}>
                 <Box >
                     <Typography className={classes.location}>Lots:</Typography>

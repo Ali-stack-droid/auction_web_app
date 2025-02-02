@@ -6,7 +6,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const BidsRange = ({ formik }: any) => {
     const classes = useCreateAuctionStyles();
-
     const handleAddRange = () => {
         formik.setFieldValue('bidsRange', [
             ...formik.values.bidsRange,
@@ -19,11 +18,24 @@ const BidsRange = ({ formik }: any) => {
         formik.setFieldValue('bidsRange', updatedRanges);
     };
 
+    // const handleRangeChange = (index: number, field: string, value: string) => {
+    //     const updatedRanges = formik.values.bidsRange.map((range: any, i: any) =>
+    //         i === index ? { ...range, [field]: value } : range
+    //     );
+    //     formik.setFieldValue('bidsRange', updatedRanges);
+    // };
+
     const handleRangeChange = (index: number, field: string, value: string) => {
-        const updatedRanges = formik.values.bidsRange.map((range: any, i: any) =>
-            i === index ? { ...range, [field]: value } : range
-        );
-        formik.setFieldValue('bidsRange', updatedRanges);
+        if (field === 'startAmount') {
+            const newEndAmount = parseInt(value) + 1;
+            formik.setFieldValue(`bidsRange[${index}].endAmount`, newEndAmount);
+            formik.setFieldValue(`bidsRange[${index}].${field}`, value);
+        } else if (field === 'endAmount') {
+            if (parseInt(value) > formik.values.bidsRange[index].startAmount) {
+                formik.setFieldValue(`bidsRange[${index}].endAmount`, value);
+            }
+        } else
+            formik.setFieldValue(`bidsRange[${index}].${field}`, value);
     };
 
     return (
