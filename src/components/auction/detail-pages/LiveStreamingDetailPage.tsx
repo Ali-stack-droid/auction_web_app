@@ -123,7 +123,6 @@ const LiveStreamingDetailPage = () => {
             }
 
         } catch (error) {
-            console.error('Error fetching auction data:', error);
         } finally {
             setIsFetchingData(false);
         }
@@ -140,7 +139,6 @@ const LiveStreamingDetailPage = () => {
                 ErrorMessage('Error deleting lot!')
             }
         } catch (error) {
-            console.error('Error deleting auction:', error);
         } finally {
             handleCloseModal()
         }

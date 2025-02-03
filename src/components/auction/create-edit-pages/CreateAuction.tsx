@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import { getAuctionDetailById } from '../../Services/Methods';
 import { formatDateInput, formatTimeInput } from '../../../utils/Format';
+import { ErrorMessage } from '../../../utils/ToastMessages';
 
 const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) => {
     const classes = useCreateAuctionStyles();
@@ -114,14 +115,12 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                         // if (typeof auction.Image === 'string' && auction.Image.startsWith('http')) {
                         //     setFile(auction.Image);
                         // } else {
-                        //     console.error('Invalid image URL');
                         // }
 
                     } else {
-                        console.error('Auction data not found');
+                        ErrorMessage('Auction data not found');
                     }
                 } catch (error) {
-                    console.error('Error fetching auction data:', error);
                 } finally {
                     setIsFetchingData(false);
                 }

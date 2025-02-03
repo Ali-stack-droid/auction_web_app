@@ -28,13 +28,7 @@ const ImageUpload = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ image: base64 }),
             });
-            if (response.ok) {
-                // console.log('Image uploaded successfully');
-            } else {
-                console.error('Failed to upload image');
-            }
         } catch (error) {
-            console.error('Error:', error);
         }
     };
 

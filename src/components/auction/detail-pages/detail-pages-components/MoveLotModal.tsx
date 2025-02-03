@@ -47,7 +47,6 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
                 }
 
             } catch (error) {
-                console.error('Error fetching auction data:', error);
             } finally {
                 setIsFetching(false); // Set loading state to false when the call ends
             }
@@ -67,7 +66,7 @@ const MoveLotModal = ({ open, handleMoveModal, setMoveModalOpen, moveLotId }: an
                     SuccessMessage("Lot moved to auction successfuly!");
                 }
             } catch (error) {
-                console.error("Error moving lot to new auction:", error);
+                ErrorMessage("Error moving lot to new auction!");
             } finally {
                 setIsMoving(false);
                 handleMoveModal(responsedId);

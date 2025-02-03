@@ -42,8 +42,8 @@ export const getPendingInvoices = () => getRequest('/invoices/pending');
 export const getPaidInvoices = () => getRequest('/invoices/paid');
 
 // Location Methods
-export const getCurrentLocations = () => getRequest('/auctions/getcurrentlocations');
-export const getPastLocations = () => getRequest('/auctions/getpastlocations');
+export const getCurrentLocations = () => getRequest('/auctions/currentlocations');
+export const getPastLocations = () => getRequest('/auctions/pastlocations');
 export const getCurrentAuctionsByLocation = (location: any) => getRequest(`/auctions/currentlocationauctions?loc=${location}`);
 export const getPastAuctionsByLocation = (location: any) => getRequest(`/auctions/pastlocationauctions?loc=${location}`);
 

@@ -94,9 +94,20 @@ const Lots = ({ searchTerm }: any) => {
                 setFilteredData([]);
                 setPaginationedData([]);
             }
+
+            // const locationResponse = isCurrentAuction
+            //     ? await getCurrentLocations()
+            //     : await getPastLocations();
+
+            // if (locationResponse.data && locationResponse.data.length > 0) {
+            //     const updatedLocation = locationResponse.data;
+            //     setLocations(updatedLocation);
+            // } else {
+            //     setLocations([]);
+            // }
+
             setIsFetchingData(false);
         } catch (error) {
-            console.error('Error fetching auction data:', error);
             setIsFetchingData(false);
         }
     };
@@ -160,7 +171,6 @@ const Lots = ({ searchTerm }: any) => {
                 ErrorMessage('Error deleting lot!')
             }
         } catch (error) {
-            console.error('Error deleting auction:', error);
         } finally {
             handleCloseModal();
         }

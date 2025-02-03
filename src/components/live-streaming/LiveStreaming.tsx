@@ -63,7 +63,6 @@ const LiveStreaming = () => {
             setIsFetchingData(false)
 
         } catch (error) {
-            console.error('Error fetching auction data:', error);
             setIsFetchingData(false)
         }
     };
@@ -81,7 +80,6 @@ const LiveStreaming = () => {
                 ErrorMessage('Error deleting auction!')
             }
         } catch (error) {
-            console.error('Error deleting auction:', error);
         } finally {
             handleCloseModal();
         }

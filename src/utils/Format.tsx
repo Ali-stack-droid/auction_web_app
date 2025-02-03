@@ -38,7 +38,6 @@ export const formatTimeInput = (timeStr: string) => {
     // Extract hours, minutes, and period (AM/PM) using regex
     const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
     if (!match) {
-        console.error("Invalid time format");
         return '';
     }
 

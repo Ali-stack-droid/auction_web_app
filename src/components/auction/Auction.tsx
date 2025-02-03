@@ -81,7 +81,6 @@ const Auction = ({ searchTerm }: any) => {
 
 
         } catch (error) {
-            console.error('Error fetching auction data:', error);
         } finally {
             setIsFetchingData(false)
         }
@@ -100,7 +99,7 @@ const Auction = ({ searchTerm }: any) => {
                 ErrorMessage('Error deleting auction!')
             }
         } catch (error) {
-            console.error('Error deleting auction:', error);
+            ErrorMessage('Error deleting auction!')
         } finally {
             handleCloseModal();
         }

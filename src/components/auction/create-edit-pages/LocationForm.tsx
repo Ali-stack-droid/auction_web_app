@@ -112,10 +112,9 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                         formik.setValues(formattedAuctionDetails);
 
                     } else {
-                        console.error('Auction data not found');
+                        ErrorMessage('Auction data not found');
                     }
                 } catch (error) {
-                    console.error('Error fetching auction data:', error);
                 } finally {
                     setIsFetchingData(false);
                 }
@@ -154,7 +153,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                     setCountries([])
                 }
             } catch (error) {
-                console.error('Error fetching auction data:', error);
             } finally {
                 setIsFetchingLocation(false);
             }
@@ -183,7 +181,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                     setStates([])
                 }
             } catch (error) {
-                console.error('Error fetching countries:', error);
             } finally {
                 setIsFetchingLocation(false);
             }
@@ -213,7 +210,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                     setCities([])
                 }
             } catch (error) {
-                console.error('Error fetching cities: ', error);
             } finally {
                 setIsFetchingLocation(false);
             }
@@ -233,15 +229,12 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                 const response = await getAddressByCity(cityId);
                 const addressess = response.data;
 
-                console.log(addressess)
-
                 if (addressess.length > 0) {
                     setAddresses(addressess)
                 } else {
                     setAddresses([])
                 }
             } catch (error) {
-                console.error('Error fetching auction data:', error);
             } finally {
                 setIsFetchingLocation(false);
             }
@@ -433,48 +426,15 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                             <Box flex={1}>
                                 <Typography className={classes.label}>Address</Typography>
                                 <CustomTextField
-                                    select
                                     fullWidth
                                     name="address"
                                     value={formik.values.address}
                                     onChange={(e) => {
                                         formik.handleChange(e);
-                                        setAddressOpen(false); // Close the dropdown after selection
                                     }}
                                     error={formik.touched.address && Boolean(formik.errors.address)}
                                     helperText={formik.touched.address && formik.errors.address}
-                                    SelectProps={{
-                                        open: addressOpen,
-                                        onOpen: () => {
-                                            if (formik.values.city === 'placeholder') {
-                                                ErrorMessage('Please select a City first!')
-                                                setAddressOpen(false); // Prevent opening
-                                            } else {
-                                                setAddressOpen(true); // Allow opening
-                                            }
-                                        },
-                                        onClose: () => setAddressOpen(false), // Close dropdown when user clicks away
-                                    }}
-                                    sx={{
-                                        '& .MuiSelect-icon': {
-                                            color: '#A0AEC0', // Set the color of the arrow icon
-                                        },
-                                    }}
-                                >
-                                    <MenuItem value="placeholder" sx={{ display: 'none', pointerEvents: 'none' }}>
-                                        <Typography sx={{ opacity: 0.5 }}>{addresses.length ? "Select Address" : "No Address Found"}</Typography>
-                                    </MenuItem>
-                                    {!addresses.length &&
-                                        <MenuItem value="placeholder" sx={{ pointerEvents: 'none' }}>
-                                            <Typography sx={{ opacity: 0.5 }}> No Address Found</Typography>
-                                        </MenuItem>
-                                    }
-                                    {addresses.map((address: any, index: number) => (
-                                        <MenuItem value={"address-" + index} >
-                                            {address}
-                                        </MenuItem>
-                                    ))}
-                                </CustomTextField>
+                                />
                             </Box>
                             <Box flex={1}>
                                 <Typography className={classes.label}>Zip Code</Typography>

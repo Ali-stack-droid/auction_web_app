@@ -115,6 +115,7 @@ const AuctionHeader = ({
                             className={classes.filterButton}
                             onClick={handleMenuOpen}
                             startIcon={<FilterAltIcon />}
+                            disabled={!locations.length ? true : false}
                         >
                             Filter
                         </Button>

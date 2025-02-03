@@ -80,7 +80,6 @@ const Dashboard = () => {
                 }
 
             } catch (error) {
-                console.error('Error fetching auction data:', error);
             } finally {
                 setIsFetching(false); // Set loading state to false when the call ends
             }

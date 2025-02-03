@@ -50,7 +50,6 @@ const Lots = ({ searchTerm }: any) => {
                     setFeaturedLots(response.data)
                 }
             } catch (error) {
-                console.error('Error in fetching geatured count:', error);
                 setFeaturedLots([])
             }
         };
@@ -109,7 +108,6 @@ const Lots = ({ searchTerm }: any) => {
             }
             setIsFetchingData(false);
         } catch (error) {
-            console.error('Error fetching auction data:', error);
             setIsFetchingData(false);
         }
     };
@@ -173,7 +171,6 @@ const Lots = ({ searchTerm }: any) => {
                 ErrorMessage('Error deleting lot!')
             }
         } catch (error) {
-            console.error('Error deleting auction:', error);
         } finally {
             handleCloseModal();
         }

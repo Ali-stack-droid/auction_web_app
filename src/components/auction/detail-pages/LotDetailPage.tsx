@@ -153,7 +153,6 @@ const LotDetailPage = () => {
                 setLotDetails([]);
             }
         } catch (error) {
-            console.error('Error fetching auction data:', error);
             setIsFetchingData(false);
         } finally {
             setIsFetchingData(false);
@@ -179,7 +178,6 @@ const LotDetailPage = () => {
                 setBidders([]);
             }
         } catch (error) {
-            console.error('Error fetching auction data:', error);
         }
     };
 
@@ -204,7 +202,6 @@ const LotDetailPage = () => {
         } catch (err) {
             setWinner({});
             // setWinner({});
-            // console.error(err);
         }
     };
 
@@ -218,7 +215,7 @@ const LotDetailPage = () => {
                 ErrorMessage('Error deleting lot!')
             }
         } catch (error) {
-            console.error('Error deleting auction:', error);
+            ErrorMessage('Error deleting lot!')
         } finally {
             handleCloseModal()
         }
