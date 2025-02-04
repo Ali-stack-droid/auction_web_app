@@ -11,8 +11,10 @@ import CustomButton from '../../custom-components/CustomButton';
 import CustomModal from '../../custom-components/CustomModal';
 import { useSetNewPasswordStyles } from './LoginStyles';  // Import the new styles
 import theme from '../../../theme';
+import { updatePassword } from '../../Services/Methods';
+import { ErrorMessage } from '../../../utils/ToastMessages';
 
-const SetNewPassword = ({ setIsAuthenticated }: any) => {
+const SetNewPassword = ({ email, otp }: any) => {
     const navigate = useNavigate();
     const classes = useSetNewPasswordStyles();  // Use the styles hook
 
@@ -40,13 +42,37 @@ const SetNewPassword = ({ setIsAuthenticated }: any) => {
         }),
         onSubmit: (values) => {
             setIsSubmitting(true);
-            setOpenModal(true);
-            setTimeout(() => {
-                navigate('/login'); // Navigate back to login after resetting password
-                setIsSubmitting(false);
-            }, 2000);
+            const payload = {
+                OTP: otp,
+                Email: email,
+                NewPassword: values.password
+            }
+            handleUpdatePassword(payload);
         },
     });
+
+    const handleUpdatePassword = async (payload: any) => {
+
+        try {
+            // Critical request:
+            let response: any = await updatePassword(payload)
+
+            if (response.data) {
+                setOpenModal(true);
+                setTimeout(() => {
+                    navigate('/login'); // Navigate back to login after resetting password
+                    setIsSubmitting(false);
+                }, 2000);
+            } else {
+                ErrorMessage("Couldn't reset password!")
+            }
+
+        } catch (error) {
+            ErrorMessage("Couldn't reset password!")
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
 
     const togglePasswordVisibility = () => {
         setShowPassword((prev) => !prev);

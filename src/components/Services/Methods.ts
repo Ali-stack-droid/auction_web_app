@@ -1,9 +1,10 @@
 import { getRequest, putRequest, postWithFormRequest, postRequest } from './index';
 
 export const SignInUser = (payload: LogInPayload) => getRequest(`/users/login?username=${payload.email}&password=${payload?.password}`)
-export const forgotPassword = (email: any) => putRequest(`/users/forgotpassword?email=${email}`)
-export const changePassword = (payload: FormData) => postWithFormRequest('/users/changepassword', payload);
-export const updatePassword = (payload: FormData) => postWithFormRequest('/users/updatepassword', payload);
+export const forgotPassword = (email: any) => putRequest(`/clients/forgotpassword?email=${email}`)
+export const verifyOtp = (payload: any) => postRequest('/clients/verifyotp', payload);
+export const updatePassword = (payload: any) => putRequest('/clients/updatepassword', payload);
+export const changePassword = (payload: any) => putRequest('/clients/changepassword', payload);
 
 
 // Dashboard Methods

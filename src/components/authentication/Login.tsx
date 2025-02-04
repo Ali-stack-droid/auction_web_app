@@ -14,6 +14,8 @@ const Login = ({ setIsAuthenticated }: any) => {
 
     const [currentComponent, setCurrentComponent]: any = useState(null);
     const [fadeIn, setFadeIn] = useState(false);
+    const [email, setEmail] = useState();
+    const [otp, setOtp] = useState();
 
     useEffect(() => {
         setFadeIn(false); // Trigger fade out
@@ -22,11 +24,11 @@ const Login = ({ setIsAuthenticated }: any) => {
             setCurrentComponent(() => {
                 switch (location.pathname) {
                     case '/forgot-password':
-                        return <ForgotPassword />;
+                        return <ForgotPassword setEmail={setEmail} />;
                     case '/reset-password':
-                        return <ResetPassword />;
+                        return <ResetPassword email={email} setOtp={setOtp} />;
                     case '/new-password':
-                        return <SetNewPassword />;
+                        return <SetNewPassword email={email} otp={otp} />;
                     default:
                         return <LoginForm setIsAuthenticated={setIsAuthenticated} />;
                 }
@@ -37,7 +39,7 @@ const Login = ({ setIsAuthenticated }: any) => {
         return () => clearTimeout(timer); // Clean up the timer
     }, [location.pathname]);
 
-  
+
 
     return (
         <Box className={classes.root}>

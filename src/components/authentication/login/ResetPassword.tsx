@@ -6,8 +6,10 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import theme from '../../../theme';
 import { useNavigate } from 'react-router-dom';
 import { useLoginStyles, useResetPasswordStyles } from './LoginStyles'; // Assuming LoginStyles is correctly exported
+import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
+import { verifyOtp } from '../../Services/Methods';
 
-const ResetPassword = () => {
+const ResetPassword = ({ email, setOtp }: any) => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [values, setValues] = useState(['', '', '', '']); // Array to hold 4-digit values
@@ -34,16 +36,26 @@ const ResetPassword = () => {
         }
     };
 
-    const handleFormSubmit = () => {
-        const code = values.join('');
-        setIsSubmitting(true);
-        setTimeout(() => {
-            if (code === '1234') navigate('/new-password');
-            else alert('Invalid code!');
-            setIsSubmitting(false);
-        }, 2000);
-    };
+    const handleFormSubmit = async () => {
+        const otp = values.join('');
 
+        if (otp.length !== 4) {
+            return ErrorMessage("Please enter a 4-digit OTP code.");
+        }
+        setIsSubmitting(true);
+        try {
+            const response = await verifyOtp({ OTP: otp, Email: email });
+            if (response?.data) {
+                setOtp(otp);
+                navigate('/new-password');
+                SuccessMessage("OTP verification successful.");
+            }
+        } catch (error) {
+            ErrorMessage("OTP verification failed. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     return (
         <Box className={loginClasses.componentContainer}>
             <Box width="100%" maxWidth={400}>

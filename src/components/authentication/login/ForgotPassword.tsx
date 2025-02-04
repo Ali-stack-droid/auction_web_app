@@ -8,8 +8,10 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useNavigate } from 'react-router-dom';
 import { useForgotPasswordStyles } from './LoginStyles';
 import theme from '../../../theme';
+import { ErrorMessage } from '../../../utils/ToastMessages';
+import { forgotPassword } from '../../Services/Methods';
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ setEmail }: any) => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const classes = useForgotPasswordStyles();
@@ -26,12 +28,26 @@ const ForgotPassword = () => {
         }),
         onSubmit: (values) => {
             setIsSubmitting(true);
-            setTimeout(() => {
-                setIsSubmitting(false);
-                navigate('/reset-password');
-            }, 2000);
+            handleForgotPassword(values.email)
         },
     });
+
+    const handleForgotPassword = async (email: any) => {
+        try {
+            // Critical request:
+            let response: any = await forgotPassword(email)
+            if (response.data.startsWith("OTP has been sent to:")) {
+                setEmail(email)
+                navigate('/reset-password');
+            } else {
+                ErrorMessage("Couldn't send email to " + email)
+            }
+        } catch (error) {
+            ErrorMessage("Couldn't send email to " + email)
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
 
     return (
         <Box className={classes.container}>
@@ -56,7 +72,7 @@ const ForgotPassword = () => {
                     onBlur={formik.handleBlur}
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
-                    placeholder="user123@gmail.com"
+                    placeholder="john123@gmail.com"
                 />
 
                 <CustomButton
