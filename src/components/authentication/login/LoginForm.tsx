@@ -51,8 +51,7 @@ const LoginForm = ({ setIsAuthenticated }: any) => {
                 setTimeout(() => {
                     setOpenModal(false)
                     navigate('/')
-                    sessionStorage.setItem('authToken', JSON.stringify('userloggedin'));
-                    // localStorage.setItem('token', 'qwerty')
+                    sessionStorage.setItem('email', JSON.stringify(payload.email));
                     setIsAuthenticated(true)
                 }, 2000);
             }

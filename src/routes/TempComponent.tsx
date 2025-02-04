@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const TempComponent = ({ setIsAuthenticated }: any) => {
     const navigate = useNavigate();
     useEffect(() => {
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('email');
         setIsAuthenticated(false);
         navigate('/')
     }, [])

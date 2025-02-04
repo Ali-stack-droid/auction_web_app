@@ -21,6 +21,7 @@ const ChangePasswordModal = ({ changePassword, setChangePassword }: any) => {
     // Formik setup
     const formik = useFormik({
         initialValues: {
+            oldPassword: '',
             password: '',
             confirmPassword: '',
         },
@@ -33,6 +34,7 @@ const ChangePasswordModal = ({ changePassword, setChangePassword }: any) => {
                 .matches(/[a-z]/, 'Password must include at least one lowercase letter')
                 .matches(/\d/, 'Password must include at least one number')
                 .matches(/[@$!%*?&]/, 'Password must include at least one special character')
+                .notOneOf([Yup.ref('oldPassword')], 'New password must not match old password')
                 .required('Password is required'),
             confirmPassword: Yup.string()
                 .oneOf([Yup.ref('password')], 'Passwords must match')
@@ -40,13 +42,17 @@ const ChangePasswordModal = ({ changePassword, setChangePassword }: any) => {
         }),
         onSubmit: (values) => {
             setIsSubmitting(true);
-            setTimeout(() => {
-                setIsSubmitting(false);
-            }, 2000);
+
+            const payload = {
+                Email: sessionStorage.getItem('email'),
+                OldPassword: values.oldPassword,
+                NewPassword: values.password
+            }
+            handleChangePassword(payload)
         },
     });
 
-    const handleUpdatePassword = async (payload: any) => {
+    const handleChangePassword = async (payload: any) => {
 
         try {
             // Critical request:
@@ -100,11 +106,11 @@ const ChangePasswordModal = ({ changePassword, setChangePassword }: any) => {
                                     variant="outlined"
                                     required
                                     name="oldPassword"
-                                    value={formik.values.password}
+                                    value={formik.values.oldPassword}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.password && Boolean(formik.errors.password)}
-                                    helperText={formik.touched.password && formik.errors.password}
+                                    error={formik.touched.oldPassword && Boolean(formik.errors.oldPassword)}
+                                    helperText={formik.touched.oldPassword && formik.errors.oldPassword}
                                     placeholder="**********"
                                     slotProps={{
                                         input: {
