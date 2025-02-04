@@ -30,7 +30,6 @@ const ProtectedRoute = ({ isAuthenticated, children }: any) => {
 };
 
 const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
-    const [selectedAuction, setSelectedAuction] = useState(0)
     return (
         <Box style={{ display: 'flex' }}>
             {/* Main Content Area */}
