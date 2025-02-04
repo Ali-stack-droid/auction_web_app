@@ -8,8 +8,6 @@ function App() {
 
   useEffect(() => {
     // Check authentication status from sessionStorage
-    sessionStorage.setItem('email', JSON.stringify('hassaanasim25@gmail.com'));
-
     const token = sessionStorage.getItem('email');
     setIsAuthenticated(!!token); // Set isAuthenticated based on token
     setLoading(false); // Authentication check complete
