@@ -3,12 +3,12 @@ import Routing from './routes/Routing';
 import { Box } from '@mui/material';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [loading, setLoading] = useState(true); // New loading state
 
   useEffect(() => {
     // Check authentication status from localStorage
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('authToken');
     setIsAuthenticated(!!token); // Set isAuthenticated based on token
     setLoading(false); // Authentication check complete
   }, []);
