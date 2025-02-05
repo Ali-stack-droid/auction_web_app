@@ -46,7 +46,7 @@ const Lots = ({ searchTerm }: any) => {
             setIsFetchingData(true)
             fetchLotsData();
         }
-    }, [filterLots, selectedLocation])
+    }, [filterLots])
 
     const fetchLotsData = async () => {
         try {
@@ -111,16 +111,23 @@ const Lots = ({ searchTerm }: any) => {
                 setPaginationedData([]);
             }
 
-            // const locationResponse = filterLots === 'current'
-            //     ? await getCurrentLocations()
-            //     : await getPastLocations();
+            const locationResponse = filterLots === 'current'
+                ? await getCurrentLocations()
+                : await getPastLocations();
 
-            // if (locationResponse.data && locationResponse.data.length > 0) {
-            //     const updatedLocation = locationResponse.data;
-            //     setLocations(updatedLocation);
-            // } else {
-            //     setLocations([]);
-            // }
+            if (filterLots === "all") {
+                const currentLocationsResponse = await getCurrentLocations();
+                const mergedLocations = [
+                    ...currentLocationsResponse.data,
+                    ...locationResponse.data
+                ];
+                setLocations(mergedLocations);
+            } else if (locationResponse.data && locationResponse.data.length > 0) {
+                const updatedLocation = locationResponse.data;
+                setLocations(updatedLocation);
+            } else {
+                setLocations([]);
+            }
 
             setIsFetchingData(false);
         } catch (error) {

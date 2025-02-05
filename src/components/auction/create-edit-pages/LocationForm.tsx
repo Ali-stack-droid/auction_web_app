@@ -36,17 +36,14 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
     const [countries, setCountries]: any = useState([]);
     const [states, setStates]: any = useState([]);
     const [cities, setCities]: any = useState([]);
-    const [addresses, setAddresses]: any = useState([]);
 
     const [countryId, setCountryId]: any = useState(0);
     const [stateId, setStateId]: any = useState(0);
     const [cityId, setCityId]: any = useState(0);
-    const [addressId, setAddressId]: any = useState(0);
 
     const [fetchingLocation, setIsFetchingLocation] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [cityOpen, setCityOpen] = useState(false);
-    const [addressOpen, setAddressOpen] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation()
@@ -54,7 +51,10 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
     const formik = useFormik({
         initialValues: {
             address: 'placeholder',
-            city: 'placeholder',
+            city: {
+                id: 0,
+                name: 'placeholder',
+            },
             zipCode: '',
             state: 'placeholder',
             country: 'placeholder',
@@ -65,7 +65,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
         },
         validationSchema: Yup.object({
             address: Yup.string().required('Address is required'),
-            city: Yup.string().required('City is required'),
+            city: Yup.object().nullable().required('City is required'),
             zipCode: Yup.string().required('Zip Code is required'),
             state: Yup.string().required('State is required'),
             country: Yup.string().required('Country is required'),
@@ -221,31 +221,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
     }, [stateId]);
 
-    // Handle address list
-    useEffect(() => {
-        const fetchAddressByCity = async () => {
-            setIsFetchingLocation(true);
-            try {
-                const response = await getAddressByCity(cityId);
-                const addressess = response.data;
-
-                if (addressess.length > 0) {
-                    setAddresses(addressess)
-                } else {
-                    setAddresses([])
-                }
-            } catch (error) {
-            } finally {
-                setIsFetchingLocation(false);
-            }
-        };
-
-        if (formik.values.city !== "placeholder" && formik.values.city !== "" && cityId !== 0) {
-            fetchAddressByCity();
-        }
-
-    }, [cityId]);
-
     const handleConfirmSubmission = () => {
         setLocationData(formData)
         setOpenConfirmModal(false);
@@ -376,47 +351,57 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                                     select
                                     fullWidth
                                     name="city"
-                                    value={formik.values.city}
-                                    // onChange={formik.handleChange}
+                                    value={formik.values.city?.id || ''} // Ensure value is an ID
                                     onChange={(e) => {
-                                        formik.handleChange(e);
-                                        setCityOpen(false); // Close the dropdown after selection
+                                        const selectedCity = cities.find((city: any) => city.id === parseInt(e.target.value));
+                                        if (selectedCity) {
+                                            formik.setFieldValue('city', { id: selectedCity.id, name: selectedCity.name }); // Store only id & name
+                                        }
+                                        setCityOpen(false);
                                     }}
                                     error={formik.touched.city && Boolean(formik.errors.city)}
-                                    helperText={formik.touched.city && formik.errors.city}
+                                    helperText={formik.touched.city && formik.errors.city?.name} // Extract name error message
                                     SelectProps={{
                                         open: cityOpen,
+                                        displayEmpty: true, // Allows showing placeholder text
+                                        renderValue: (selected) => {
+                                            if (!selected || selected === 0) {
+                                                return <Typography sx={{ opacity: 0.5 }}>Select City</Typography>; // Placeholder
+                                            }
+                                            const selectedCity = cities.find((city: any) => city.id === selected);
+                                            return selectedCity ? selectedCity.name : 'Select City'; // Show city name
+                                        },
                                         onOpen: () => {
                                             if (formik.values.state === 'placeholder') {
-                                                ErrorMessage('Please select a State first!')
-                                                setCityOpen(false); // Prevent opening
+                                                ErrorMessage('Please select a State first!');
+                                                setCityOpen(false);
                                             } else {
-                                                setCityOpen(true); // Allow opening
+                                                setCityOpen(true);
                                             }
                                         },
-                                        onClose: () => setCityOpen(false), // Close dropdown when user clicks away
+                                        onClose: () => setCityOpen(false),
                                     }}
                                     sx={{
                                         '& .MuiSelect-icon': {
-                                            color: '#A0AEC0', // Set the color of the arrow icon
+                                            color: '#A0AEC0',
                                         },
                                     }}
                                 >
-                                    <MenuItem value="placeholder" sx={{ display: 'none' }}>
+                                    <MenuItem value={0} sx={{ display: 'none' }}>
                                         <Typography sx={{ opacity: 0.5 }}>Select City</Typography>
                                     </MenuItem>
-                                    {!cities.length &&
-                                        <MenuItem value="placeholder" sx={{ pointerEvents: 'none' }}>
-                                            <Typography sx={{ opacity: 0.5 }}> No City Found</Typography>
+                                    {!cities.length && (
+                                        <MenuItem value={0} sx={{ pointerEvents: 'none' }}>
+                                            <Typography sx={{ opacity: 0.5 }}>No City Found</Typography>
                                         </MenuItem>
-                                    }
-                                    {cities.map((item: any, index: number) => (
-                                        <MenuItem value={"city-" + index} onClick={() => setCityId(item.id)} >
+                                    )}
+                                    {cities.map((item: any) => (
+                                        <MenuItem key={item.id} value={item.id}>
                                             {item.name}
-                                            {/* {cityOpen && <Typography component="span" sx={{ opacity: 0.5, ml: 1 }}>({item.locations})</Typography>} */}
                                         </MenuItem>
                                     ))}
                                 </CustomTextField>
+
                             </Box>
 
                         </Box>

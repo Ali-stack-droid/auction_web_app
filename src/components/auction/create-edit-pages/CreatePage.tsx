@@ -50,16 +50,16 @@ const CreatePage = ({ type }: any) => {
                 PrevEndDate: formatDate(auctionData.auctionPreviewEndDate),
                 PrevStartTime: formatTime(auctionData.auctionPreviewStartTime),
                 PrevEndTime: formatTime(auctionData.auctionPreviewEndTime),
-                Country: locationData.country,
-                State: locationData.state,
+                CityID: locationData.city.id,
                 ZipCode: locationData.zipCode,
-                City: locationData.city,
-                Address: locationData.address,
                 ShippingMethod: true,
                 PaymentTerms: locationData.paymentTerms,
                 TermsConditions: locationData.termsAndConditions,
                 CreatedAt: formatDate(auctionData.auctionPreviewStartDate),
                 UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
+                CheckOutDate: formatDate(auctionData.checkoutDate),
+                CheckOutTime: formatTime(auctionData.checkoutTime),
+                Address: locationData.address,
             };
             createNewAuction(updatedData)
         }
@@ -82,16 +82,16 @@ const CreatePage = ({ type }: any) => {
                 PrevEndDate: formatDate(auctionData.auctionPreviewEndDate),
                 PrevStartTime: formatTime(auctionData.auctionPreviewStartTime),
                 PrevEndTime: formatTime(auctionData.auctionPreviewEndTime),
-                Country: locationData.country,
-                State: locationData.state,
+                CityID: locationData.city.id,
                 ZipCode: locationData.zipCode,
-                City: locationData.city,
-                Address: locationData.address,
                 ShippingMethod: true,
                 PaymentTerms: locationData.paymentTerms,
                 TermsConditions: locationData.termsAndConditions,
                 CreatedAt: formatDate(auctionData.auctionPreviewStartDate),
                 UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
+                CheckOutDate: formatDate(auctionData.checkoutDate),
+                CheckOutTime: formatTime(auctionData.checkoutTime),
+                Address: locationData.address,
             };
             updateAuction(updatedData)
         }
