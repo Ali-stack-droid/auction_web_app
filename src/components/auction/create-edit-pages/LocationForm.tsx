@@ -39,7 +39,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
     const [countryId, setCountryId]: any = useState(0);
     const [stateId, setStateId]: any = useState(0);
-    const [cityId, setCityId]: any = useState(0);
 
     const [fetchingLocation, setIsFetchingLocation] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);

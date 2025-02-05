@@ -27,8 +27,6 @@ import {
 } from '@mui/icons-material';
 import CustomNotifications from '../../custom-components/CustomNotifications';
 import { useLocation, useNavigate } from 'react-router-dom';
-import CustomButton from '../../custom-components/CustomButton';
-import { useFormik } from 'formik';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import ChangePasswordModal from './ChangePasswordModal';
 
