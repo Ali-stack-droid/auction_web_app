@@ -32,6 +32,16 @@ const Lots = ({ searchTerm }: any) => {
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
     // const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
 
+    const parseDateTime = (lot: any) => {
+        const [startDate, endDate] = lot.details.date.split(' to ');
+        const [startTime, endTime] = lot.details.time.split(' to ');
+
+        return {
+            startDateTime: new Date(`${startDate} ${startTime}`),
+            endDateTime: new Date(`${endDate} ${endTime}`),
+        };
+    };
+
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true)
@@ -75,8 +85,21 @@ const Lots = ({ searchTerm }: any) => {
                 // Filter data based on isCurrentLot condition
                 let latestData = [];
 
+                let filteredLots = updatedData.filter((lot: any) => {
+
+                    const { endDateTime } = parseDateTime(lot);
+                    const now = new Date();
+                    const remainingTime = endDateTime.getTime() - now.getTime();
+                    const notEnded = remainingTime > 0;
+                    console.log(lot.id, " - ", notEnded)
+
+                    return notEnded && !lot.isSold; // Keep only current lots
+                });
+
+                console.log(filteredLots)
+
                 if (filterLots !== 'all') {
-                    latestData = updatedData.filter((lot: any) => {
+                    latestData = filteredLots.filter((lot: any) => {
                         if (filterLots === 'current') {
                             return !lot.isPast; // Keep only current lots
                         } else {
@@ -86,8 +109,8 @@ const Lots = ({ searchTerm }: any) => {
                     setFilteredData(latestData);
                     setPaginationedData(latestData);
                 } else {
-                    setFilteredData(updatedData);
-                    setPaginationedData(updatedData);
+                    setFilteredData(filteredLots);
+                    setPaginationedData(filteredLots);
                 }
 
             } else {

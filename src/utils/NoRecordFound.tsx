@@ -18,7 +18,7 @@ const NoRecordFound = () => {
                     />
                 </Box>
                 <Typography variant="h6" color="textSecondary">
-                    No record found.
+                    No record found!
                 </Typography>
             </Box>
 
