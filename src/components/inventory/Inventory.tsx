@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CustomDialogue from '../custom-components/CustomDialogue';
-import { deleteLot, getInventoryLots } from '../Services/Methods';
+import { deleteLot, getCurrentLocations, getInventoryLots, getPastLocations } from '../Services/Methods';
 
 import NoRecordFound from '../../utils/NoRecordFound';
 import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
@@ -18,7 +18,6 @@ import PaginationButton from '../auction/auction-components/PaginationButton';
 
 
 const Lots = ({ searchTerm }: any) => {
-    const [isCurrentLot, setIsCurrentLot] = useState(true); // Toggle between Current and Past Lots
     const [filterLots, setFilterLots] = useState('all');
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
 
@@ -28,9 +27,9 @@ const Lots = ({ searchTerm }: any) => {
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const [locations, setLocations]: any = useState([]);
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
-    // const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
 
     const parseDateTime = (lot: any) => {
         const [startDate, endDate] = lot.details.date.split(' to ');
@@ -47,7 +46,7 @@ const Lots = ({ searchTerm }: any) => {
             setIsFetchingData(true)
             fetchLotsData();
         }
-    }, [filterLots])
+    }, [filterLots, selectedLocation])
 
     const fetchLotsData = async () => {
         try {
@@ -82,21 +81,15 @@ const Lots = ({ searchTerm }: any) => {
                     },
                 }));
 
-                // Filter data based on isCurrentLot condition
                 let latestData = [];
 
                 let filteredLots = updatedData.filter((lot: any) => {
-
                     const { endDateTime } = parseDateTime(lot);
                     const now = new Date();
                     const remainingTime = endDateTime.getTime() - now.getTime();
                     const notEnded = remainingTime > 0;
-                    console.log(lot.id, " - ", notEnded)
-
-                    return notEnded && !lot.isSold; // Keep only current lots
+                    return notEnded && !lot.isSold; // Keep only active lots
                 });
-
-                console.log(filteredLots)
 
                 if (filterLots !== 'all') {
                     latestData = filteredLots.filter((lot: any) => {
@@ -118,7 +111,7 @@ const Lots = ({ searchTerm }: any) => {
                 setPaginationedData([]);
             }
 
-            // const locationResponse = isCurrentAuction
+            // const locationResponse = filterLots === 'current'
             //     ? await getCurrentLocations()
             //     : await getPastLocations();
 
@@ -138,17 +131,11 @@ const Lots = ({ searchTerm }: any) => {
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
-        // const newFilteredData = lotsData.filter((lot) => {
-        //     const matchesLocation = selectedLocation ? lot.location === selectedLocation : true;
-        //     return matchesLocation;
-        // });
         setFadeIn(false); // Trigger fade-out
         setTimeout(() => {
             setFadeIn(true); // Trigger fade-in after filtering
-            // setFilteredData(filteredData);
-            // setPaginationedData(filteredData)
         }, 200);
-    }, [isCurrentLot, selectedLocation, paginationedData]);
+    }, [filterLots, selectedLocation, paginationedData]);
 
     // Open confirmation modal
     const handleDeleteLot = (id: number) => {
@@ -178,7 +165,7 @@ const Lots = ({ searchTerm }: any) => {
 
     // Handle Edit
     const handleEdit = (id: number) => {
-        // navigate(`edit/${id}`); // Navigate to the edit route with lot ID
+        navigate(`/auction/lots/edit?lotId=${id}`); // Navigate to the edit route with lot ID
     };
 
     const handleDelete = async (id: number) => {
@@ -214,11 +201,11 @@ const Lots = ({ searchTerm }: any) => {
         <Box sx={{ padding: 2 }}>
             <AuctionHeader
                 headerType={"inventory"}
-                isCurrent={isCurrentLot}
+                isCurrent={filterLots === 'current'}
                 onToggle={handleToggle}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
-                locations={[]}
+                locations={locations}
                 filterLots={filterLots}
             />
             <Box sx={{ minHeight: "500px" }}>
