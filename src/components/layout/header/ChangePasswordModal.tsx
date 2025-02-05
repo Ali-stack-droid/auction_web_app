@@ -9,7 +9,7 @@ import useHeaderStyles from './HeaderStyles'
 import * as Yup from 'yup';
 import { changePassword } from '../../Services/Methods'
 import { useNavigate } from 'react-router-dom'
-import { ErrorMessage } from '../../../utils/ToastMessages'
+import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages'
 
 const ChangePasswordModal = ({ changePasswordOpen, setChangePasswordOpen }: any) => {
     const classes = useHeaderStyles();
@@ -61,8 +61,9 @@ const ChangePasswordModal = ({ changePasswordOpen, setChangePasswordOpen }: any)
             if (response.data) {
                 // setOpenModal(true);
                 setTimeout(() => {
-                    navigate('/login'); // Navigate back to login after resetting password
                     setIsSubmitting(false);
+                    setChangePasswordOpen(false);
+                    SuccessMessage("Password changed successfully!");
                 }, 2000);
             } else {
                 ErrorMessage("Couldn't reset password!")
