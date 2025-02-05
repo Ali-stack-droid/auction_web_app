@@ -7,11 +7,11 @@ import CustomTextField from '../../custom-components/CustomTextField'
 import { useFormik } from 'formik'
 import useHeaderStyles from './HeaderStyles'
 import * as Yup from 'yup';
-import { changePassword, updatePassword } from '../../Services/Methods'
+import { changePassword } from '../../Services/Methods'
 import { useNavigate } from 'react-router-dom'
 import { ErrorMessage } from '../../../utils/ToastMessages'
 
-const ChangePasswordModal = ({ changePassword, setChangePassword }: any) => {
+const ChangePasswordModal = ({ changePasswordOpen, setChangePasswordOpen }: any) => {
     const classes = useHeaderStyles();
     const navigate = useNavigate()
 
@@ -56,7 +56,7 @@ const ChangePasswordModal = ({ changePassword, setChangePassword }: any) => {
 
         try {
             // Critical request:
-            let response: any = await updatePassword(payload)
+            let response: any = await changePassword(payload)
 
             if (response.data) {
                 // setOpenModal(true);
@@ -80,7 +80,7 @@ const ChangePasswordModal = ({ changePassword, setChangePassword }: any) => {
     };
 
     return (
-        <Dialog open={changePassword} onClose={() => setChangePassword(false)} maxWidth="sm"
+        <Dialog open={changePasswordOpen} onClose={() => setChangePasswordOpen(false)} maxWidth="sm"
             PaperProps={{ sx: { borderRadius: "20px" } }}
         >
             <Box className={classes.dialogue}>

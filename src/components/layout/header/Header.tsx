@@ -43,7 +43,7 @@ const Header = ({ searchTerm, setSearchTerm }: any) => {
     const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
 
     // change password states:
-    const [changePassword, setChangePassword] = useState(false);
+    const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
     const handleNotificationClick = (event: any) => {
         setNotificationMenuAnchor(event.currentTarget);
@@ -75,7 +75,7 @@ const Header = ({ searchTerm, setSearchTerm }: any) => {
     };
 
     const handleChangePassword = () => {
-        setChangePassword(true)
+        setChangePasswordOpen(true)
         handleProfileClose();
     }
 
@@ -164,7 +164,7 @@ const Header = ({ searchTerm, setSearchTerm }: any) => {
                     </Box>
                 </Box>
             </Toolbar >
-            <ChangePasswordModal changePassword={changePassword} setChangePassword={setChangePassword} />
+            <ChangePasswordModal changePasswordOpen={changePasswordOpen} setChangePasswordOpen={setChangePasswordOpen} />
         </Box >
     );
 };
