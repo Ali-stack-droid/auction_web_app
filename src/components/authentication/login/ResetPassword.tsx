@@ -63,7 +63,7 @@ const ResetPassword = ({ email, setOtp }: any) => {
                     Password Reset
                 </Typography>
                 <Typography variant="body1" fontSize={15} mb={2}>
-                    We sent a code to “user123@gmail.com”. Please enter the code below.
+                    We sent a code to “{email}”. Please enter the code below.
                 </Typography>
                 <Box className={classes.codeInputContainer}>
                     {values.map((value, index) => (

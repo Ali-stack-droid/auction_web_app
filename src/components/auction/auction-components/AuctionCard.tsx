@@ -8,7 +8,7 @@ import { getQueryParam } from '../../../helper/GetQueryParam';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
-import { setFeaturedLots } from '../../Services/Methods';
+import { setFeaturedAuctions, setFeaturedLots } from '../../Services/Methods';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
 
 const AuctionCard = ({
@@ -26,7 +26,9 @@ const AuctionCard = ({
     const [moveLotId, setMoveLotId] = useState(0)
 
     const [moveModalOpen, setMoveModalOpen] = useState(false)
-    const [isFeatured, setIsFeatured] = useState(cardData.isFeatured)
+    const [isFeatured, setIsFeatured] = useState(cardData.isFeatured);
+    const [isFeaturedAuction, setIsFeaturedAuction] = useState(cardData.isFeatured)
+
     // const isFeatured = cardData.isFeatured;
 
     // const [moveDialogue, setMoveDialogue] = useState(false)
@@ -72,8 +74,23 @@ const AuctionCard = ({
                 response.data === "Selected Lot Featured..." ?
                     SuccessMessage('Lot featured successfully!') :
                     SuccessMessage('Lot unfeatured successfully!')
-
                 setIsFeatured(!isFeatured)
+            }
+        }
+        catch {
+            ErrorMessage('Only 3 lots can be fetured. Please unfeature a lot first!')
+        }
+
+    }
+
+    const handleFeaturedAuction = async (id: any) => {
+        try {
+            const response = await setFeaturedAuctions(id);
+            if (response) {
+                response.data.IsFeatured ?
+                    SuccessMessage('Auction featured successfully!') :
+                    SuccessMessage('Auction unfeatured successfully!')
+                setIsFeaturedAuction(!isFeaturedAuction)
             }
         }
         catch {
@@ -229,18 +246,27 @@ const AuctionCard = ({
                                 </Button>
                                 : headerType === "lots" && !cardData?.isPast ?
                                     <Tooltip title={isFeatured ? "Click to unfeature" : "Click to feature"}>
-                                        {/* <Button className={classes.joinButton} variant="outlined" size="small" color="primary" onClick={() => handleFeaturedLot(cardData.id)}>
-                                            {isFeatured ? "Featured" : "Unfeatured"}
-                                        </Button> */}
                                         <FormControlLabel
                                             control={
                                                 <Switch checked={isFeatured}
-                                                    onChange={() => handleFeaturedLot(cardData.id)} />
+                                                    onChange={() => handleFeaturedLot(cardData.id)}
+                                                />
                                             }
                                             label={isFeatured ? "Featured" : "Unfeatured"}
                                         />
                                     </Tooltip>
-                                    : null
+                                    : headerType === "auction" && !cardData?.isPast ?
+                                        <Tooltip title={isFeaturedAuction ? "Click to unfeature" : "Click to feature"}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Switch checked={isFeaturedAuction}
+                                                        onChange={() => handleFeaturedAuction(cardData.id)}
+                                                    />
+                                                }
+                                                label={isFeaturedAuction ? "Featured" : "Unfeatured"}
+                                            />
+                                        </Tooltip>
+                                        : null
                     }
                 </Box>
             </Box>

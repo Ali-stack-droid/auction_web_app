@@ -55,6 +55,8 @@ const Auction = ({ searchTerm }: any) => {
                     id: item.Id,
                     name: item.Name,
                     image: item.Image,
+                    isFeatured: item.IsFeatured,
+                    isPast: item.IsPast,
                     details: {
                         location: `${item.City}, ${item.Country}`,
                         dateRange: `${item.StartDate} to ${item.EndDate}`,
