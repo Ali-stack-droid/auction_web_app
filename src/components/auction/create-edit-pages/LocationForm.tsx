@@ -49,7 +49,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
     const formik = useFormik({
         initialValues: {
-            address: 'placeholder',
+            address: '',
             city: {
                 id: 0,
                 name: 'placeholder',
