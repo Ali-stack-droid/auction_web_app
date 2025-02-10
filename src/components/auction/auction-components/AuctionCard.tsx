@@ -94,7 +94,7 @@ const AuctionCard = ({
             }
         }
         catch {
-            ErrorMessage('Only 3 lots can be fetured. Please unfeature a lot first!')
+            ErrorMessage('Only 3 auctions can be fetured. Please unfeature a lot first!')
         }
 
     }

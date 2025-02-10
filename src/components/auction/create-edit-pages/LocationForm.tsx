@@ -57,7 +57,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
             zipCode: '',
             state: 'placeholder',
             country: 'placeholder',
-            buyerPremium: 'placeholder',
+            buyerPremium: '',
             paymentTerms: '',
             shippingMethod: 'Shipping',
             termsAndConditions: '',
@@ -83,8 +83,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
         }
     });
 
-
-
     useEffect(() => {
         const auctionId = getQueryParam('aucId');
         if (auctionId) {
@@ -99,17 +97,18 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                         const formattedAuctionDetails = {
                             country: auction.Country || 'placeholder',
                             state: auction.State || 'placeholder',
-                            city: auction.City || { id: 0, name: 'placeholder', },
+                            city: { id: auction.CityID || 0, name: auction.City || 'placeholder' },
                             address: auction.Address || 'placeholder',
                             zipCode: auction.ZipCode || '',
                             buyerPremium: lot.BuyerPremium || 'placeholder',
                             paymentTerms: auction.PaymentTerms || '',
-                            shippingMethod: auction.ShippingMethod || 'Shipping',
-                            termsAndConditions: auction.TermsAndConditions || '',
+                            shippingMethod: auction.ShippingMethod ? 'Shipping' : 'Pickup',
+                            termsAndConditions: auction.TermsConditions || '',
                         };
 
                         setCountryId(1);
                         // Populate formik fields
+                        console.log(formattedAuctionDetails)
                         formik.setValues(formattedAuctionDetails);
 
                     } else {

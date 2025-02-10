@@ -31,7 +31,10 @@ const AuctionHeader = ({
     };
 
     const handleAddClick = () => {
-        if (headerType === "auction" || headerType === "live") {
+        if (headerType === "auction") {
+            navigate('/auction/create')
+        } else if (headerType === "live") {
+            localStorage.setItem('isLive', 'true');
             navigate('/auction/create')
         } else {
             const selectedAuction = getQueryParam('aucId');

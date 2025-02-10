@@ -6,28 +6,32 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
-import { createLot } from '../../Services/Methods';
+import { createLot, getLotDetailsById } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
-import { formatDate, formatTime } from '../../../utils/Format';
+import { formatDate, formatDateInput, formatTime, formatTimeInput } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
 import CustomDialogue from '../../custom-components/CustomDialogue';
 import LotsTable from '../auction-components/LotsTable';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // redux imports
 import { getQueryParam } from '../../../helper/GetQueryParam';
 
 const AddLot = () => {
+
     const [file, setFile] = useState(null)
     const [lots, setLots]: any = useState([])
     const [confirmModal, setConfirmModal] = useState(false);
     const [submissionAttempt, setSubmissionAttempt] = useState(false);
     const [isCancelOpen, setIsCancelOpen] = useState(false);
     const [saveModal, setSaveModal] = useState(false);
+    const [isFetchingData, setIsFetchingData] = useState(false);
 
     const classes = useCreateAuctionStyles();
     const navigate = useNavigate();
+    const location = useLocation();
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+    const isEdit = location.pathname === '/auction/lots/edit';
 
     const formik = useFormik({
         initialValues: {
@@ -110,11 +114,59 @@ const AddLot = () => {
 
             const formattedLots = [...lots, newLot];
             setLots(formattedLots)
-            createNewLot(newLot);
-            formik.resetForm();
+            handleFormSubmission(newLot);
+            if (!isEdit)
+                formik.resetForm();
         },
     });
 
+    useEffect(() => {
+        const lotId = getQueryParam('lotId');
+        if (lotId) {
+            setIsFetchingData(true);
+            const fetchAuctionDetails = async () => {
+                try {
+                    const response = await getLotDetailsById(lotId);
+                    const images = response.data.Images;
+                    const bidsRange = response.data.BidsRange?.map((bid: any) => ({
+                        startAmount: bid.StartAmount,
+                        endAmount: bid.EndAmount,
+                        bidRangeAmount: bid.BidRange
+                    }))
+                    const lot = response.data.Lot;
+
+                    if (lot) {
+                        const formattedLot: any = {
+                            orderNumber: lot.OrderNo,
+                            lotNumber: lot.LotNo,
+                            category: lot.Category,
+                            subCategory: lot.SubCategory,
+                            lead: lot.ShortDescription,
+                            description: lot.LongDescription,
+                            startDate: formatDateInput(lot.StartDate),
+                            startTime: formatTimeInput(lot.StartTime),
+                            endDate: formatDateInput(lot.EndDate),
+                            endTime: formatTimeInput(lot.EndTime),
+                            internalNotes: lot.InternalNotes || '',
+                            auctionImage: lot.Image,
+                            bidsRange: bidsRange
+                        };
+
+                        // Populate formik fields
+                        formik.setValues(formattedLot);
+
+                    } else {
+                        ErrorMessage('Lot data not found');
+                    }
+                } catch (error) {
+                } finally {
+                    setIsFetchingData(false);
+                }
+            };
+
+            fetchAuctionDetails();
+        }
+    }, []);
 
     useEffect(() => {
         if (formik.errors && Object.keys(formik.errors).length > 0) {
@@ -127,7 +179,7 @@ const AddLot = () => {
         }
     }, [submissionAttempt]);
 
-    const createNewLot = async (payload: any) => {
+    const handleFormSubmission = async (payload: any) => {
         const formData = new FormData();
         formData.append("payload", JSON.stringify(payload));
         if (file) {
@@ -135,13 +187,18 @@ const AddLot = () => {
             setFile(null);
         }
 
-        createLot(formData)
-            .then((response) => {
-                SuccessMessage('Lot created successfully!');
-            })
-            .catch((error) => {
-                ErrorMessage('Error creating lot!');
-            });
+        if (isEdit) {
+            ErrorMessage('This feature will be available soon!');
+        } else {
+
+            createLot(formData)
+                .then((response) => {
+                    SuccessMessage('Lot created successfully!');
+                })
+                .catch((error) => {
+                    ErrorMessage('Error creating lot!');
+                });
+        }
     };
 
     const handleConfirmAddLot = () => {
@@ -163,15 +220,16 @@ const AddLot = () => {
 
     return (
         <Box p={2}>
-
-            <Typography className={classes.title}>Create New Lot</Typography>
+            <Typography className={classes.title}>{getQueryParam('lotId') ? "Edit Lot" : "Create New Lot"}</Typography>
             <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingBottom: 3 }}>
                 <Box >
                     <Typography className={classes.location}>Lots:</Typography>
                 </Box>
-                <Button variant={"contained"} onClick={() => setConfirmModal(true)} sx={{ textTransform: 'none' }}>
-                    Add Another Lot
-                </Button>
+                {!getQueryParam('lotId') &&
+                    <Button variant={"contained"} onClick={() => setConfirmModal(true)} sx={{ textTransform: 'none' }}>
+                        Add Another Lot
+                    </Button>
+                }
             </Box>
 
             {lots?.length > 0 &&
@@ -384,11 +442,11 @@ const AddLot = () => {
                             color="primary"
                             onClick={() => {
                                 if (Object.keys(formik.errors).length === 0) {
-                                    setSaveModal(true);
+                                    if (!isEdit) setSaveModal(true);
                                 }
                             }}
                         >
-                            Confirm
+                            {isEdit ? "Update Lot" : "Confirm"}
                         </Button>
                     </Box>
                 </Box>
@@ -409,7 +467,7 @@ const AddLot = () => {
             <CustomDialogue
                 type={"create"}
                 title={"Cancel Auction Creation?"}
-                message={"Are you sure you want to cancel creating the current lot?"}
+                message={`Are you sure you want to cancel ${isEdit ? 'editing' : 'creating'} the current lot?`}
                 openDialogue={isCancelOpen}
                 handleCloseModal={() => setIsCancelOpen(false)}
                 handleConfirmModal={handleCancelConfirmation}

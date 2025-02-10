@@ -35,13 +35,14 @@ const CreatePage = ({ type }: any) => {
 
     useEffect(() => {
         if ((isSubmitted || isSubmittedByLot) && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
+            const isLiveAuction = localStorage.getItem("isLive");
             const updatedData = {
                 Name: auctionData.auctionName,
                 Type: auctionData.auctionType,
                 Image: "https://example.com/image.jpg",
                 Description: auctionData.description,
                 Notes: "Test Notes",
-                LiveStreaming: auctionData.liveStreaming,
+                LiveStreaming: isLiveAuction === "true" ? true : false,
                 StartDate: formatDate(auctionData.startDate),
                 EndDate: formatDate(auctionData.endDate),
                 StartTime: formatTime(auctionData.startTime),
@@ -61,6 +62,9 @@ const CreatePage = ({ type }: any) => {
                 CheckOutTime: formatTime(auctionData.checkoutTime),
                 Address: locationData.address,
             };
+            if (isLiveAuction) {
+                localStorage.removeItem("isLive");
+            }
             createNewAuction(updatedData)
         }
     }, [isSubmitted, isSubmittedByLot])
