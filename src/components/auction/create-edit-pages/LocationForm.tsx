@@ -93,20 +93,22 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                 try {
                     const response = await getAuctionDetailById(auctionId);
                     const auction = response.data.Auction;
+                    const lot = response.data.Lots[0];
 
                     if (auction) {
                         const formattedAuctionDetails = {
-                            address: auction.Address || 'placeholder',
-                            city: auction.City || 'placeholder',
-                            zipCode: auction.ZipCode || '',
-                            state: auction.State || 'placeholder',
                             country: auction.Country || 'placeholder',
-                            buyerPremium: auction.BuyerPremium || 'placeholder',
+                            state: auction.State || 'placeholder',
+                            city: auction.City || { id: 0, name: 'placeholder', },
+                            address: auction.Address || 'placeholder',
+                            zipCode: auction.ZipCode || '',
+                            buyerPremium: lot.BuyerPremium || 'placeholder',
                             paymentTerms: auction.PaymentTerms || '',
                             shippingMethod: auction.ShippingMethod || 'Shipping',
                             termsAndConditions: auction.TermsAndConditions || '',
                         };
 
+                        setCountryId(1);
                         // Populate formik fields
                         formik.setValues(formattedAuctionDetails);
 
@@ -176,6 +178,9 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                         countries: item.Countries,
                     }));
                     setStates(updatedStates)
+                    if (getQueryParam('aucId')) {
+                        setStateId(updatedStates.find((state: any) => state.name === formik.values.state).id)
+                    }
                 } else {
                     setStates([])
                 }
@@ -204,7 +209,13 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                         stateId: item.StateID,
                         states: item.States,
                     }));
-                    setCities(updatedCities)
+                    setCities(updatedCities);
+                    // if (getQueryParam('aucId')) {
+                    //     formik.setFieldValue('city', {
+                    //         id: updatedCities.find((city: any) => city.name === formik.values.city.name).id,
+                    //         name: updatedCities.find((city: any) => city.name === formik.values.city.name).name
+                    //     });
+                    // }
                 } else {
                     setCities([])
                 }
@@ -254,7 +265,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
     return (
         <Box>
-            <Typography className={classes.title}>Create New Auction</Typography>
+            <Typography className={classes.title}>{getQueryParam('aucId') ? "Edit Auction" : "Create New Auction"}</Typography>
             <Typography className={classes.location}>Location</Typography>
             {!isFetchingData ?
                 <form onSubmit={formik.handleSubmit}>
