@@ -15,7 +15,7 @@ const AuctionDetails = ({ auctionDetails }: any) => {
                 <Box className={classes.iconText}>
                     <PlaceIcon fontSize="small" color="primary" />
                     <Typography className={classes.text}>
-                        {auctionDetails.address.length > 30 ? `${auctionDetails.address.substring(0, 30)}...` : auctionDetails.address}
+                        {auctionDetails.address?.length > 30 ? `${auctionDetails?.address.substring(0, 30)}...` : auctionDetails?.address}
                     </Typography>
                 </Box>
                 {/* Date Range */}

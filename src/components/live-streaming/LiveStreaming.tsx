@@ -48,6 +48,7 @@ const LiveStreaming = () => {
                     description: item.Description,
                     isLive: item.LiveStreaming,
                     details: {
+                        address: item.Address,
                         location: `${item.City}, ${item.Country}`,
                         dateRange: `${item.StartDate} to ${item.EndDate}`,
                         lotsAvailable: item.TotalLots // Replace with actual data if available
