@@ -1,21 +1,31 @@
 import { useEffect, useState } from 'react';
 import Routing from './routes/Routing';
 import { Box } from '@mui/material';
+import { io } from 'socket.io-client';
+
+const socket = io('ws://localhost:8181');
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); // New loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication status from sessionStorage
-    // sessionStorage.setItem('email', 'hassaan@gmail.com');
+    try {
+      socket.on('connect', () => {
+
+        console.log('Connected to socket server');
+      });
+    } catch (error) {
+      console.log("socket error ==", JSON.stringify(error, null, 2));
+    }
+
+    sessionStorage.setItem('email', 'hassaan@gmail.com');
     const token = sessionStorage.getItem('email');
-    setIsAuthenticated(!!token); // Set isAuthenticated based on token
-    setLoading(false); // Authentication check complete
+    setIsAuthenticated(!!token);
+    setLoading(false);
   }, []);
 
   if (loading) {
-    // Show a loader until authentication is verified
     return <Box>Loading...</Box>
   }
 
