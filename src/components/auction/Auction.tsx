@@ -58,11 +58,13 @@ const Auction = ({ searchTerm }: any) => {
                     isFeatured: item.IsFeatured,
                     isPast: item.IsPast,
                     details: {
+                        address: item.Address,
                         location: `${item.City}, ${item.Country}`,
                         dateRange: `${item.StartDate} to ${item.EndDate}`,
                         lotsAvailable: item.TotalLots // Replace with actual data if available
                     }
                 }));
+                console.log(updatedData)
                 setFilteredData(updatedData);
                 setPaginationedData(updatedData)
             } else {
