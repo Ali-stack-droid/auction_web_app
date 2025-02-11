@@ -6,6 +6,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
 import CustomTextField from '../../custom-components/CustomTextField';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const AuctionHeader = ({
     headerType = 'auction', // Default to 'auction'
@@ -133,6 +135,10 @@ const AuctionHeader = ({
                                 </MenuItem>
                             ))}
                         </Menu>
+                        {selectedLocation && (
+                            <IconButton onClick={() => setSelectedLocation(null)}>
+                                <CloseIcon style={{ color: 'red' }} />
+                            </IconButton>)}
                     </React.Fragment>
                 }
             </Box>
