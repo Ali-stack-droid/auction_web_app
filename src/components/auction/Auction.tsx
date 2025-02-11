@@ -32,22 +32,36 @@ const Auction = ({ searchTerm }: any) => {
         if (!isFetchingData) {
             setIsFetchingData(true)
             fetchAuctionData();
-
         }
-    }, [isCurrentAuction, selectedLocation])
+    }, [isCurrentAuction])
+
+    useEffect(() => {
+        if (selectedLocation) {
+            setPaginationedData(filteredData.filter((item: any) => item.details.address === selectedLocation))
+        } else {
+            setPaginationedData(filteredData)
+        }
+    }, [selectedLocation])
+
 
     const fetchAuctionData = async () => {
         try {
             // Critical request:
             let response;
+            // if (isCurrentAuction) {
+            //     response = selectedLocation
+            //         ? await getCurrentAuctionsByLocation(selectedLocation)
+            //         : await getCurrentAuctions()
+            // } else {
+            //     response = selectedLocation
+            //         ? await getPastAuctionsByLocation(selectedLocation)
+            //         : await getPastAuctions();
+            // }
+
             if (isCurrentAuction) {
-                response = selectedLocation
-                    ? await getCurrentAuctionsByLocation(selectedLocation)
-                    : await getCurrentAuctions()
+                response = await getCurrentAuctions()
             } else {
-                response = selectedLocation
-                    ? await getPastAuctionsByLocation(selectedLocation)
-                    : await getPastAuctions();
+                response = await getPastAuctions();
             }
 
             if (response.data && response.data.length > 0) {
