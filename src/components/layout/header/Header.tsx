@@ -37,6 +37,8 @@ const Header = ({ searchTerm, setSearchTerm }: any) => {
     const navigate = useNavigate()
     const location = useLocation();
 
+    const user: any = sessionStorage.getItem('email');
+
     const [notificationMenuAnchor, setNotificationMenuAnchor] = useState(null);
     const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
 
@@ -137,7 +139,7 @@ const Header = ({ searchTerm, setSearchTerm }: any) => {
 
                         {/* User Avatar */}
                         <IconButton onClick={handleProfileClick}>
-                            <Avatar alt="Admin" src="/static/images/avatar/1.jpg" className={classes.avatar} />
+                            <Avatar alt={user ? user : "Admin"} src="/static/images/avatar/1.jpg" className={classes.avatar} />
                         </IconButton>
                         <Menu
                             anchorEl={profileMenuAnchor}
