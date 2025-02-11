@@ -53,10 +53,10 @@ const CreatePage = ({ type }: any) => {
                 PrevEndTime: formatTime(auctionData.auctionPreviewEndTime),
                 CityID: locationData.city.id,
                 ZipCode: locationData.zipCode,
-                ShippingMethod: true,
+                ShippingMethod: locationData.shippingMethod === "Shipping",
                 PaymentTerms: locationData.paymentTerms,
                 TermsConditions: locationData.termsAndConditions,
-                CreatedAt: formatDate(auctionData.auctionPreviewStartDate),
+                CreatedAt: formatDate(auctionData.StartDate),
                 UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
                 CheckOutDate: formatDate(auctionData.checkoutDate),
                 CheckOutTime: formatTime(auctionData.checkoutTime),
@@ -71,13 +71,15 @@ const CreatePage = ({ type }: any) => {
 
     useEffect(() => {
         if (isUpdated && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
+            const isLiveAuction = localStorage.getItem("isLive");
             const updatedData = {
+                Id: auctionData.auctionId,
                 Name: auctionData.auctionName,
                 Type: auctionData.auctionType,
                 Image: "https://example.com/image.jpg",
                 Description: auctionData.description,
                 Notes: "Test Notes",
-                LiveStreaming: auctionData.liveStreaming,
+                LiveStreaming: isLiveAuction === "true" ? true : false,
                 StartDate: formatDate(auctionData.startDate),
                 EndDate: formatDate(auctionData.endDate),
                 StartTime: formatTime(auctionData.startTime),
@@ -86,17 +88,25 @@ const CreatePage = ({ type }: any) => {
                 PrevEndDate: formatDate(auctionData.auctionPreviewEndDate),
                 PrevStartTime: formatTime(auctionData.auctionPreviewStartTime),
                 PrevEndTime: formatTime(auctionData.auctionPreviewEndTime),
-                CityID: locationData.city.id,
+                Country: locationData.country,
+                State: locationData.state,
                 ZipCode: locationData.zipCode,
-                ShippingMethod: true,
+                City: locationData.city.name,
+                CityID: locationData.city.id,
+                Address: locationData.address,
+                ShippingMethod: locationData.shippingMethod === "Shipping",
                 PaymentTerms: locationData.paymentTerms,
                 TermsConditions: locationData.termsAndConditions,
-                CreatedAt: formatDate(auctionData.auctionPreviewStartDate),
-                UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
+                CreatedAt: formatDate(auctionData.startDate),
+                UpdatedAt: formatDate(auctionData.startDate),
                 CheckOutDate: formatDate(auctionData.checkoutDate),
                 CheckOutTime: formatTime(auctionData.checkoutTime),
-                Address: locationData.address,
+                IsSold: false,
+                IsDeleted: false
             };
+            if (isLiveAuction) {
+                localStorage.removeItem("isLive");
+            }
             updateAuction(updatedData)
         }
     }, [isUpdated])
@@ -165,6 +175,8 @@ const CreatePage = ({ type }: any) => {
                     isSubmittedByLot={isSubmittedByLot}
                     setIsSubmittedByLot={setIsSubmittedByLot}
                     setNavigation={setNavigation}
+                    setIsUpdated={setIsUpdated}
+                    isUpdated={isUpdated}
                 />
             ) : (
                 <CreateAuction
@@ -172,8 +184,6 @@ const CreatePage = ({ type }: any) => {
                     setFile={setFile}
                     setIsContinue={setIsContinue}
                     setAuctionData={setAuctionData}
-                    isUpdated={isUpdated}
-                    setIsUpdated={setIsUpdated}
                 />
             )}
             {/* <ToastContainer /> */}

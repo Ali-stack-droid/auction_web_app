@@ -74,8 +74,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
         }),
         onSubmit: (values) => {
             setFormData(values)
-            if (location.pathname === '/auction/edit') {
-                handleUpdateAuction()
+            if (getQueryParam('aucId')) {
+                handleUpdateAuction(values)
             }
             else if (!isSubmitted && !isSubmittedByLot) {
                 setOpenConfirmModal(true);
@@ -91,8 +91,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                 try {
                     const response = await getAuctionDetailById(auctionId);
                     const auction = response.data.Auction;
-                    const lot = response.data.Lots[0];
-
+                    const lot = response.data.Lots.length && response.data.Lots[0];
                     if (auction) {
                         const formattedAuctionDetails = {
                             country: auction.Country || 'placeholder',
@@ -100,7 +99,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                             city: { id: auction.CityID || 0, name: auction.City || 'placeholder' },
                             address: auction.Address || 'placeholder',
                             zipCode: auction.ZipCode || '',
-                            buyerPremium: lot.BuyerPremium || 'placeholder',
+                            buyerPremium: lot.BuyerPremium || '',
                             paymentTerms: auction.PaymentTerms || '',
                             shippingMethod: auction.ShippingMethod ? 'Shipping' : 'Pickup',
                             termsAndConditions: auction.TermsConditions || '',
@@ -108,7 +107,6 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
 
                         setCountryId(1);
                         // Populate formik fields
-                        console.log(formattedAuctionDetails)
                         formik.setValues(formattedAuctionDetails);
 
                     } else {
@@ -125,7 +123,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
     }, []);
 
     useEffect(() => {
-        if (formik.errors && Object.keys(formik.errors).length > 0) {
+        if (Object.keys(formik.errors).length > 0) {
             const firstErrorField = Object.keys(formik.errors)[0];
             const errorElement: any = document.querySelector(`[name="${firstErrorField}"]`);
             if (errorElement) {
@@ -237,8 +235,8 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
         setIsSubmitted(true)
     }
 
-    const handleUpdateAuction = () => {
-        setLocationData(formData)
+    const handleUpdateAuction = (payload: any) => {
+        setLocationData(payload)
         setOpenConfirmModal(false);
         setNavigation('auction');
         setIsUpdated(true)
