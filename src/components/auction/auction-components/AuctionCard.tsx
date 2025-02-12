@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
 import { setFeaturedAuctions, setFeaturedLots } from '../../Services/Methods';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
+import useWebSocket from '../../../utils/useSocket';
 
 const AuctionCard = ({
     headerType,

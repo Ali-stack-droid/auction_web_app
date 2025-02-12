@@ -1,24 +1,15 @@
 import { useEffect, useState } from 'react';
 import Routing from './routes/Routing';
 import { Box } from '@mui/material';
-import { io } from 'socket.io-client';
-
-const socket = io('ws://localhost:8181');
+import useWebSocket from './utils/useSocket';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  // const {  sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom } = useWebSocket("ws://localhost:8181");
+
 
   useEffect(() => {
-    // try {
-    //   socket.on('connect', () => {
-
-    //     console.log('Connected to socket server');
-    //   });
-    // } catch (error) {
-    //   console.log("socket error ==", JSON.stringify(error, null, 2));
-    // }
-
     sessionStorage.setItem('email', 'hassaan@gmail.com');
     const token = sessionStorage.getItem('email');
     setIsAuthenticated(!!token);
