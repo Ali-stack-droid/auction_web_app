@@ -179,8 +179,6 @@ const LiveStreamingDetailPage = () => {
                                 handleNextLot={handleNextLot}
                                 handleSelectLot={handleSelectLot}
                                 auctionLots={auctionLots}
-                            // setSelect={setSelect}
-
                             />
                         </Box>
                         <Box className={classes.rightSection}>
