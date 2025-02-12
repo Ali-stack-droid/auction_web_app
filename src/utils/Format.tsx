@@ -1,11 +1,13 @@
 export const formatTime = (time: any) => {
     if (time) {
-        const [hour, minute] = time.split(":");
+        const [hour, minute, second] = time.split(":");
         const suffix = +hour >= 12 ? "PM" : "AM";
-        const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
-        return `${formattedHour}:${minute} ${suffix}`;
+        const formattedHour = String(+hour % 12 || 12).padStart(2, "0"); // Ensure two digits
+        return `${formattedHour}:${minute.padStart(2, "0")} ${suffix}`;
     }
+    return "";
 };
+
 
 export const formatDate = (dateString: any) => {
     const date = new Date(dateString); // Convert string to Date object

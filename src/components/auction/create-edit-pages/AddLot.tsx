@@ -6,7 +6,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
-import { createLot, editLot, getLotDetailsById } from '../../Services/Methods';
+import { createLot, editLot, getAuctionDetailById, getLotDetailsById } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { formatDate, formatDateInput, formatTime, formatTimeInput } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
@@ -37,6 +37,7 @@ const AddLot = () => {
     const [isCancelOpen, setIsCancelOpen] = useState(false);
     const [saveModal, setSaveModal] = useState(false);
     const [isFetchingData, setIsFetchingData] = useState(false);
+    const [auction, setAuction]: any = useState({})
 
     const categories: CategoryType = {
         Vehicles: ["Automobiles/Cars", "Motorcycles", "SUVs", "Trucks", "Buses", "RVs & Campers", "Boats", "Trailers", "Specialized Vehicles"],
@@ -49,6 +50,33 @@ const AddLot = () => {
 
     const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [subCategories, setSubCategories] = useState<string[]>([]);
+
+    useEffect(() => {
+        const auctionId = getQueryParam('aucId');
+        if (auctionId) {
+            const fetchAuctionDetails = async () => {
+                try {
+                    const response = await getAuctionDetailById(auctionId);
+                    const auction = response.data.Auction;
+                    if (auction) {
+                        const formattedAuctionDetails = {
+                            startDate: auction.StartDate ? formatDateInput(auction.StartDate) : '',
+                            startTime: auction.StartTime ? formatTimeInput(auction.StartTime) : '',
+                            endDate: auction.EndDate ? formatDateInput(auction.EndDate) : '',
+                            endTime: auction.StartTime ? formatTimeInput(auction.EndTime) : '',
+                        };
+                        setAuction(formattedAuctionDetails)
+                    } else {
+                        ErrorMessage('Auction data not found');
+                    }
+                } catch (error) {
+                }
+            };
+
+            fetchAuctionDetails();
+        }
+    }, []);
+
 
 
     const formik = useFormik({
@@ -74,9 +102,36 @@ const AddLot = () => {
             subCategory: Yup.string().required('Sub-Category is required'),
             lead: Yup.string().required('Lead is required'),
             description: Yup.string().max(500).required('Description is required'),
-            startDate: Yup.date().required('Start Date is required'),
+            startDate: Yup.date()
+                .required('Start Date is required')
+                .test(
+                    'is-within-auction-range',
+                    'Start Date must be within the auction period',
+                    function (value) {
+                        return value && auction?.startDate && auction?.endDate
+                            ? value >= auction.startDate && value <= auction.endDate
+                            : true;
+                    }
+                ),
+            endDate: Yup.date()
+                .required('End Date is required')
+                .test(
+                    'is-within-auction-range',
+                    'End Date must be within the auction period',
+                    function (value) {
+                        return value && auction?.startDate && auction?.endDate
+                            ? value >= auction.startDate && value <= auction.endDate
+                            : false;
+                    }
+                )
+                .test(
+                    'is-after-start-date',
+                    'End Date must be greater than or equal to Start Date',
+                    function (value) {
+                        return value && this.parent.startDate ? value >= this.parent.startDate : true;
+                    }
+                ),
             startTime: Yup.string().required('Start Time is required'),
-            endDate: Yup.date().required('End Date is required'),
             endTime: Yup.string().required('End Time is required'),
             internalNotes: Yup.string(),
             auctionImage: Yup.mixed().required('Auction Image is required'),
@@ -423,7 +478,7 @@ const AddLot = () => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                                 helperText={formik.touched.startDate && formik.errors.startDate}
-                                inputProps={{ min: today }} // Disable past dates
+                                inputProps={{ min: auction.startDate, max: auction.endDate }} // Disable past dates
                             />
                         </Box>
                         <Box flex={1}>
@@ -450,8 +505,7 @@ const AddLot = () => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.endDate && Boolean(formik.errors.endDate)}
                                 helperText={formik.touched.endDate && formik.errors.endDate}
-                                inputProps={{ min: today }} // Disable past dates
-
+                                inputProps={{ min: auction.startDate, max: auction.endDate }} // Disable past dates
                             />
                         </Box>
                     </Box>
