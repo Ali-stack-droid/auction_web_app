@@ -118,7 +118,7 @@ const LotDetailPage = () => {
                     name: lot.ShortDescription,
                     description: lot.LongDescription,
                     countDown: "N/A", // Update if you calculate countdown elsewhere
-                    location: "N/A", // Replace with actual location if available
+                    location: lot.Address, // Replace with actual location if available
                     image: lot.Image,
                     type: lot.IsPast ? "past" : "current",
                     highestBid: lot.BidStartAmount,
