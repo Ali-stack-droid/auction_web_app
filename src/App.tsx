@@ -10,14 +10,14 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      socket.on('connect', () => {
+    // try {
+    //   socket.on('connect', () => {
 
-        console.log('Connected to socket server');
-      });
-    } catch (error) {
-      console.log("socket error ==", JSON.stringify(error, null, 2));
-    }
+    //     console.log('Connected to socket server');
+    //   });
+    // } catch (error) {
+    //   console.log("socket error ==", JSON.stringify(error, null, 2));
+    // }
 
     sessionStorage.setItem('email', 'hassaan@gmail.com');
     const token = sessionStorage.getItem('email');

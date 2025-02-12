@@ -15,7 +15,7 @@ import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import CustomDialogue from '../../custom-components/CustomDialogue';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import { getAuctionDetailById } from '../../Services/Methods';
 import { formatDateInput, formatTimeInput } from '../../../utils/Format';
@@ -24,11 +24,13 @@ import { ErrorMessage } from '../../../utils/ToastMessages';
 const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) => {
     const classes = useCreateAuctionStyles();
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation()
 
     // create auction states
     const [submissionAttempt, setSubmissionAttempt] = useState(false);
     const [isCancelOpen, setIsCancelOpen] = useState(false);
+    const [editStates, setEditStates]: any = useState({});
 
     // Edit auction states
     const [isFetchingData, setIsFetchingData] = useState(false);
@@ -60,13 +62,33 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
             description: Yup.string().max(500).required('Description is required'),
             startDate: Yup.date().required('Start Date is required'),
             startTime: Yup.string().required('Start Time is required'),
-            endDate: Yup.date().required('End Date is required'),
+            endDate: Yup.date()
+                .required('End Date is required')
+                .test('is-greater', 'End Date must be greater than Start Date', function (value) {
+                    return value && this.parent.startDate ? value > this.parent.startDate : true;
+                }),
             endTime: Yup.string().required('End Time is required'),
-            checkoutDate: Yup.date().required('Checkout Date is required'),
+            checkoutDate: Yup.date()
+                .required('Checkout Date is required')
+                .test('is-greater-or-equal', 'Checkout Date must be greater or equal to End Date', function (value) {
+                    return value && this.parent.endDate ? value >= this.parent.endDate : true;
+                }),
             checkoutTime: Yup.string().required('Checkout Time is required'),
-            auctionPreviewStartDate: Yup.date().required('Preview Start Date is required'),
+            auctionPreviewStartDate: Yup.date()
+                .required('Preview Start Date is required')
+                .test('is-between', 'Preview Start Date must be between Start and End Date', function (value) {
+                    return value && this.parent.startDate && this.parent.endDate
+                        ? value >= this.parent.startDate && value <= this.parent.endDate
+                        : true;
+                }),
             auctionPreviewStartTime: Yup.string().required('Preview Start Time is required'),
-            auctionPreviewEndDate: Yup.date().required('Preview End Date is required'),
+            auctionPreviewEndDate: Yup.date()
+                .required('Preview End Date is required')
+                .test('is-between', 'Preview End Date must be between Start and End Date', function (value) {
+                    return value && this.parent.startDate && this.parent.endDate
+                        ? value >= this.parent.startDate && value <= this.parent.endDate
+                        : true;
+                }),
             auctionPreviewEndTime: Yup.string().required('Preview End Time is required'),
         }),
         onSubmit: (values) => {
@@ -103,7 +125,10 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                             auctionPreviewEndDate: auction.PrevEndDate ? formatDateInput(auction.PrevEndDate) : '',
                             auctionPreviewEndTime: auction.PrevEndTime ? formatTimeInput(auction.PrevEndTime) : '',
                         };
-
+                        setEditStates({
+                            startDate: formattedAuctionDetails.startDate,
+                            endDate: formattedAuctionDetails.endDate,
+                        })
                         // Populate formik fields
                         formik.setValues(formattedAuctionDetails);
 
@@ -132,7 +157,12 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
 
 
     useEffect(() => {
-        if (formik.errors && Object.keys(formik.errors).length > 0) {
+        if (!file) {
+            const errorElement: any = document.getElementById(`uploader-error`);
+            if (errorElement) {
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        } else if (formik.errors && Object.keys(formik.errors).length > 0) {
             const firstErrorField = Object.keys(formik.errors)[0];
             const errorElement: any = document.querySelector(`[name="${firstErrorField}"]`);
             if (errorElement) {
@@ -147,6 +177,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
         navigate('/auction')
     }
 
+    const isEdit = location.pathname === '/auction/edit';
     return (
         <Box>
             <Typography className={classes.title}>{getQueryParam('aucId') ? "Edit Auction" : "Create New Auction"}</Typography>
@@ -220,7 +251,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                                     formik.setFieldValue('auctionImage', uploadedFile); // Update Formik state
                                 }} />
                             {formik.touched.auctionImage && formik.errors.auctionImage && (
-                                <Typography color="error" variant="body2">
+                                <Typography color="error" variant="body2" id="uploader-error">
                                     {formik.errors.auctionImage}
                                 </Typography>
                             )}
@@ -277,7 +308,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                                     onChange={formik.handleChange}
                                     error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                                     helperText={formik.touched.startDate && formik.errors.startDate}
-                                    inputProps={{ min: today }} // Disable past dates
+                                    inputProps={{ min: isEdit ? editStates.startDate : today }}
                                 />
                             </Box>
                             <Box flex={1}>
@@ -292,7 +323,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                                     onChange={formik.handleChange}
                                     error={formik.touched.endDate && Boolean(formik.errors.endDate)}
                                     helperText={formik.touched.endDate && formik.errors.endDate}
-                                    inputProps={{ min: today }} // Disable past dates
+                                    inputProps={{ min: isEdit ? editStates.endDate : today }}
                                 />
                             </Box>
                             <Box flex={1}>
@@ -308,7 +339,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                                     onChange={formik.handleChange}
                                     error={formik.touched.checkoutDate && Boolean(formik.errors.checkoutDate)}
                                     helperText={formik.touched.checkoutDate && formik.errors.checkoutDate}
-                                    inputProps={{ min: today }} // Disable past dates
+                                    inputProps={{ min: formik.values.endDate }}
                                 />
                             </Box>
                         </Box>
@@ -376,7 +407,8 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                                     onChange={formik.handleChange}
                                     error={formik.touched.auctionPreviewStartDate && Boolean(formik.errors.auctionPreviewStartDate)}
                                     helperText={formik.touched.auctionPreviewStartDate && formik.errors.auctionPreviewStartDate}
-                                    inputProps={{ min: today }} // Disable past dates
+                                    inputProps={{ min: formik.values.startDate, max: formik.values.endDate }}
+
                                 />
                             </Box>
                             <Box flex={1}>
@@ -391,7 +423,7 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
                                     onChange={formik.handleChange}
                                     error={formik.touched.auctionPreviewEndDate && Boolean(formik.errors.auctionPreviewEndDate)}
                                     helperText={formik.touched.auctionPreviewEndDate && formik.errors.auctionPreviewEndDate}
-                                    inputProps={{ min: today }} // Disable past dates
+                                    inputProps={{ min: formik.values.auctionPreviewStartDate, max: formik.values.endDate }}
                                 />
                             </Box>
                             <Box flex={1}>
