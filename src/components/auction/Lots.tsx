@@ -44,7 +44,7 @@ const Lots = ({ searchTerm }: any) => {
 
     useEffect(() => {
         if (selectedLocation) {
-            setPaginationedData(filteredData.filter((item: any) => item.details.address === selectedLocation))
+            setPaginationedData(filteredData.filter((item: any) => item.address === selectedLocation))
         } else {
             setPaginationedData(filteredData)
         }
