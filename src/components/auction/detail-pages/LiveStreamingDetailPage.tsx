@@ -187,7 +187,6 @@ const LiveStreamingDetailPage = () => {
     }
 
     const handleNextLot = (id?: number) => {
-        console.log(id)
         setCurrentIndex((prevIndex) => {
             if (id !== undefined) {
                 const newIndex = auctionLots.findIndex((lot: any) => lot.id === id);
