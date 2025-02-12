@@ -17,13 +17,17 @@ const AuctionCard = ({
     cardData,
     handleEdit,
     handleDelete,
-    handleMoveModal
+    handleMoveModal,
+    auctionLots,
+    setSelect,
+    liveAuctions,
+    setReset,
+    reset
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [select, setSelect] = useState(false)
     const [moveLotId, setMoveLotId] = useState(0)
 
     const [moveModalOpen, setMoveModalOpen] = useState(false)
@@ -54,8 +58,17 @@ const AuctionCard = ({
     }
 
     const handleNextLot = (id: number) => {
-        console.log("Join live stream: ", id)
-    }
+        const currentIndex = auctionLots.findIndex((lot: any) => lot.id === id);
+        const nextLot = auctionLots.slice(currentIndex + 1).find((lot: any) => lot.id !== id);
+
+        if (nextLot) {
+            navigate(`/auction/lots/details?lotId=${nextLot.id}`);
+            // setReset(!reset);
+        } else {
+            ErrorMessage("No next lot available");
+        }
+    };
+
 
     const isLiveDetail = headerType === "live" && getQueryParam('aucId');
 
@@ -167,7 +180,7 @@ const AuctionCard = ({
                     <Tooltip title={cardData.name}>
                         {isLiveDetail ?
                             <Typography className={classes.title} gutterBottom>
-                                {cardData.name.length > 100 ? `${cardData.name.substring(0, 33)}...` : cardData.name}
+                                {cardData.name?.length > 100 ? `${cardData?.name.substring(0, 33)}...` : cardData?.name}
                             </Typography>
                             :
                             <Typography className={classes.title} gutterBottom>
@@ -179,10 +192,12 @@ const AuctionCard = ({
                     {/* View Catalog Button */}
                     {isLiveDetail ?
                         <Button
-                            onClick={() => navigate(`/auction/lots?aucId=${cardData.id}`)}
+                            onClick={() => handleNextLot(cardData?.id)}
                             variant={"outlined"}
                             size="small"
-                            className={classes.nextButton}>
+                            className={classes.nextButton}
+                            disabled={!auctionLots.length}
+                        >
                             Show Next Lot
                         </Button>
                         :
@@ -208,7 +223,7 @@ const AuctionCard = ({
                 </Box>
                 {isLiveDetail &&
                     <Typography className={classes.description} gutterBottom>
-                        {cardData.description.length > 300 ? `${cardData.description.substring(0, 33)}...` : cardData.description}
+                        {cardData.description?.length > 300 ? `${cardData?.description.substring(0, 33)}...` : cardData?.description}
                     </Typography>
                 }
 
@@ -234,7 +249,12 @@ const AuctionCard = ({
                         </React.Fragment>
                     }
                     {isLiveDetail ?
-                        <Button className={classes.selectButton} variant="contained" size="small" color="primary" onClick={() => setSelect(true)}>
+                        <Button className={classes.selectButton}
+                            variant="contained"
+                            size="small"
+                            color="primary"
+                            disabled={!auctionLots.length}
+                            onClick={() => setSelect(true)}>
                             Select Next Lot
                         </Button>
                         : headerType === "live" ?

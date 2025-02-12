@@ -9,31 +9,43 @@ import { useState, useEffect } from 'react';
 const LotDetails = ({ lotData }: any) => {
     const classes = useAuctionDetailStyles();
     const [countdown, setCountdown] = useState<string>('00:00:00');
-
     useEffect(() => {
-        const parseDateTime = () => {
-            const [startDate, endDate] = lotData.details.date.split(' to ');
-            const [startTime, endTime] = lotData.details.time.split(' to ');
-
-            return {
-                startDateTime: new Date(`${startDate} ${startTime}`),
-                endDateTime: new Date(`${endDate} ${endTime}`),
-            };
-        };
         const calculateCountdown = () => {
-            const { endDateTime } = parseDateTime();
-            const now = new Date();
+            if (!lotData.details?.endDate || !lotData.details?.endTime) {
+                setCountdown(''); // Handle missing data
+                return;
+            }
 
+            // Split endDate into MM-DD-YYYY format
+            const [day, month, year] = lotData.details.endDate.split('-').map(Number);
+
+            // Create a Date object in LOCAL TIME
+            const endDateTime = new Date(year, month - 1, day);
+
+            // Extract hours and minutes from endTime (assume 12-hour format with AM/PM)
+            const [time, period] = lotData.details.endTime.split(' ');
+            let [hours, minutes] = time.split(':').map(Number);
+
+            if (period.toLowerCase() === 'pm' && hours !== 12) hours += 12;
+            if (period.toLowerCase() === 'am' && hours === 12) hours = 0;
+
+            // Set correct hours & minutes
+            endDateTime.setHours(hours, minutes, 0, 0);
+            if (isNaN(endDateTime.getTime())) {
+                setCountdown(''); // Invalid date
+                return;
+            }
+
+            const now = new Date();
             const remainingTime = endDateTime.getTime() - now.getTime();
+
             if (remainingTime > 0) {
                 const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
                 const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
                 const seconds = Math.floor((remainingTime / 1000) % 60);
 
-                setCountdown(
-                    `${days}d ${hours}h ${minutes}m ${seconds}s`
-                );
+                setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
             } else {
                 setCountdown(''); // Auction ended
             }
@@ -43,7 +55,7 @@ const LotDetails = ({ lotData }: any) => {
         const interval = setInterval(calculateCountdown, 1000); // Update every second
 
         return () => clearInterval(interval); // Cleanup on component unmount
-    }, [lotData.details.date, lotData.details.time]);
+    }, [lotData.details.endTime, lotData.details.endDate]);
 
     return (
         <Box className={classes.lotContainer}>

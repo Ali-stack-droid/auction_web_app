@@ -13,7 +13,7 @@ const LiveStreamingDetails = ({ streamData }: any) => {
             {/* Lots Available */}
             <Box className={classes.iconText}>
                 <ViewInArRoundedIcon fontSize="small" color="primary" />
-                <Typography className={classes.textLive}>{streamData.lotsAvailable} Lots Available</Typography>
+                <Typography className={classes.textLive}>{streamData?.lotsAvailable} Lots Available</Typography>
             </Box>
 
             {/* Location */}

@@ -6,7 +6,7 @@ import AuctionCard from '../auction-components/AuctionCard';
 import PaginationButton from '../auction-components/PaginationButton';
 import useLiveStreamDetailStyles from './detail-pages-components/LiveStreamingDetailStyles';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
-import { getAuctionDetailById, deleteAuction } from '../../Services/Methods';
+import { getAuctionDetailById, deleteAuction, getCurrentLiveAuctions } from '../../Services/Methods';
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
 
 const LiveStreamingDetailPage = () => {
@@ -22,13 +22,60 @@ const LiveStreamingDetailPage = () => {
     const [auctionDetails, setAuctionDetails]: any = useState({})
     const [auctionLots, setAuctionLots]: any = useState([])
     const [paginationedData, setPaginationedData]: any = useState([])
+    const [select, setSelect] = useState(false)
+    const [reset, setReset] = useState(false)
+    const [liveAuctions, setLiveAuctions]: any = useState([])
+
+
+    useEffect(() => {
+        if (select) {
+            const lisitng: any = document.getElementById('listing');
+            if (lisitng) {
+                lisitng.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }, [select])
+
+    useEffect(() => {
+        if (!isFetchingData) {
+            setIsFetchingData(true)
+            fetchLiveStreamingData();
+        }
+    }, [reset])
+
+    const fetchLiveStreamingData = async () => {
+        try {
+            const response = await getCurrentLiveAuctions()
+            if (response.data && response.data.length > 0) {
+                const updatedData = response.data.map((item: any) => ({
+                    id: item.Id,
+                    name: item.Name,
+                    image: item.Image,
+                    description: item.Description,
+                    isLive: item.LiveStreaming,
+                    details: {
+                        address: item.Address,
+                        location: `${item.City}, ${item.Country}`,
+                        dateRange: `${item.StartDate} to ${item.EndDate}`,
+                        lotsAvailable: item.TotalLots // Replace with actual data if available
+                    }
+                }));
+
+                setLiveAuctions(updatedData);
+            } else {
+                setLiveAuctions([]);
+            }
+        } catch (error) {
+            setIsFetchingData(false)
+        }
+    };
 
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true);
             fetchAuctionDetails()
         }
-    }, [])
+    }, [reset])
 
     const fetchAuctionDetails = async () => {
         try {
@@ -45,7 +92,7 @@ const LiveStreamingDetailPage = () => {
                     details: {
                         location: `${auction.City}, ${auction.Country}`,
                         dateRange: `${auction.StartDate} to ${auction.EndDate}`,
-                        lotsAvailable: `${auction.TotalLots} Lots Available`
+                        lotsAvailable: auction.TotalLots ? auction.TotalLots : 'No'
                     },
 
                     dateRange: `${auction.StartDate} to ${auction.EndDate}`,
@@ -196,7 +243,7 @@ const LiveStreamingDetailPage = () => {
                 </Typography>
             </Box>
 
-            {!isFetchingData && auctionDetails && auctionLots.length > 0 ?
+            {!isFetchingData && auctionDetails ?
                 <Box>
                     <Box className={classes.container}>
                         <Box flex={1} className={classes.mediaSection}>
@@ -207,6 +254,11 @@ const LiveStreamingDetailPage = () => {
                                 handleEdit={() => { }}
                                 handleDelete={() => { }}
                                 handleMoveModal={() => { }}
+                                auctionLots={auctionLots}
+                                setSelect={setSelect}
+                                liveAuctions={liveAuctions}
+                                setReset={setReset}
+                                reset={reset}
                             />
                         </Box>
                         <Box className={classes.rightSection}>
@@ -224,8 +276,8 @@ const LiveStreamingDetailPage = () => {
                             </List>
                         </Box>
                     </Box>
-                    {auctionLots.length > 0 &&
-                        <Box width={'80vw'} pt={3}>
+                    {auctionLots.length > 0 && select &&
+                        <Box id="listing" width={'80vw'} pt={3}>
                             <Box className={classes.titleWrapper}>
                                 <Typography className={classes.title}>
                                     Auction Lots :

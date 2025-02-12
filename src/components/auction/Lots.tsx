@@ -77,6 +77,8 @@ const Lots = ({ searchTerm }: any) => {
                     isPast: item.IsPast,
                     details: {
                         description: item.LongDescription,
+                        endDate: item.EndDate,
+                        endTime: item.EndTime,
                         date: `${item.StartDate} to ${item.EndDate}`,
                         time: `${item.StartTime} to ${item.EndTime}`,
                         orderNumber: item.OrderNo,
