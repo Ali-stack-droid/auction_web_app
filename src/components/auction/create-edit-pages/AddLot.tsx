@@ -6,7 +6,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
-import { createLot, getLotDetailsById } from '../../Services/Methods';
+import { createLot, editLot, getLotDetailsById } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { formatDate, formatDateInput, formatTime, formatTimeInput } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
@@ -102,39 +102,65 @@ const AddLot = () => {
                 .required('Bids Range is required'),
         }),
         onSubmit: (values) => {
-
-            const newLot = {
-                Id: lots.length + 1,
-                OrderNo: values.orderNumber,
-                LotNo: values.lotNumber,
-                Image: "example.jpg",
-                Category: values.category,
-                SubCategory: values.subCategory,
-                ShortDescription: values.lead,
-                LongDescription: values.description,
-                BidStartAmount: values.bidsRange[0]?.startAmount,
-                StartDate: formatDate(values.startDate),
-                EndDate: formatDate(values.endDate),
-                StartTime: formatTime(values.startTime),
-                EndTime: formatTime(values.endTime),
-                BuyerPremium: 15,
-                Currency: 'USD',
-                CreatedAt: formatDate(values.startDate),
-                UpdatedAt: formatDate(values.startDate),
-                AuctionId: getQueryParam('aucId'),
-                BidsRange: values.bidsRange.map((bid: any) => ({
-                    StartAmount: bid.startAmount,
-                    EndAmount: bid.endAmount,
-                    BidRange: bid.bidRangeAmount,
-                    LotId: lots.length + 1,
-                })),
-            };
-
-            const formattedLots = [...lots, newLot];
-            setLots(formattedLots)
-            handleFormSubmission(newLot);
-            if (!isEdit)
-                formik.resetForm();
+            if (!isEdit) {
+                const newLot = {
+                    Id: lots.length + 1,
+                    OrderNo: values.orderNumber,
+                    LotNo: values.lotNumber,
+                    Image: "example.jpg",
+                    Category: values.category,
+                    SubCategory: values.subCategory,
+                    ShortDescription: values.lead,
+                    LongDescription: values.description,
+                    BidStartAmount: values.bidsRange[0]?.startAmount,
+                    StartDate: formatDate(values.startDate),
+                    EndDate: formatDate(values.endDate),
+                    StartTime: formatTime(values.startTime),
+                    EndTime: formatTime(values.endTime),
+                    BuyerPremium: 15,
+                    Currency: 'USD',
+                    CreatedAt: formatDate(values.startDate),
+                    UpdatedAt: formatDate(values.startDate),
+                    AuctionId: getQueryParam('aucId'),
+                    BidsRange: values.bidsRange.map((bid: any) => ({
+                        StartAmount: bid.startAmount,
+                        EndAmount: bid.endAmount,
+                        BidRange: bid.bidRangeAmount,
+                        LotId: lots.length + 1,
+                    })),
+                };
+                const formattedLots = [...lots, newLot];
+                setLots(formattedLots)
+                handleFormSubmission(newLot);
+            } else {
+                const edittedLot = {
+                    Id: getQueryParam('lotId'),
+                    OrderNo: values.orderNumber,
+                    LotNo: values.lotNumber,
+                    Image: "example.jpg",
+                    Category: values.category,
+                    SubCategory: values.subCategory,
+                    ShortDescription: values.lead,
+                    LongDescription: values.description,
+                    BidStartAmount: values.bidsRange[0]?.startAmount,
+                    StartDate: formatDate(values.startDate),
+                    EndDate: formatDate(values.endDate),
+                    StartTime: formatTime(values.startTime),
+                    EndTime: formatTime(values.endTime),
+                    BuyerPremium: 15,
+                    Currency: 'USD',
+                    CreatedAt: formatDate(values.startDate),
+                    UpdatedAt: formatDate(values.startDate),
+                    AuctionId: getQueryParam('aucId'),
+                    BidsRange: values.bidsRange.map((bid: any) => ({
+                        StartAmount: bid.startAmount,
+                        EndAmount: bid.endAmount,
+                        BidRange: bid.bidRangeAmount,
+                        LotId: getQueryParam('lotId'),
+                    })),
+                };
+                handleFormSubmission(edittedLot);
+            }
         },
     });
 
@@ -169,7 +195,8 @@ const AddLot = () => {
                             auctionImage: lot.Image,
                             bidsRange: bidsRange
                         };
-
+                        setSelectedCategory(formattedLot.category);
+                        setSubCategories(categories[formattedLot.category]); // Update subcategories
                         // Populate formik fields
                         formik.setValues(formattedLot);
 
@@ -206,12 +233,21 @@ const AddLot = () => {
         }
 
         if (isEdit) {
-            ErrorMessage('This feature will be available soon!');
+            editLot(formData)
+                .then((response) => {
+                    console.log(response)
+                    SuccessMessage('Lot updated successfully!');
+                    formik.resetForm();
+                })
+                .catch((error) => {
+                    ErrorMessage('Error updating lot!');
+                });
         } else {
 
             createLot(formData)
                 .then((response) => {
                     SuccessMessage('Lot created successfully!');
+                    formik.resetForm();
                 })
                 .catch((error) => {
                     ErrorMessage('Error creating lot!');

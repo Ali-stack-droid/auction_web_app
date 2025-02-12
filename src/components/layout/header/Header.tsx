@@ -139,7 +139,7 @@ const Header = ({ searchTerm, setSearchTerm }: any) => {
 
                         {/* User Avatar */}
                         <IconButton onClick={handleProfileClick}>
-                            <Avatar alt={user ? user.toUpperCase() : "Admin"} src="/static/images/avatar/1.jpg" className={classes.avatar} />
+                            <Avatar alt={user ? JSON.parse(user).toUpperCase() : "Admin"} src="/static/images/avatar/1.jpg" className={classes.avatar} />
                         </IconButton>
                         <Menu
                             anchorEl={profileMenuAnchor}

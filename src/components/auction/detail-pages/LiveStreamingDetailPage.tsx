@@ -110,6 +110,7 @@ const LiveStreamingDetailPage = () => {
                         lot: item.LotNo,
                         category: item.Category,
                         subCategory: item.SubCategory,
+                        lotsAvailable: item.TotalLots,
                         winner: {
                             email: "N/A", // Replace with actual data if available
                             phone: "N/A", // Replace with actual data if available
