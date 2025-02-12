@@ -11,7 +11,7 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import AuctionCard from './auction-components/AuctionCard';
 import PaginationButton from './auction-components/PaginationButton';
-import { deleteLot, getFeaturedLots, getLotsByAuctionId } from '../Services/Methods';
+import { deleteLot, getCurrentLocations, getFeaturedLots, getLotsByAuctionId, getPastLocations } from '../Services/Methods';
 
 import NoRecordFound from '../../utils/NoRecordFound';
 import { getQueryParam } from '../../helper/GetQueryParam';
@@ -30,7 +30,9 @@ const Lots = ({ searchTerm }: any) => {
     const [featuredLots, setFeaturedLots] = useState([]);
 
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
-    const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
+    const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state 
+    const [locations, setLocations]: any = useState([]); // Filtered data statesetLocations
+
     // const selectedAuction = useSelector((state: RootState) => state.auction.selectedAuction);
 
     useEffect(() => {
@@ -39,6 +41,14 @@ const Lots = ({ searchTerm }: any) => {
             fetchLotsData();
         }
     }, [isCurrentLot])
+
+    useEffect(() => {
+        if (selectedLocation) {
+            setPaginationedData(filteredData.filter((item: any) => item.details.address === selectedLocation))
+        } else {
+            setPaginationedData(filteredData)
+        }
+    }, [selectedLocation])
 
     useEffect(() => {
 
@@ -75,6 +85,7 @@ const Lots = ({ searchTerm }: any) => {
                     highestBid: item.BidStartAmount,
                     sold: item.IsSold,
                     isPast: item.IsPast,
+                    address: item.Address,
                     details: {
                         description: item.LongDescription,
                         endDate: item.EndDate,
@@ -108,6 +119,18 @@ const Lots = ({ searchTerm }: any) => {
                 setFilteredData([]);
                 setPaginationedData([]);
             }
+
+            const locationResponse = isCurrentLot
+                ? await getCurrentLocations()
+                : await getPastLocations();
+
+            if (locationResponse.data && locationResponse.data.length > 0) {
+                const updatedLocation = locationResponse.data;
+                setLocations(updatedLocation);
+            } else {
+                setLocations([]);
+            }
+
             setIsFetchingData(false);
         } catch (error) {
             setIsFetchingData(false);
@@ -117,15 +140,9 @@ const Lots = ({ searchTerm }: any) => {
 
     // Filtered Data based on `type` and `location`
     useEffect(() => {
-        // const newFilteredData = lotsData.filter((lot) => {
-        //     const matchesLocation = selectedLocation ? lot.location === selectedLocation : true;
-        //     return matchesLocation;
-        // });
-        setFadeIn(false); // Trigger fade-out
+        setFadeIn(false);
         setTimeout(() => {
-            setFadeIn(true); // Trigger fade-in after filtering
-            // setFilteredData(filteredData);
-            // setPaginationedData(filteredData)
+            setFadeIn(true);
         }, 200);
     }, [isCurrentLot, selectedLocation, paginationedData]);
 
@@ -199,7 +216,7 @@ const Lots = ({ searchTerm }: any) => {
                 onToggle={handleToggle}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
-                locations={[]}
+                locations={locations}
             />
             <Box sx={{ minHeight: "500px" }}>
                 {!isFetchingData && paginationedData?.length ?

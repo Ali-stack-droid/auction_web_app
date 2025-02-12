@@ -48,6 +48,14 @@ const Lots = ({ searchTerm }: any) => {
         }
     }, [filterLots])
 
+    useEffect(() => {
+        if (selectedLocation) {
+            setPaginationedData(filteredData.filter((item: any) => item.address === selectedLocation))
+        } else {
+            setPaginationedData(filteredData)
+        }
+    }, [selectedLocation])
+
     const fetchLotsData = async () => {
         try {
             const response = await getInventoryLots();
@@ -55,6 +63,7 @@ const Lots = ({ searchTerm }: any) => {
             if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
+                    address: item.Address,
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
                     description: item.LongDescription,
