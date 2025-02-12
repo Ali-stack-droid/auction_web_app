@@ -186,7 +186,6 @@ const CreatePage = ({ type }: any) => {
                     setAuctionData={setAuctionData}
                 />
             )}
-            {/* <ToastContainer /> */}
         </Box>
     );
 };
