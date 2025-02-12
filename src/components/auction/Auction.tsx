@@ -78,7 +78,6 @@ const Auction = ({ searchTerm }: any) => {
                         lotsAvailable: item.TotalLots // Replace with actual data if available
                     }
                 }));
-                console.log(updatedData)
                 setFilteredData(updatedData);
                 setPaginationedData(updatedData)
             } else {
