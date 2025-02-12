@@ -17,7 +17,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 // redux imports
 import { getQueryParam } from '../../../helper/GetQueryParam';
 
+// Define the type of categories object
+type CategoryType = {
+    [key: string]: string[]; // Index signature for dynamic keys with array of strings as values
+};
+
 const AddLot = () => {
+
+    const classes = useCreateAuctionStyles();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+    const isEdit = location.pathname === '/auction/lots/edit';
 
     const [file, setFile] = useState(null)
     const [lots, setLots]: any = useState([])
@@ -27,18 +38,25 @@ const AddLot = () => {
     const [saveModal, setSaveModal] = useState(false);
     const [isFetchingData, setIsFetchingData] = useState(false);
 
-    const classes = useCreateAuctionStyles();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const today = useMemo(() => new Date().toISOString().split('T')[0], []);
-    const isEdit = location.pathname === '/auction/lots/edit';
+    const categories: CategoryType = {
+        Vehicles: ["Automobiles/Cars", "Motorcycles", "SUVs", "Trucks", "Buses", "RVs & Campers", "Boats", "Trailers", "Specialized Vehicles"],
+        HeavyEquipment: ["Construction Equipment", "Agricultural Equipment", "Industrial Equipment", "Mining Equipment", "Public Safety Equipment"],
+        RealEstate: ["Residential Properties", "Commercial Properties", "Vacant Land", "Buildings and Structures"],
+        ConsumerGoods: ["Electronics", "Furniture", "Home Appliances", "Clothing & Accessories", "Sporting Goods", "Toys & Games"],
+        GeneralSurplus: ["Office Equipment", "Medical Equipment", "Laboratory Equipment", "Aviation Equipment"],
+        Miscellaneous: ["Collectibles", "Antiques", "Art", "Jewelry", "Musical Instruments", "Books"]
+    };
+
+    const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [subCategories, setSubCategories] = useState<string[]>([]);
+
 
     const formik = useFormik({
         initialValues: {
             orderNumber: '',
             lotNumber: '',
-            category: '',
-            subCategory: '',
+            category: 'placeholder',
+            subCategory: 'placeholder',
             lead: '',
             description: '',
             startDate: '',
@@ -212,11 +230,18 @@ const AddLot = () => {
         navigate('/auction');
     }
 
-
     const handleSaveLot = () => {
         setSubmissionAttempt(!submissionAttempt)
         setSaveModal(false)
     }
+
+    const handleCategoryChange = (event: any) => {
+        const category = event.target.value;
+        setSelectedCategory(category);
+        setSubCategories(categories[category] || []); // Update subcategories
+        formik.setFieldValue("category", category);
+        formik.setFieldValue("subCategory", "placeholder"); // Reset subcategory on category change
+    };
 
     return (
         <Box p={2}>
@@ -275,14 +300,19 @@ const AddLot = () => {
                             <CustomTextField
                                 select
                                 name="category"
-                                placeholder="Category"
                                 value={formik.values.category}
-                                onChange={formik.handleChange}
+                                onChange={handleCategoryChange}
                                 error={formik.touched.category && Boolean(formik.errors.category)}
                                 helperText={formik.touched.category && formik.errors.category}
                             >
-                                <MenuItem value="Category1">Category1</MenuItem>
-                                <MenuItem value="Category2">Category2</MenuItem>
+                                <MenuItem value="placeholder" sx={{ display: 'none' }}>
+                                    <Typography sx={{ opacity: 0.5 }}>Select Category</Typography>
+                                </MenuItem>
+                                {Object.keys(categories).map((category) => (
+                                    <MenuItem key={category} value={category}>
+                                        {category}
+                                    </MenuItem>
+                                ))}
                             </CustomTextField>
                         </Box>
                     </Box>
@@ -295,14 +325,20 @@ const AddLot = () => {
                             <CustomTextField
                                 select
                                 name="subCategory"
-                                placeholder="Sub-Category"
                                 value={formik.values.subCategory}
                                 onChange={formik.handleChange}
                                 error={formik.touched.subCategory && Boolean(formik.errors.subCategory)}
                                 helperText={formik.touched.subCategory && formik.errors.subCategory}
+                                disabled={!selectedCategory} // Disable if no category is selected
                             >
-                                <MenuItem value="SubCategory1">SubCategory1</MenuItem>
-                                <MenuItem value="SubCategory2">SubCategory2</MenuItem>
+                                <MenuItem value="placeholder" sx={{ display: 'none' }}>
+                                    <Typography sx={{ opacity: 0.5 }}>Select Subcategory</Typography>
+                                </MenuItem>
+                                {subCategories.map((subCategory, index) => (
+                                    <MenuItem key={index} value={subCategory}>
+                                        {subCategory}
+                                    </MenuItem>
+                                ))}
                             </CustomTextField>
                         </Box>
                         <Box flex={1} ml={2}>
@@ -450,9 +486,9 @@ const AddLot = () => {
                         </Button>
                     </Box>
                 </Box>
-            </form>
+            </form >
             {/* Confirmation Modal */}
-            <CustomDialogue
+            < CustomDialogue
                 type={"create"}
                 title={"Confirm Add New Lot"}
                 message={"Are you sure to create new lot without saving current lot?"}
@@ -464,7 +500,7 @@ const AddLot = () => {
             />
 
             {/* Cancel Cofirmation on Cancel Button*/}
-            <CustomDialogue
+            < CustomDialogue
                 type={"create"}
                 title={"Cancel Auction Creation?"}
                 message={`Are you sure you want to cancel ${isEdit ? 'editing' : 'creating'} the current lot?`}
