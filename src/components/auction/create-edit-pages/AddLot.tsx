@@ -233,7 +233,7 @@ const AddLot = () => {
         }
 
         if (isEdit) {
-            editLot(formData)
+            editLot(payload)
                 .then((response) => {
                     console.log(response)
                     SuccessMessage('Lot updated successfully!');

@@ -222,8 +222,8 @@ const LotDetailPage = () => {
     };
 
     // Handle Edit
-    const handleEdit = (id: string) => {
-        navigate(`/auction/lots/edit?lotId=${id}`); // Navigate to the edit route with auction ID
+    const handleEdit = (lotId: number, aucId: any) => {
+        navigate(`/auction/lots/edit?lotId=${lotId}&aucId=${aucId}`);
     };
 
     // Open confirmation modal
@@ -396,7 +396,7 @@ const LotDetailPage = () => {
                             <Box className={classes.actionButtons}>
                                 <Button className={classes.actionButton}
                                     variant="contained" size="small" color="primary"
-                                    onClick={() => handleEdit(lotDetails.id)}
+                                    onClick={() => handleEdit(lotDetails.id, lotDetails.auctionId)}
                                 >
                                     Edit
                                 </Button>

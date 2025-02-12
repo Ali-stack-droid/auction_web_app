@@ -236,7 +236,11 @@ const AuctionCard = ({
                 <Box className={classes.actionButtons}>
                     {!isLiveDetail &&
                         <React.Fragment>
-                            <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(cardData.id)}>
+                            <Button className={classes.actionButton} variant="contained" size="small" color="primary"
+                                onClick={() => headerType === "lots"
+                                    ? handleEdit(cardData.id, cardData.auctionId)
+                                    : handleEdit(cardData.id)}
+                            >
                                 Edit
                             </Button>
                             <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDelete(cardData.id)}>

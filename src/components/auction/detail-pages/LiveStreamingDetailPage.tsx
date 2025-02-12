@@ -38,61 +38,10 @@ const LiveStreamingDetailPage = () => {
             const auction = response.data.Auction;
             const lots = response.data.Lots;
 
-            // if (auction) {
-            //     const formattedAuctionDetails = {
-            //         id: auction.Id,
-            //         name: auction.Name,
-            //         image: auction.Image,
-            //         type: auction.IsPast ? "past" : "current",
-            //         details: {
-            //             location: `${auction.City}, ${auction.Country}`,
-            //             dateRange: `${auction.StartDate} to ${auction.EndDate}`,
-            //             lotsAvailable: auction.TotalLots ? auction.TotalLots : 'No'
-            //         },
-
-            //         dateRange: `${auction.StartDate} to ${auction.EndDate}`,
-            //         timeRange: `${auction.StartTime} to ${auction.EndTime}`,
-            //         previewDateRange: `${auction.PrevStartDate} to ${auction.PrevEndDate}`,
-            //         previewTimeRange: `${auction.PrevStartTime} to ${auction.PrevEndTime}`,
-
-            //         description: auction.Description,
-            //         notes: auction.Notes,
-
-            //         liveStreaming: auction.LiveStreaming,
-            //         startDate: auction.StartDate,
-            //         endDate: auction.EndDate,
-            //         startTime: auction.StartTime,
-            //         endTime: auction.EndTime,
-            //         prevStartDate: auction.PrevStartDate,
-            //         prevEndDate: auction.PrevEndDate,
-            //         prevStartTime: auction.PrevStartTime,
-            //         prevEndTime: auction.PrevEndTime,
-
-            //         country: auction.Country,
-            //         state: auction.State,
-            //         zipCode: auction.ZipCode,
-            //         city: auction.City,
-            //         address: auction.Address,
-            //         fullAddress: `Street ${auction.Address}, ${auction.City}, ${auction.ZipCode}, ${auction.State}, ${auction.Country}`,
-            //         shippingMethod: auction.ShippingMethod,
-            //         termsConditions: auction.TermsConditions,
-            //         paymentTerms: auction.PaymentTerms,
-            //         // termsConxditions: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
-            //         // paymentTerms: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
-            //         createdAt: auction.CreatedAt,
-            //         updatedAt: auction.UpdateddAt,
-            //         isDeleted: auction.IsDeleted,
-            //         isSold: auction.IsSold,
-            //         totalLots: auction.TotalLots
-            //     };
-            //     setAuctionDetails(formattedAuctionDetails);
-            // } else {
-            //     setAuctionDetails([]);
-            // }
-
             if (lots?.length > 0) {
                 const formattedLots = lots.map((item: any) => ({
                     id: item.Id,
+                    auctionId: item.AuctionId,
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
                     description: item.LongDescription,
@@ -154,9 +103,10 @@ const LiveStreamingDetailPage = () => {
         navigate(`/auction/edit/${id}`);
     };
 
-    const handleEditLots = (id: string) => {
-        navigate(`/auction/lots/edit?lotId=${id}`);
-    }
+    // Handle Edit
+    const handleEditLots = (lotId: number, aucId: any) => {
+        navigate(`/auction/lots/edit?lotId=${lotId}&aucId=${aucId}`);
+    };
 
     // Open confirmation modal
     const handleDeleteAuction = (id: number) => {
