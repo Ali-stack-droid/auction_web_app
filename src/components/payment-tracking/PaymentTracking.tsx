@@ -1,9 +1,11 @@
 import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, Pagination, Stack, Button, ToggleButton, ToggleButtonGroup, Fade, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import usePaymentTrackingStyles from "./PaymentTrackingStyles";
-import { getPaidInvoices, getPendingInvoices } from "../Services/Methods";
+import { getPaidInvoices, getPendingInvoices, invoiceReminder } from "../Services/Methods";
 import NoRecordFound from "../../utils/NoRecordFound";
 import PaymentViewModal from "./PaymentViewModal";
+import theme from "../../theme";
+import { ErrorMessage } from "../../utils/ToastMessages";
 
 const PaymentTracking = () => {
     const classes = usePaymentTrackingStyles();
@@ -14,6 +16,7 @@ const PaymentTracking = () => {
     const [page, setPage] = useState<number>(0);
     const [selectedInvoice, setSelectedInvoice] = useState({});
     const [paidInvoice, setPaidInvoice] = useState<boolean>(false);
+    const [isReminding, setIsReminding] = useState<boolean>(false);
     const [viewDetails, setViewDetails] = useState(false);
     const rowsPerPage = 10;
 
@@ -71,6 +74,26 @@ const PaymentTracking = () => {
     }
     // Calculate the number of pages based on the length of tableData
     const totalPages = Math.ceil(invoices.length / rowsPerPage);
+    const formatDate = (dateStr: string) => {
+        const [day, month, year] = dateStr.split("-");
+        return `${month}-${day}-${year}`;
+    };
+
+    const handleInvoiceReminder = async (payload: any) => {
+
+        setIsReminding(true)
+
+        try {
+            const response = await invoiceReminder(payload);
+            if (response) {
+                console.log(response)
+            }
+        } catch (error) {
+            ErrorMessage('Failed to send reminder')
+        } finally {
+            setIsReminding(false)
+        }
+    }
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -138,8 +161,12 @@ const PaymentTracking = () => {
                                     </TableCell>
                                     {!paidInvoice &&
                                         <TableCell>
-                                            <Button variant={'contained'} className={`${classes.status} ${'active'}`}>
-                                                Remember
+                                            <Button
+                                                variant={'contained'}
+                                                className={`${classes.status} ${'active'}`}
+                                                onClick={() => handleInvoiceReminder({ Email: 'parkerauction369@gmail.com', Amount: row.amount, DueDate: formatDate(row.deadline) })}
+                                            >
+                                                {isReminding ? <CircularProgress size={25} sx={{ color: theme.palette.primary.main3 }} /> : 'Remember'}
                                             </Button>
                                         </TableCell>
                                     }

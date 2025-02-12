@@ -43,6 +43,7 @@ export const placeBid = (payload: any) => postWithFormRequest('/lots/newbid', pa
 // Payment Tracking Methods
 export const getPendingInvoices = () => getRequest('/invoices/pending');
 export const getPaidInvoices = () => getRequest('/invoices/paid');
+export const invoiceReminder = (payload: any) => postRequest('/invoices/invoicereminder', payload);
 
 // Location Methods
 export const getCurrentLocations = () => getRequest('/auctions/currentlocations');
