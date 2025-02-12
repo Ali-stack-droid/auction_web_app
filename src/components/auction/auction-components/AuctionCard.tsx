@@ -52,7 +52,7 @@ const AuctionCard = ({
 
         if (headerType === "lots") {
             if (location.pathname === "/inventory") {
-                localStorage.setItem("inventory", "true");
+                return navigate(`/inventory/lots/details?lotId=${cardData.id}`);
             }
             return navigate(`/auction/lots/details?lotId=${cardData.id}`);
         }
@@ -69,7 +69,11 @@ const AuctionCard = ({
     const isLiveDetail = headerType === "live" && getQueryParam('aucId');
 
     const handleViewCatalog = (id: number) => {
-        navigate(`/auction/lots?aucId=${id}`)
+        if (headerType === 'live') {
+            navigate(`/live/lots?aucId=${id}`)
+        } else {
+            navigate(`/auction/lots?aucId=${id}`)
+        }
     }
 
     const handleMoveLot = (id: number) => {

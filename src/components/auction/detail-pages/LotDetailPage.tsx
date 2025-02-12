@@ -28,7 +28,7 @@ import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded
 const LotDetailPage = () => {
     const classes = useDetailStyles();
     const navigate = useNavigate();
-    const locationURL = useLocation();
+    const location = useLocation();
 
     const [lotDetails, setLotDetails]: any = useState({})
     const [bidders, setBidders]: any = useState([])
@@ -43,55 +43,6 @@ const LotDetailPage = () => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const [mainImage, setMainImage] = useState("");
-
-    const fakeBidders = [
-        {
-            id: "raw-1",
-            clientId: "client-1",
-            name: "John Doe",
-            bidAmount: 100,
-            email: "john.doe@example.com",
-            address: "123 Main St, Springfield",
-            company: "ABC Corp",
-        },
-        {
-            id: "raw-2",
-            clientId: "client-2",
-            name: "Jane Smith",
-            bidAmount: 200,
-            email: "jane.smith@example.com",
-            address: "456 Elm St, Metropolis",
-            company: "XYZ Ltd",
-        },
-        {
-            id: "raw-3",
-            clientId: "client-3",
-            name: "Robert Brown",
-            bidAmount: 300,
-            email: "robert.brown@example.com",
-            address: "789 Oak St, Gotham",
-            company: "PQR Inc",
-        },
-        {
-            id: "raw-4",
-            clientId: "client-4",
-            name: "Emily White",
-            bidAmount: 400,
-            email: "emily.white@example.com",
-            address: "321 Pine St, Star City",
-            company: "LMN LLC",
-        },
-        {
-            id: "raw-5",
-            clientId: "client-5",
-            name: "Michael Green",
-            bidAmount: 500,
-            email: "michael.green@example.com",
-            address: "654 Maple St, Central City",
-            company: "DEF Group",
-        },
-    ];
-
 
     useEffect(() => {
         if (!isFetchingData) {
@@ -258,9 +209,7 @@ const LotDetailPage = () => {
     };
 
     const handleBackClick = () => {
-        const isFromInventory = localStorage.getItem('inventory');
-        if (isFromInventory) {
-            localStorage.removeItem('inventory');
+        if (location.pathname.includes('inventory')) {
             navigate(`/inventory`)
         } else {
             navigate(`/auction/lots?aucId=${lotDetails.auctionId}`)

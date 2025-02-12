@@ -99,22 +99,28 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                                 </ProtectedRoute>
                             }
                         />
-                        <Route
-                            path="/auction/lots"
-                            element={
-                                <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <Lots />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/auction/lots/details"
-                            element={
-                                <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <LotDetailPage />
-                                </ProtectedRoute>
-                            }
-                        />
+                        {['/auction/lots', '/live/lots'].map((path) => (
+                            <Route
+                                key={path}
+                                path={path}
+                                element={
+                                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                        <Lots />
+                                    </ProtectedRoute>
+                                }
+                            />
+                        ))}
+                        {['/auction/lots/details', '/inventory/lots/details'].map((path) => (
+                            <Route
+                                key={path}
+                                path={path}
+                                element={
+                                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                        <LotDetailPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                        ))}
                         <Route
                             path="/auction/details"
                             element={
