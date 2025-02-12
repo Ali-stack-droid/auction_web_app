@@ -19,63 +19,18 @@ const LiveStreamingDetailPage = () => {
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const [auctionDetails, setAuctionDetails]: any = useState({})
+    // const [auctionDetails, setAuctionDetails]: any = useState({})
     const [auctionLots, setAuctionLots]: any = useState([])
     const [paginationedData, setPaginationedData]: any = useState([])
-    const [select, setSelect] = useState(false)
-    const [reset, setReset] = useState(false)
-    const [liveAuctions, setLiveAuctions]: any = useState([])
-
-
-    useEffect(() => {
-        if (select) {
-            const lisitng: any = document.getElementById('listing');
-            if (lisitng) {
-                lisitng.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-    }, [select])
-
-    useEffect(() => {
-        if (!isFetchingData) {
-            setIsFetchingData(true)
-            fetchLiveStreamingData();
-        }
-    }, [reset])
-
-    const fetchLiveStreamingData = async () => {
-        try {
-            const response = await getCurrentLiveAuctions()
-            if (response.data && response.data.length > 0) {
-                const updatedData = response.data.map((item: any) => ({
-                    id: item.Id,
-                    name: item.Name,
-                    image: item.Image,
-                    description: item.Description,
-                    isLive: item.LiveStreaming,
-                    details: {
-                        address: item.Address,
-                        location: `${item.City}, ${item.Country}`,
-                        dateRange: `${item.StartDate} to ${item.EndDate}`,
-                        lotsAvailable: item.TotalLots // Replace with actual data if available
-                    }
-                }));
-
-                setLiveAuctions(updatedData);
-            } else {
-                setLiveAuctions([]);
-            }
-        } catch (error) {
-            setIsFetchingData(false)
-        }
-    };
+    const [select, setSelect] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true);
-            fetchAuctionDetails()
+            fetchAuctionDetails();
         }
-    }, [reset])
+    }, [])
 
     const fetchAuctionDetails = async () => {
         try {
@@ -83,57 +38,57 @@ const LiveStreamingDetailPage = () => {
             const auction = response.data.Auction;
             const lots = response.data.Lots;
 
-            if (auction) {
-                const formattedAuctionDetails = {
-                    id: auction.Id,
-                    name: auction.Name,
-                    image: auction.Image,
-                    type: auction.IsPast ? "past" : "current",
-                    details: {
-                        location: `${auction.City}, ${auction.Country}`,
-                        dateRange: `${auction.StartDate} to ${auction.EndDate}`,
-                        lotsAvailable: auction.TotalLots ? auction.TotalLots : 'No'
-                    },
+            // if (auction) {
+            //     const formattedAuctionDetails = {
+            //         id: auction.Id,
+            //         name: auction.Name,
+            //         image: auction.Image,
+            //         type: auction.IsPast ? "past" : "current",
+            //         details: {
+            //             location: `${auction.City}, ${auction.Country}`,
+            //             dateRange: `${auction.StartDate} to ${auction.EndDate}`,
+            //             lotsAvailable: auction.TotalLots ? auction.TotalLots : 'No'
+            //         },
 
-                    dateRange: `${auction.StartDate} to ${auction.EndDate}`,
-                    timeRange: `${auction.StartTime} to ${auction.EndTime}`,
-                    previewDateRange: `${auction.PrevStartDate} to ${auction.PrevEndDate}`,
-                    previewTimeRange: `${auction.PrevStartTime} to ${auction.PrevEndTime}`,
+            //         dateRange: `${auction.StartDate} to ${auction.EndDate}`,
+            //         timeRange: `${auction.StartTime} to ${auction.EndTime}`,
+            //         previewDateRange: `${auction.PrevStartDate} to ${auction.PrevEndDate}`,
+            //         previewTimeRange: `${auction.PrevStartTime} to ${auction.PrevEndTime}`,
 
-                    description: auction.Description,
-                    notes: auction.Notes,
+            //         description: auction.Description,
+            //         notes: auction.Notes,
 
-                    liveStreaming: auction.LiveStreaming,
-                    startDate: auction.StartDate,
-                    endDate: auction.EndDate,
-                    startTime: auction.StartTime,
-                    endTime: auction.EndTime,
-                    prevStartDate: auction.PrevStartDate,
-                    prevEndDate: auction.PrevEndDate,
-                    prevStartTime: auction.PrevStartTime,
-                    prevEndTime: auction.PrevEndTime,
+            //         liveStreaming: auction.LiveStreaming,
+            //         startDate: auction.StartDate,
+            //         endDate: auction.EndDate,
+            //         startTime: auction.StartTime,
+            //         endTime: auction.EndTime,
+            //         prevStartDate: auction.PrevStartDate,
+            //         prevEndDate: auction.PrevEndDate,
+            //         prevStartTime: auction.PrevStartTime,
+            //         prevEndTime: auction.PrevEndTime,
 
-                    country: auction.Country,
-                    state: auction.State,
-                    zipCode: auction.ZipCode,
-                    city: auction.City,
-                    address: auction.Address,
-                    fullAddress: `Street ${auction.Address}, ${auction.City}, ${auction.ZipCode}, ${auction.State}, ${auction.Country}`,
-                    shippingMethod: auction.ShippingMethod,
-                    termsConditions: auction.TermsConditions,
-                    paymentTerms: auction.PaymentTerms,
-                    // termsConxditions: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
-                    // paymentTerms: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
-                    createdAt: auction.CreatedAt,
-                    updatedAt: auction.UpdateddAt,
-                    isDeleted: auction.IsDeleted,
-                    isSold: auction.IsSold,
-                    totalLots: auction.TotalLots
-                };
-                setAuctionDetails(formattedAuctionDetails);
-            } else {
-                setAuctionDetails([]);
-            }
+            //         country: auction.Country,
+            //         state: auction.State,
+            //         zipCode: auction.ZipCode,
+            //         city: auction.City,
+            //         address: auction.Address,
+            //         fullAddress: `Street ${auction.Address}, ${auction.City}, ${auction.ZipCode}, ${auction.State}, ${auction.Country}`,
+            //         shippingMethod: auction.ShippingMethod,
+            //         termsConditions: auction.TermsConditions,
+            //         paymentTerms: auction.PaymentTerms,
+            //         // termsConxditions: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
+            //         // paymentTerms: "Welcome to our auction! By participating, you agree to our terms: All bids are binding and non-retractable. Items are sold without warranty, expressed or implied. Payment must be completed within 48 hours of auction close. Shipping costs are borne by the buyer, and delivery timelines may vary. We reserve the right to cancel or reschedule auctions without prior notice. Unauthorized use of our platform is prohibited. All sales are final; no returns or refunds will be entertained.",
+            //         createdAt: auction.CreatedAt,
+            //         updatedAt: auction.UpdateddAt,
+            //         isDeleted: auction.IsDeleted,
+            //         isSold: auction.IsSold,
+            //         totalLots: auction.TotalLots
+            //     };
+            //     setAuctionDetails(formattedAuctionDetails);
+            // } else {
+            //     setAuctionDetails([]);
+            // }
 
             if (lots?.length > 0) {
                 const formattedLots = lots.map((item: any) => ({
@@ -231,6 +186,25 @@ const LiveStreamingDetailPage = () => {
         }
     }
 
+    const handleNextLot = (id?: number) => {
+        console.log(id)
+        setCurrentIndex((prevIndex) => {
+            if (id !== undefined) {
+                const newIndex = auctionLots.findIndex((lot: any) => lot.id === id);
+                return newIndex !== -1 ? newIndex : prevIndex; // Set index if found, otherwise keep previous index
+            }
+            return (prevIndex + 1) % auctionLots.length; // Loop through the array
+        });
+    };
+
+
+    const handleSelectLot = () => {
+        setSelect(true)
+        const lisitng: any = document.getElementById('listing');
+        if (lisitng) {
+            lisitng.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
 
     return (
         <Box p={2}>
@@ -243,22 +217,20 @@ const LiveStreamingDetailPage = () => {
                 </Typography>
             </Box>
 
-            {!isFetchingData && auctionDetails ?
+            {!isFetchingData ?
                 <Box>
                     <Box className={classes.container}>
                         <Box flex={1} className={classes.mediaSection}>
                             <AuctionCard
                                 width={"100%"}
                                 headerType={"live"}
-                                cardData={auctionDetails || {}}
-                                handleEdit={() => { }}
-                                handleDelete={() => { }}
-                                handleMoveModal={() => { }}
+                                cardData={auctionLots[currentIndex]}
+                                handleEdit={handleEdit}
+                                handleNextLot={handleNextLot}
+                                handleSelectLot={handleSelectLot}
                                 auctionLots={auctionLots}
-                                setSelect={setSelect}
-                                liveAuctions={liveAuctions}
-                                setReset={setReset}
-                                reset={reset}
+                            // setSelect={setSelect}
+
                             />
                         </Box>
                         <Box className={classes.rightSection}>
@@ -295,6 +267,8 @@ const LiveStreamingDetailPage = () => {
                                                 handleEdit={handleEditLots}
                                                 handleDelete={handleDeleteAuction}
                                                 handleMoveModal={handleMoveModal}
+                                                isLiveLot={true}
+                                                handleNextLot={handleNextLot}
                                             />
                                         </Grid>
                                     ))}
