@@ -10,7 +10,7 @@ function App() {
 
 
   useEffect(() => {
-    sessionStorage.setItem('email', 'hassaan@gmail.com');
+    // sessionStorage.setItem('email', 'hassaan@gmail.com');
     const token = sessionStorage.getItem('email');
     setIsAuthenticated(!!token);
     setLoading(false);
