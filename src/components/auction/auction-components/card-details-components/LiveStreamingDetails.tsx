@@ -9,7 +9,6 @@ const LiveStreamingDetails = ({ streamData }: any) => {
 
     return (
         <Box className={classes.containerLive}>
-
             {/* Lots Available */}
             <Box className={classes.iconText}>
                 <ViewInArRoundedIcon fontSize="small" color="primary" />
@@ -19,14 +18,14 @@ const LiveStreamingDetails = ({ streamData }: any) => {
             {/* Location */}
             <Box className={classes.iconText}>
                 <CategoryRoundedIcon fontSize="small" color="primary" />
-                <Typography className={classes.textLive}>Categories</Typography>
+                <Typography className={classes.textLive}>{streamData.category}</Typography>
             </Box>
 
             {/* Date Range */}
             <Box className={`${classes.iconText} ${classes.flexItem}`}>
                 <DeviceHubRoundedIcon fontSize="small" color="primary" />
                 <Typography className={classes.textLive} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                    Sub-Categories
+                    {streamData.subCategory}
                 </Typography>
             </Box>
 
