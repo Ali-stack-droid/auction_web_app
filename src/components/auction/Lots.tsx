@@ -74,6 +74,7 @@ const Lots = ({ searchTerm }: any) => {
             if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
+                    auctionId: item.AuctionId,
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
                     description: item.LongDescription,
@@ -173,8 +174,8 @@ const Lots = ({ searchTerm }: any) => {
     const navigate = useNavigate();
 
     // Handle Edit
-    const handleEdit = (id: number) => {
-        navigate(`/auction/lots/edit?lotId=${id}`); // Navigate to the edit route with lot ID
+    const handleEdit = (lotId: number, aucId: any) => {
+        navigate(`/auction/lots/edit?lotId=${lotId}&aucId=${aucId}`);
     };
 
     const handleDelete = async (id: number) => {

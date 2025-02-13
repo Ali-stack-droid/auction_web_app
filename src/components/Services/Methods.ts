@@ -22,6 +22,7 @@ export const setFeaturedAuctions = (id: any) => getRequest(`/auctions/featured?i
 
 // Lot Methos
 export const createLot = (payload: any) => postWithFormRequest('/lots/create', payload);
+export const editLot = (payload: any) => postRequest('/lots/editlot', payload);
 export const getCurrentLots = () => getRequest('/lots/currentlots');
 export const getPastLots = () => getRequest('/lots/pastlots');
 export const getLotsByAuctionId = (id: any) => getRequest(`/lots/lotsbyauctionid?id=${id}`);

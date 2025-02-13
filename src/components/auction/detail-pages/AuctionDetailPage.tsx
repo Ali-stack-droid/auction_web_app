@@ -105,6 +105,7 @@ const AuctionDetailPage = () => {
             if (lots.length > 0) {
                 const formattedLots = lots.map((item: any) => ({
                     id: item.Id,
+                    auctionId: item.AuctionId,
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
                     description: item.LongDescription,
@@ -169,8 +170,9 @@ const AuctionDetailPage = () => {
         navigate(`/auction/edit?aucId=${id}`);
     };
 
-    const handleEditLots = (id: number) => {
-        navigate(`/auction/lots/edit?lotId=${id}`);
+    // Handle Edit
+    const handleEditLots = (lotId: number, aucId: any) => {
+        navigate(`/auction/lots/edit?lotId=${lotId}&aucId=${aucId}`);
     };
 
     // Open confirmation modal

@@ -64,8 +64,8 @@ const CreateAuction = ({ setIsContinue, setAuctionData, file, setFile }: any) =>
             startTime: Yup.string().required('Start Time is required'),
             endDate: Yup.date()
                 .required('End Date is required')
-                .test('is-greater', 'End Date must be greater than Start Date', function (value) {
-                    return value && this.parent.startDate ? value > this.parent.startDate : true;
+                .test('is-greater-or-equal', 'End Date must be greater than or equal to Start Date', function (value) {
+                    return value && this.parent.startDate ? value >= this.parent.startDate : true;
                 }),
             endTime: Yup.string().required('End Time is required'),
             checkoutDate: Yup.date()

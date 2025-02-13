@@ -52,7 +52,7 @@ const AuctionCard = ({
 
         if (headerType === "lots") {
             if (location.pathname === "/inventory") {
-                localStorage.setItem("inventory", "true");
+                return navigate(`/inventory/lots/details?lotId=${cardData.id}`);
             }
             return navigate(`/auction/lots/details?lotId=${cardData.id}`);
         }
@@ -69,7 +69,11 @@ const AuctionCard = ({
     const isLiveDetail = headerType === "live" && getQueryParam('aucId');
 
     const handleViewCatalog = (id: number) => {
-        navigate(`/auction/lots?aucId=${id}`)
+        if (headerType === 'live') {
+            navigate(`/live/lots?aucId=${id}`)
+        } else {
+            navigate(`/auction/lots?aucId=${id}`)
+        }
     }
 
     const handleMoveLot = (id: number) => {
@@ -236,7 +240,11 @@ const AuctionCard = ({
                 <Box className={classes.actionButtons}>
                     {!isLiveDetail &&
                         <React.Fragment>
-                            <Button className={classes.actionButton} variant="contained" size="small" color="primary" onClick={() => handleEdit(cardData.id)}>
+                            <Button className={classes.actionButton} variant="contained" size="small" color="primary"
+                                onClick={() => headerType === "lots"
+                                    ? handleEdit(cardData.id, cardData.auctionId)
+                                    : handleEdit(cardData.id)}
+                            >
                                 Edit
                             </Button>
                             <Button className={classes.actionButton} variant="contained" size="small" color="error" onClick={() => handleDelete(cardData.id)}>

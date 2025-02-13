@@ -29,7 +29,7 @@ const SideBar = () => {
 
     const isSelected = (path: string) => {
 
-        if (path === "/auction" || path === "/live") {
+        if (path === "/auction" || path === "/live" || path === "/inventory") {
             return location.pathname.replace(/\/+$/, '').includes(path);
         }
         return path === location.pathname;

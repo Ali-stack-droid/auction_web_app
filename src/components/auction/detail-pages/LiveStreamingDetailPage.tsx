@@ -41,6 +41,7 @@ const LiveStreamingDetailPage = () => {
             if (lots?.length > 0) {
                 const formattedLots = lots.map((item: any) => ({
                     id: item.Id,
+                    auctionId: item.AuctionId,
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
                     description: item.LongDescription,
@@ -102,9 +103,10 @@ const LiveStreamingDetailPage = () => {
         navigate(`/auction/edit/${id}`);
     };
 
-    const handleEditLots = (id: string) => {
-        navigate(`/auction/lots/edit?lotId=${id}`);
-    }
+    // Handle Edit
+    const handleEditLots = (lotId: number, aucId: any) => {
+        navigate(`/auction/lots/edit?lotId=${lotId}&aucId=${aucId}`);
+    };
 
     // Open confirmation modal
     const handleDeleteAuction = (id: number) => {
@@ -177,8 +179,6 @@ const LiveStreamingDetailPage = () => {
                                 handleNextLot={handleNextLot}
                                 handleSelectLot={handleSelectLot}
                                 auctionLots={auctionLots}
-                            // setSelect={setSelect}
-
                             />
                         </Box>
                         <Box className={classes.rightSection}>

@@ -63,6 +63,7 @@ const Lots = ({ searchTerm }: any) => {
             if (response.data && response.data.length > 0) {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
+                    auctionId: item.AuctionId,
                     address: item.Address,
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
@@ -74,7 +75,10 @@ const Lots = ({ searchTerm }: any) => {
                     highestBid: item.BidStartAmount,
                     sold: item.IsSold,
                     isPast: item.IsPast,
+                    isFeatured: item.IsFeatured,
                     details: {
+                        endDate: item.EndDate,
+                        endTime: item.EndTime,
                         description: item.LongDescription,
                         date: `${item.StartDate} to ${item.EndDate}`,
                         time: `${item.StartTime} to ${item.EndTime}`,
@@ -90,14 +94,10 @@ const Lots = ({ searchTerm }: any) => {
                     },
                 }));
 
-                let latestData = [];
+                let latestData = updatedData;
 
                 let filteredLots = updatedData.filter((lot: any) => {
-                    const { endDateTime } = parseDateTime(lot);
-                    const now = new Date();
-                    const remainingTime = endDateTime.getTime() - now.getTime();
-                    const notEnded = remainingTime > 0;
-                    return notEnded && !lot.isSold; // Keep only active lots
+                    return !lot.isSold; // Keep only active lots
                 });
 
                 if (filterLots !== 'all') {
@@ -108,6 +108,7 @@ const Lots = ({ searchTerm }: any) => {
                             return lot.isPast; // Keep only past lots
                         }
                     });
+
                     setFilteredData(latestData);
                     setPaginationedData(latestData);
                 } else {
@@ -180,8 +181,8 @@ const Lots = ({ searchTerm }: any) => {
     const navigate = useNavigate();
 
     // Handle Edit
-    const handleEdit = (id: number) => {
-        navigate(`/auction/lots/edit?lotId=${id}`); // Navigate to the edit route with lot ID
+    const handleEdit = (lotId: number, aucId: any) => {
+        navigate(`/auction/lots/edit?lotId=${lotId}&aucId=${aucId}`);
     };
 
     const handleDelete = async (id: number) => {

@@ -6,7 +6,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
-import { createLot, getLotDetailsById } from '../../Services/Methods';
+import { createLot, editLot, getAuctionDetailById, getLotDetailsById } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { formatDate, formatDateInput, formatTime, formatTimeInput } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
@@ -37,6 +37,7 @@ const AddLot = () => {
     const [isCancelOpen, setIsCancelOpen] = useState(false);
     const [saveModal, setSaveModal] = useState(false);
     const [isFetchingData, setIsFetchingData] = useState(false);
+    const [auction, setAuction]: any = useState({})
 
     const categories: CategoryType = {
         Vehicles: ["Automobiles/Cars", "Motorcycles", "SUVs", "Trucks", "Buses", "RVs & Campers", "Boats", "Trailers", "Specialized Vehicles"],
@@ -49,6 +50,33 @@ const AddLot = () => {
 
     const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [subCategories, setSubCategories] = useState<string[]>([]);
+
+    useEffect(() => {
+        const auctionId = getQueryParam('aucId');
+        if (auctionId) {
+            const fetchAuctionDetails = async () => {
+                try {
+                    const response = await getAuctionDetailById(auctionId);
+                    const auction = response.data.Auction;
+                    if (auction) {
+                        const formattedAuctionDetails = {
+                            startDate: auction.StartDate ? formatDateInput(auction.StartDate) : '',
+                            startTime: auction.StartTime ? formatTimeInput(auction.StartTime) : '',
+                            endDate: auction.EndDate ? formatDateInput(auction.EndDate) : '',
+                            endTime: auction.StartTime ? formatTimeInput(auction.EndTime) : '',
+                        };
+                        setAuction(formattedAuctionDetails)
+                    } else {
+                        ErrorMessage('Auction data not found');
+                    }
+                } catch (error) {
+                }
+            };
+
+            fetchAuctionDetails();
+        }
+    }, []);
+
 
 
     const formik = useFormik({
@@ -74,9 +102,36 @@ const AddLot = () => {
             subCategory: Yup.string().required('Sub-Category is required'),
             lead: Yup.string().required('Lead is required'),
             description: Yup.string().max(500).required('Description is required'),
-            startDate: Yup.date().required('Start Date is required'),
+            startDate: Yup.date()
+                .required('Start Date is required')
+                .test(
+                    'is-within-auction-range',
+                    'Start Date must be within the auction period',
+                    function (value) {
+                        return value && auction?.startDate && auction?.endDate
+                            ? value >= auction.startDate && value <= auction.endDate
+                            : true;
+                    }
+                ),
+            endDate: Yup.date()
+                .required('End Date is required')
+                .test(
+                    'is-within-auction-range',
+                    'End Date must be within the auction period',
+                    function (value) {
+                        return value && auction?.startDate && auction?.endDate
+                            ? value >= auction.startDate && value <= auction.endDate
+                            : false;
+                    }
+                )
+                .test(
+                    'is-after-start-date',
+                    'End Date must be greater than or equal to Start Date',
+                    function (value) {
+                        return value && this.parent.startDate ? value >= this.parent.startDate : true;
+                    }
+                ),
             startTime: Yup.string().required('Start Time is required'),
-            endDate: Yup.date().required('End Date is required'),
             endTime: Yup.string().required('End Time is required'),
             internalNotes: Yup.string(),
             auctionImage: Yup.mixed().required('Auction Image is required'),
@@ -102,39 +157,65 @@ const AddLot = () => {
                 .required('Bids Range is required'),
         }),
         onSubmit: (values) => {
-
-            const newLot = {
-                Id: lots.length + 1,
-                OrderNo: values.orderNumber,
-                LotNo: values.lotNumber,
-                Image: "example.jpg",
-                Category: values.category,
-                SubCategory: values.subCategory,
-                ShortDescription: values.lead,
-                LongDescription: values.description,
-                BidStartAmount: values.bidsRange[0]?.startAmount,
-                StartDate: formatDate(values.startDate),
-                EndDate: formatDate(values.endDate),
-                StartTime: formatTime(values.startTime),
-                EndTime: formatTime(values.endTime),
-                BuyerPremium: 15,
-                Currency: 'USD',
-                CreatedAt: formatDate(values.startDate),
-                UpdatedAt: formatDate(values.startDate),
-                AuctionId: getQueryParam('aucId'),
-                BidsRange: values.bidsRange.map((bid: any) => ({
-                    StartAmount: bid.startAmount,
-                    EndAmount: bid.endAmount,
-                    BidRange: bid.bidRangeAmount,
-                    LotId: lots.length + 1,
-                })),
-            };
-
-            const formattedLots = [...lots, newLot];
-            setLots(formattedLots)
-            handleFormSubmission(newLot);
-            if (!isEdit)
-                formik.resetForm();
+            if (!isEdit) {
+                const newLot = {
+                    Id: lots.length + 1,
+                    OrderNo: values.orderNumber,
+                    LotNo: values.lotNumber,
+                    Image: "example.jpg",
+                    Category: values.category,
+                    SubCategory: values.subCategory,
+                    ShortDescription: values.lead,
+                    LongDescription: values.description,
+                    BidStartAmount: values.bidsRange[0]?.startAmount,
+                    StartDate: formatDate(values.startDate),
+                    EndDate: formatDate(values.endDate),
+                    StartTime: formatTime(values.startTime),
+                    EndTime: formatTime(values.endTime),
+                    BuyerPremium: 15,
+                    Currency: 'USD',
+                    CreatedAt: formatDate(values.startDate),
+                    UpdatedAt: formatDate(values.startDate),
+                    AuctionId: getQueryParam('aucId'),
+                    BidsRange: values.bidsRange.map((bid: any) => ({
+                        StartAmount: bid.startAmount,
+                        EndAmount: bid.endAmount,
+                        BidRange: bid.bidRangeAmount,
+                        LotId: lots.length + 1,
+                    })),
+                };
+                const formattedLots = [...lots, newLot];
+                setLots(formattedLots)
+                handleFormSubmission(newLot);
+            } else {
+                const edittedLot = {
+                    Id: getQueryParam('lotId'),
+                    OrderNo: values.orderNumber,
+                    LotNo: values.lotNumber,
+                    Image: "example.jpg",
+                    Category: values.category,
+                    SubCategory: values.subCategory,
+                    ShortDescription: values.lead,
+                    LongDescription: values.description,
+                    BidStartAmount: values.bidsRange[0]?.startAmount,
+                    StartDate: formatDate(values.startDate),
+                    EndDate: formatDate(values.endDate),
+                    StartTime: formatTime(values.startTime),
+                    EndTime: formatTime(values.endTime),
+                    BuyerPremium: 15,
+                    Currency: 'USD',
+                    CreatedAt: formatDate(values.startDate),
+                    UpdatedAt: formatDate(values.startDate),
+                    AuctionId: getQueryParam('aucId'),
+                    BidsRange: values.bidsRange.map((bid: any) => ({
+                        StartAmount: bid.startAmount,
+                        EndAmount: bid.endAmount,
+                        BidRange: bid.bidRangeAmount,
+                        LotId: getQueryParam('lotId'),
+                    })),
+                };
+                handleFormSubmission(edittedLot);
+            }
         },
     });
 
@@ -169,7 +250,8 @@ const AddLot = () => {
                             auctionImage: lot.Image,
                             bidsRange: bidsRange
                         };
-
+                        setSelectedCategory(formattedLot.category);
+                        setSubCategories(categories[formattedLot.category]); // Update subcategories
                         // Populate formik fields
                         formik.setValues(formattedLot);
 
@@ -206,12 +288,21 @@ const AddLot = () => {
         }
 
         if (isEdit) {
-            ErrorMessage('This feature will be available soon!');
+            editLot(payload)
+                .then((response) => {
+                    console.log(response)
+                    SuccessMessage('Lot updated successfully!');
+                    formik.resetForm();
+                })
+                .catch((error) => {
+                    ErrorMessage('Error updating lot!');
+                });
         } else {
 
             createLot(formData)
                 .then((response) => {
                     SuccessMessage('Lot created successfully!');
+                    formik.resetForm();
                 })
                 .catch((error) => {
                     ErrorMessage('Error creating lot!');
@@ -387,7 +478,7 @@ const AddLot = () => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                                 helperText={formik.touched.startDate && formik.errors.startDate}
-                                inputProps={{ min: today }} // Disable past dates
+                                inputProps={{ min: auction.startDate, max: auction.endDate }} // Disable past dates
                             />
                         </Box>
                         <Box flex={1}>
@@ -414,8 +505,7 @@ const AddLot = () => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.endDate && Boolean(formik.errors.endDate)}
                                 helperText={formik.touched.endDate && formik.errors.endDate}
-                                inputProps={{ min: today }} // Disable past dates
-
+                                inputProps={{ min: auction.startDate, max: auction.endDate }} // Disable past dates
                             />
                         </Box>
                     </Box>

@@ -44,11 +44,18 @@ const AuctionHeader = ({
         }
     }
 
+
+    const handleBackNavigation = () => {
+        headerType === "inventory" ? navigate('/inventory')
+            : locationURL.pathname === "/live/lots" ? navigate('/live')
+                : navigate('/auction')
+    }
+
     return (
         <Box className={classes.root}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {locationURL.pathname === '/auction/lots' &&
-                    <IconButton onClick={() => headerType === "inventory" ? navigate('/inventory') : navigate('/auction')}>
+                {(locationURL.pathname === '/auction/lots' || locationURL.pathname === '/live/lots') &&
+                    <IconButton onClick={() => handleBackNavigation()}>
                         <KeyboardReturnRoundedIcon />
                     </IconButton>
                 }
