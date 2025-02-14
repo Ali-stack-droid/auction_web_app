@@ -6,7 +6,7 @@ import CustomTextField from '../../custom-components/CustomTextField';
 import { CustomMultiLineTextField } from '../../custom-components/CustomMultiLineTextField';
 import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
-import { createLot, editLot, getAuctionDetailById, getLotDetailsById } from '../../Services/Methods';
+import { createLot, editLot, editLotImage, getAuctionDetailById, getLotDetailsById } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { formatDate, formatDateInput, formatTime, formatTimeInput } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
@@ -59,11 +59,12 @@ const AddLot = () => {
                     const response = await getAuctionDetailById(auctionId);
                     const auction = response.data.Auction;
                     if (auction) {
+                        console.log(auction)
                         const formattedAuctionDetails = {
-                            startDate: auction.StartDate ? formatDateInput(auction.StartDate) : '',
-                            startTime: auction.StartTime ? formatTimeInput(auction.StartTime) : '',
-                            endDate: auction.EndDate ? formatDateInput(auction.EndDate) : '',
-                            endTime: auction.StartTime ? formatTimeInput(auction.EndTime) : '',
+                            startDate: auction.StartDate,
+                            startTime: auction.StartTime,
+                            endDate: auction.EndDate,
+                            endTime: auction.StartTime,
                         };
                         setAuction(formattedAuctionDetails)
                     } else {
@@ -108,6 +109,8 @@ const AddLot = () => {
                     'is-within-auction-range',
                     'Start Date must be within the auction period',
                     function (value) {
+                        // console.log("auction?.startDate : ", auction?.startDate)
+                        // console.log("value : ", value)
                         return value && auction?.startDate && auction?.endDate
                             ? value >= auction.startDate && value <= auction.endDate
                             : true;
@@ -283,7 +286,19 @@ const AddLot = () => {
         const formData = new FormData();
         formData.append("payload", JSON.stringify(payload));
         if (file) {
-            formData.append("file", file);
+            if (isEdit) {
+                const edittedFormData = new FormData();
+                edittedFormData.append("file", file);
+                editLotImage(payload.id, edittedFormData)
+                    .then((response) => {
+                        console.log(response)
+                        // SuccessMessage('Lot updated successfully!');
+                        // formik.resetForm();
+                    })
+                    .catch((error) => {
+                        ErrorMessage('Error updating lot!');
+                    });
+            }
             setFile(null);
         }
 
