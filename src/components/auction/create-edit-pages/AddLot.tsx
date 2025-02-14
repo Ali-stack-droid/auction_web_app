@@ -61,10 +61,10 @@ const AddLot = () => {
                     if (auction) {
                         console.log(auction)
                         const formattedAuctionDetails = {
-                            startDate: auction.StartDate,
-                            startTime: auction.StartTime,
-                            endDate: auction.EndDate,
-                            endTime: auction.StartTime,
+                            startDate: auction.StartDate ? formatDateInput(auction.StartDate) : '',
+                            startTime: auction.StartTime ? formatDateInput(auction.StartTime) : '',
+                            endDate: auction.EndDate ? formatDateInput(auction.EndDate) : '',
+                            endTime: auction.StartTime ? formatDateInput(auction.StartTime) : '',
                         };
                         setAuction(formattedAuctionDetails)
                     } else {
@@ -109,29 +109,40 @@ const AddLot = () => {
                     'is-within-auction-range',
                     'Start Date must be within the auction period',
                     function (value) {
-                        // console.log("auction?.startDate : ", auction?.startDate)
-                        // console.log("value : ", value)
-                        return value && auction?.startDate && auction?.endDate
-                            ? value >= auction.startDate && value <= auction.endDate
-                            : true;
+                        if (!value || !auction?.startDate || !auction?.endDate) return true;
+
+                        const auctionStart = new Date(auction.startDate);
+                        const auctionEnd = new Date(auction.endDate);
+                        auctionStart.setHours(0, 0, 0, 0);
+                        auctionEnd.setHours(0, 0, 0, 0);
+
+                        return value >= auctionStart && value <= auctionEnd;
                     }
                 ),
+
             endDate: Yup.date()
                 .required('End Date is required')
                 .test(
                     'is-within-auction-range',
                     'End Date must be within the auction period',
                     function (value) {
-                        return value && auction?.startDate && auction?.endDate
-                            ? value >= auction.startDate && value <= auction.endDate
-                            : false;
+                        if (!value || !auction?.startDate || !auction?.endDate) return false;
+
+                        const auctionStart = new Date(auction.startDate);
+                        const auctionEnd = new Date(auction.endDate);
+                        auctionStart.setHours(0, 0, 0, 0);
+                        auctionEnd.setHours(0, 0, 0, 0);
+
+                        return value >= auctionStart && value <= auctionEnd;
                     }
                 )
                 .test(
                     'is-after-start-date',
                     'End Date must be greater than or equal to Start Date',
                     function (value) {
-                        return value && this.parent.startDate ? value >= this.parent.startDate : true;
+                        if (!value || !this.parent.startDate) return true;
+
+                        return value >= this.parent.startDate;
                     }
                 ),
             startTime: Yup.string().required('Start Time is required'),
@@ -289,16 +300,14 @@ const AddLot = () => {
             if (isEdit) {
                 const edittedFormData = new FormData();
                 edittedFormData.append("file", file);
-                editLotImage(payload.id, edittedFormData)
+                editLotImage(getQueryParam('lotId'), edittedFormData)
                     .then((response) => {
-                        console.log(response)
-                        // SuccessMessage('Lot updated successfully!');
-                        // formik.resetForm();
                     })
                     .catch((error) => {
-                        ErrorMessage('Error updating lot!');
+                        ErrorMessage('Error updating image!');
                     });
             }
+            formData.append("file", file);
             setFile(null);
         }
 
@@ -308,6 +317,7 @@ const AddLot = () => {
                     console.log(response)
                     SuccessMessage('Lot updated successfully!');
                     formik.resetForm();
+                    navigate('/auction');
                 })
                 .catch((error) => {
                     ErrorMessage('Error updating lot!');
