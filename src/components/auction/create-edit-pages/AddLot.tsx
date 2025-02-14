@@ -59,7 +59,6 @@ const AddLot = () => {
                     const response = await getAuctionDetailById(auctionId);
                     const auction = response.data.Auction;
                     if (auction) {
-                        console.log(auction)
                         const formattedAuctionDetails = {
                             startDate: auction.StartDate ? formatDateInput(auction.StartDate) : '',
                             startTime: auction.StartTime ? formatDateInput(auction.StartTime) : '',
@@ -314,7 +313,6 @@ const AddLot = () => {
         if (isEdit) {
             editLot(payload)
                 .then((response) => {
-                    console.log(response)
                     SuccessMessage('Lot updated successfully!');
                     formik.resetForm();
                     navigate('/auction');
