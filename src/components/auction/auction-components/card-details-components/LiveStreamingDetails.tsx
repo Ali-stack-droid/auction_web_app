@@ -18,14 +18,14 @@ const LiveStreamingDetails = ({ streamData }: any) => {
             {/* Location */}
             <Box className={classes.iconText}>
                 <CategoryRoundedIcon fontSize="small" color="primary" />
-                <Typography className={classes.textLive}>{streamData.category}</Typography>
+                <Typography className={classes.textLive}>{streamData?.category}</Typography>
             </Box>
 
             {/* Date Range */}
             <Box className={`${classes.iconText} ${classes.flexItem}`}>
                 <DeviceHubRoundedIcon fontSize="small" color="primary" />
                 <Typography className={classes.textLive} sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                    {streamData.subCategory}
+                    {streamData?.subCategory}
                 </Typography>
             </Box>
 
