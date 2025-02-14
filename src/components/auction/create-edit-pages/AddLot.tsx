@@ -52,6 +52,13 @@ const AddLot = () => {
     const [subCategories, setSubCategories] = useState<string[]>([]);
 
     useEffect(() => {
+        document.getElementById('childContainer')?.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }, []);
+
+    useEffect(() => {
         const auctionId = getQueryParam('aucId');
         if (auctionId) {
             const fetchAuctionDetails = async () => {
@@ -76,8 +83,6 @@ const AddLot = () => {
             fetchAuctionDetails();
         }
     }, []);
-
-
 
     const formik = useFormik({
         initialValues: {
