@@ -8,7 +8,7 @@ import ImageUploader from '../../custom-components/ImageUploader';
 import { useCreateAuctionStyles } from './CreateAuctionStyles';
 import { createLot, editLot, editLotImage, getAuctionDetailById, getLotDetailsById } from '../../Services/Methods';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
-import { formatDate, formatDateInput, formatTime, formatTimeInput } from '../../../utils/Format';
+import { convertTo24HourFormat, formatDate, formatDateInput, formatTime, formatTimeInput } from '../../../utils/Format';
 import BidsRange from '../auction-components/BidsRange';
 import CustomDialogue from '../../custom-components/CustomDialogue';
 import LotsTable from '../auction-components/LotsTable';
@@ -38,6 +38,7 @@ const AddLot = () => {
     const [saveModal, setSaveModal] = useState(false);
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [auction, setAuction]: any = useState({})
+    const [lot, setLot]: any = useState({})
 
     const categories: CategoryType = {
         Vehicles: ["Automobiles/Cars", "Motorcycles", "SUVs", "Trucks", "Buses", "RVs & Campers", "Boats", "Trailers", "Specialized Vehicles"],
@@ -68,9 +69,9 @@ const AddLot = () => {
                     if (auction) {
                         const formattedAuctionDetails = {
                             startDate: auction.StartDate ? formatDateInput(auction.StartDate) : '',
-                            startTime: auction.StartTime ? formatDateInput(auction.StartTime) : '',
+                            startTime: auction.StartTime,
                             endDate: auction.EndDate ? formatDateInput(auction.EndDate) : '',
-                            endTime: auction.StartTime ? formatDateInput(auction.StartTime) : '',
+                            endTime: auction.EndTime,
                         };
                         setAuction(formattedAuctionDetails)
                     } else {
@@ -106,6 +107,26 @@ const AddLot = () => {
             category: Yup.string().required('Category is required'),
             subCategory: Yup.string().required('Sub-Category is required'),
             lead: Yup.string().required('Lead is required'),
+            bidsRange: Yup.array()
+                .of(
+                    Yup.object().shape({
+                        startAmount: Yup.number()
+                            .required('Start Amount is required')
+                            .typeError('Start Amount must be a number'),
+                        endAmount: Yup.number()
+                            .required('End Amount is required')
+                            .typeError('End Amount must be a number')
+                            .moreThan(
+                                Yup.ref('startAmount'),
+                                'End Amount must be greater than Start Amount'
+                            ),
+                        bidRangeAmount: Yup.number()
+                            .required('Bid Range Amount is required')
+                            .typeError('Bid Range Amount must be a number'),
+                    })
+                )
+                .min(1, 'At least one bid range is required')
+                .required('Bids Range is required'),
             description: Yup.string().max(500).required('Description is required'),
             startDate: Yup.date()
                 .required('Start Date is required')
@@ -123,7 +144,6 @@ const AddLot = () => {
                         return value >= auctionStart && value <= auctionEnd;
                     }
                 ),
-
             endDate: Yup.date()
                 .required('End Date is required')
                 .test(
@@ -149,30 +169,46 @@ const AddLot = () => {
                         return value >= this.parent.startDate;
                     }
                 ),
-            startTime: Yup.string().required('Start Time is required'),
-            endTime: Yup.string().required('End Time is required'),
-            internalNotes: Yup.string(),
+            startTime: Yup.string()
+                .required('Start Time is required')
+                .test(
+                    'valid-start-time',
+                    `Start time must be greater or equal to auction's start time (${auction?.startTime})`,
+                    function (value) {
+                        if (!value || !formik.values.startDate || !auction?.startDate || !auction?.startTime) {
+                            return true;
+                        }
+
+                        const lotStartDate = new Date(formik.values.startDate).setHours(0, 0, 0, 0);
+                        const auctionStartDate = new Date(auction.startDate).setHours(0, 0, 0, 0);
+
+                        if (lotStartDate === auctionStartDate) {
+                            return value >= convertTo24HourFormat(auction.startTime);
+                        }
+                        return true;
+                    }
+                ),
+            endTime: Yup.string()
+                .required('End Time is required')
+                .test(
+                    'valid-end-time',
+                    `End time must be lesser or equal to auction's end time (${auction?.endTime})`,
+                    function (value) {
+                        if (!value || !formik.values.endDate || !auction?.endDate || !auction?.endTime) {
+                            return true;
+                        }
+
+                        const lotEndDate = new Date(formik.values.endDate).setHours(0, 0, 0, 0);
+                        const auctionEndDate = new Date(auction.endDate).setHours(0, 0, 0, 0);
+
+                        if (lotEndDate === auctionEndDate) {
+                            return value <= convertTo24HourFormat(auction.endTime);
+                        }
+                        return true;
+                    }
+                ),
             auctionImage: Yup.mixed().required('Auction Image is required'),
-            bidsRange: Yup.array()
-                .of(
-                    Yup.object().shape({
-                        startAmount: Yup.number()
-                            .required('Start Amount is required')
-                            .typeError('Start Amount must be a number'),
-                        endAmount: Yup.number()
-                            .required('End Amount is required')
-                            .typeError('End Amount must be a number')
-                            .moreThan(
-                                Yup.ref('startAmount'),
-                                'End Amount must be greater than Start Amount'
-                            ),
-                        bidRangeAmount: Yup.number()
-                            .required('Bid Range Amount is required')
-                            .typeError('Bid Range Amount must be a number'),
-                    })
-                )
-                .min(1, 'At least one bid range is required')
-                .required('Bids Range is required'),
+            internalNotes: Yup.string(),
         }),
         onSubmit: (values) => {
             if (!isEdit) {
@@ -202,9 +238,7 @@ const AddLot = () => {
                         LotId: lots.length + 1,
                     })),
                 };
-                const formattedLots = [...lots, newLot];
-                setLots(formattedLots)
-                handleFormSubmission(newLot);
+                setLot(newLot)
             } else {
                 const edittedLot = {
                     Id: getQueryParam('lotId'),
@@ -232,7 +266,7 @@ const AddLot = () => {
                         LotId: getQueryParam('lotId'),
                     })),
                 };
-                handleFormSubmission(edittedLot);
+                handleFormSubmission(edittedLot, 0);
             }
         },
     });
@@ -288,8 +322,26 @@ const AddLot = () => {
 
     useEffect(() => {
         if (formik.errors && Object.keys(formik.errors).length > 0) {
-            const firstErrorField = Object.keys(formik.errors)[0];
-            const errorElement: any = document.querySelector(`[name="${firstErrorField}"]`);
+            let firstErrorField = Object.keys(formik.errors)[0];
+            let errorElement: any;
+
+            if (firstErrorField === "bidsRange" && formik.errors.bidsRange) {
+                for (let i = 0; i < formik.errors.bidsRange.length; i++) {
+                    if (formik.errors.bidsRange[i] && Object.keys(formik.errors.bidsRange[i]).length > 0) {
+                        firstErrorField = `bidsRange[${i}].${Object.keys(formik.errors.bidsRange[i])[0]}`;
+                        errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+                        break;
+                    }
+                }
+            } else {
+                errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+            }
+
+            // Handle special cases like auctionImage
+            if (firstErrorField === "auctionImage") {
+                errorElement = document.getElementById("image-uploader"); // Use an ID for selection
+            }
+
             if (errorElement) {
                 errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 errorElement.focus();
@@ -297,7 +349,7 @@ const AddLot = () => {
         }
     }, [submissionAttempt]);
 
-    const handleFormSubmission = async (payload: any) => {
+    const handleFormSubmission = async (payload: any, isAnotherLot: number) => {
         const formData = new FormData();
         formData.append("payload", JSON.stringify(payload));
         if (file) {
@@ -326,11 +378,13 @@ const AddLot = () => {
                     ErrorMessage('Error updating lot!');
                 });
         } else {
-
             createLot(formData)
                 .then((response) => {
-                    SuccessMessage('Lot created successfully!');
                     formik.resetForm();
+                    if (!isAnotherLot) {
+                        navigate('/auction')
+                    }
+                    SuccessMessage('Lot created successfully!');
                 })
                 .catch((error) => {
                     ErrorMessage('Error creating lot!');
@@ -340,18 +394,16 @@ const AddLot = () => {
 
     const handleConfirmAddLot = () => {
         formik.resetForm();
-        setConfirmModal(false);
         setFile(null)
+        setConfirmModal(false);
+        const formattedLots = [...lots, lot];
+        setLots(formattedLots)
+        handleFormSubmission(lot, 1);
     }
 
     const handleCancelConfirmation = () => {
         formik.resetForm();
         navigate('/auction');
-    }
-
-    const handleSaveLot = () => {
-        setSubmissionAttempt(!submissionAttempt)
-        setSaveModal(false)
     }
 
     const handleCategoryChange = (event: any) => {
@@ -362,6 +414,33 @@ const AddLot = () => {
         formik.setFieldValue("subCategory", "placeholder"); // Reset subcategory on category change
     };
 
+    const handleSaveLot = () => {
+        setSaveModal(false)
+        handleFormSubmission(lot, 0);
+    }
+
+    const handleCloseModal = (addAnotherLot: number) => {
+        if (addAnotherLot === 1) {
+            const formattedLots = [...lots, lot];
+            setLots(formattedLots)
+            setSaveModal(false)
+            handleFormSubmission(lot, 1);
+        } else if (addAnotherLot === 0) {
+            setSaveModal(false)
+        }
+    }
+
+    const handleSubmit = (addAnother: number) => {
+        setSubmissionAttempt(!submissionAttempt)
+        if (Object.keys(formik.errors).length === 0 && Object.values(formik.values).every(value => value !== '')) {
+            if (addAnother === 0) {
+                if (!isEdit) setSaveModal(true);
+                else handleSaveLot();
+            } else {
+                setConfirmModal(true)
+            }
+        }
+    }
     return (
         <Box p={2}>
             <Typography className={classes.title}>{getQueryParam('lotId') ? "Edit Lot" : "Create New Lot"}</Typography>
@@ -370,7 +449,12 @@ const AddLot = () => {
                     <Typography className={classes.location}>Lots:</Typography>
                 </Box>
                 {!getQueryParam('lotId') &&
-                    <Button variant={"contained"} onClick={() => setConfirmModal(true)} sx={{ textTransform: 'none' }}>
+                    <Button
+                        type={"submit"}
+                        variant={"contained"}
+                        onClick={() => { formik.handleSubmit(); handleSubmit(1) }}
+                        sx={{ textTransform: 'none' }}
+                    >
                         Add Another Lot
                     </Button>
                 }
@@ -563,7 +647,7 @@ const AddLot = () => {
                                 formik.setFieldValue('auctionImage', uploadedFile); // Update Formik state
                             }} />
                         {formik.touched.auctionImage && formik.errors.auctionImage && (
-                            <Typography color="error" variant="body2">
+                            <Typography id="image-uploader" color="error" variant="body2">
                                 {formik.errors.auctionImage}
                             </Typography>
                         )}
@@ -594,11 +678,7 @@ const AddLot = () => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            onClick={() => {
-                                if (Object.keys(formik.errors).length === 0) {
-                                    if (!isEdit) setSaveModal(true);
-                                }
-                            }}
+                            onClick={() => handleSubmit(0)}
                         >
                             {isEdit ? "Update Lot" : "Confirm"}
                         </Button>
@@ -612,7 +692,7 @@ const AddLot = () => {
                 message={"Are you sure to create new lot without saving current lot?"}
                 openDialogue={confirmModal}
                 handleCloseModal={() => setConfirmModal(false)}
-                handleConfirmModal={handleConfirmAddLot}
+                handleConfirmModal={() => handleConfirmAddLot()}
                 isDeleting={false}
 
             />
@@ -624,18 +704,18 @@ const AddLot = () => {
                 message={`Are you sure you want to cancel ${isEdit ? 'editing' : 'creating'} the current lot?`}
                 openDialogue={isCancelOpen}
                 handleCloseModal={() => setIsCancelOpen(false)}
-                handleConfirmModal={handleCancelConfirmation}
+                handleConfirmModal={() => handleCancelConfirmation()}
                 isDeleting={false}
 
             />
 
             <CustomDialogue
                 type={"continue"}
-                title={"Add another Lot?"}
-                message={"Do you wish to add another lot?"}
+                title={"Confirm Lot?"}
+                message={"Do you wish to save current lot or add another lot?"}
                 openDialogue={saveModal}
-                handleCloseModal={() => navigate('/auction')}
-                handleConfirmModal={handleSaveLot}
+                handleCloseModal={handleCloseModal}
+                handleConfirmModal={() => handleSaveLot()}
                 isDeleting={false}
 
             />
