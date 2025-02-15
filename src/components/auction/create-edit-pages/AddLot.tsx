@@ -448,7 +448,7 @@ const AddLot = () => {
                 <Box >
                     <Typography className={classes.location}>Lots:</Typography>
                 </Box>
-                {!getQueryParam('lotId') &&
+                {/* {!getQueryParam('lotId') &&
                     <Button
                         type={"submit"}
                         variant={"contained"}
@@ -457,7 +457,7 @@ const AddLot = () => {
                     >
                         Add Another Lot
                     </Button>
-                }
+                } */}
             </Box>
 
             {lots?.length > 0 &&
