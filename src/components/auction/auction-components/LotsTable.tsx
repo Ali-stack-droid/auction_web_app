@@ -10,6 +10,8 @@ import {
     IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ErrorMessage, SuccessMessage } from "../../../utils/ToastMessages";
+import { deleteLot } from "../../Services/Methods";
 
 interface Lot {
     Id: number;
@@ -24,8 +26,19 @@ interface LotsTableProps {
 }
 
 const LotsTable: React.FC<LotsTableProps> = ({ lots, setLots }) => {
-    const handleDelete = (id: number) => {
+    const handleDelete = async (id: number) => {
         setLots((prevLots) => prevLots.filter((lot) => lot.Id !== id));
+        SuccessMessage('Lot deleted successfully!')
+        // try {
+        // Call the delete API
+        // const response: any = await deleteLot(id);
+        // if (response.status === 200) {
+        //     setLots((prevLots) => prevLots.filter((lot) => lot.Id !== id));
+        // } else {
+        //     ErrorMessage('Error deleting lot!')
+        // }
+        // } catch (error) {
+        // }
     };
 
     return (
@@ -37,7 +50,7 @@ const LotsTable: React.FC<LotsTableProps> = ({ lots, setLots }) => {
                         <TableCell>Lot No</TableCell>
                         <TableCell>Start Date</TableCell>
                         <TableCell>End Date</TableCell>
-                        {/* <TableCell>Action</TableCell> */}
+                        <TableCell>Action</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -47,14 +60,14 @@ const LotsTable: React.FC<LotsTableProps> = ({ lots, setLots }) => {
                             <TableCell>{lot.LotNo}</TableCell>
                             <TableCell>{lot.StartDate}</TableCell>
                             <TableCell>{lot.EndDate}</TableCell>
-                            {/* <TableCell>
+                            <TableCell>
                                 <IconButton
                                     color="error"
                                     onClick={() => handleDelete(lot.Id)}
                                 >
                                     <DeleteIcon />
                                 </IconButton>
-                            </TableCell> */}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
