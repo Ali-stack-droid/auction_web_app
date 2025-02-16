@@ -123,15 +123,19 @@ const CreatePage = ({ type }: any) => {
         createAuction(formData).then((response) => {
 
             const newAuctionId = response.data.Id;
-            setIsSubmitted(false)
+            if (newAuctionId) {
+                // const {  sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom } = useWebSocket("ws://localhost:8181");
 
-            if (navigation == "auction") {
-                navigate('/auction')
+                if (navigation == "auction") {
+                    navigate('/auction')
+                } else {
+                    navigate(`/auction/lots/create?aucId=${newAuctionId}`)
+                }
+                SuccessMessage('Auction created successfully!');
             } else {
-                navigate(`/auction/lots/create?aucId=${newAuctionId}`)
+                ErrorMessage('Error creating auction!');
             }
-
-            SuccessMessage('Auction created successfully!');
+            setIsSubmitted(false)
 
         }).catch(error => {
             ErrorMessage('Error creating auction!');
