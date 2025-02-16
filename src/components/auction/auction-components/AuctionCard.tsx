@@ -21,7 +21,7 @@ const AuctionCard = ({
     handleNextLot,
     handleSelectLot,
     auctionLots,
-    isLiveLot
+    isLiveLot,
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();

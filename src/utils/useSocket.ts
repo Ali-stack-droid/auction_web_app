@@ -1,24 +1,49 @@
 import { useState, useEffect, useCallback } from "react";
 
-const useWebSocket = (url: string) => {
+const useWebSocket = () => {
 
     const [ws, setWs] = useState<WebSocket | null>(null);
+    const [messageHandler, setMessageHandler] = useState<(message: string) => void>(() => { });
+    const socket = new WebSocket("ws://localhost:8181");
 
     useEffect(() => {
-        const socket = new WebSocket(url);
         setWs(socket);
+    }, []);
 
-        socket.onmessage = (event) => {
-            const msg = event.data;
-        };
+    useEffect(() => {
+        if (ws) {
+            ws.onmessage = function (event) {
+                console.log("event", event);
+                // // const chatbox = document.getElementById("chatbox");
+                // const message = event.data;
 
-        return () => socket.close();
-    }, [url]);
+                // if (message === "CLEAR_CHAT") {
+                //     // chatbox.innerHTML = "";
+                //     return;
+                // }
+
+                // if (message.startsWith("History|")) {
+                //     const historyMessages = message.substring(8).split("\n");
+                //     historyMessages.forEach(msg => appendMessage(msg));
+                //     return;
+                // }
+
+                // appendMessage(message);
+            };
+        }
+
+        // return () => socket.close();
+    }, [ws]);
 
     const sendMessage = useCallback((message: string, room: string) => {
         if (ws && message.trim() && room) {
             ws.send(`MESSAGE|${room}|${message}`);
         }
+
+    }, [ws]);
+
+    const onMessage = useCallback((handler: (message: string) => void) => {
+        setMessageHandler(() => handler);
     }, [ws]);
 
     const setUser = useCallback((userName: string) => {
@@ -28,12 +53,15 @@ const useWebSocket = (url: string) => {
     }, [ws]);
 
     const createRoom = useCallback((roomName: string) => {
+        console.log("ws  ==", ws + "room name ", roomName);
+
         if (ws && roomName) {
             ws.send(`CREATE|${roomName}`);
         }
     }, [ws]);
 
     const joinRoom = useCallback((roomName: string) => {
+        console.log("room name ", roomName);
         if (ws && roomName) {
             ws.send(`JOIN|${roomName}`);
         }
@@ -52,12 +80,14 @@ const useWebSocket = (url: string) => {
     }, [ws]);
 
     return {
+        ws: ws,
         sendMessage,
         setUser,
         createRoom,
         joinRoom,
         leaveRoom,
         deleteRoom,
+        onMessage
     };
 };
 

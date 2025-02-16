@@ -8,8 +8,10 @@ import { createAuction, editAuction } from '../../Services/Methods';
 import { toast, ToastContainer } from 'react-toastify';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
 import { useNavigate } from 'react-router-dom';
+import useWebSocket from '../../../utils/useSocket';
 
 const CreatePage = ({ type }: any) => {
+    const { sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom,  } = useWebSocket();
 
     // data states
     const [auctionData, setAuctionData]: any = useState({});
@@ -22,6 +24,7 @@ const CreatePage = ({ type }: any) => {
     const [isContinue, setIsContinue] = useState(false);
     const [file, setFile]: any = useState(null);
     const [navigation, setNavigation] = useState("");
+    const isLiveAuction = localStorage.getItem("isLive");
 
     const navigate = useNavigate()
     useEffect(() => {
@@ -71,7 +74,7 @@ const CreatePage = ({ type }: any) => {
 
     useEffect(() => {
         if (isUpdated && Object.keys(auctionData).length !== 0 && Object.keys(locationData).length !== 0) {
-            const isLiveAuction = localStorage.getItem("isLive");
+
             const updatedData = {
                 Id: auctionData.auctionId,
                 Name: auctionData.auctionName,
@@ -124,8 +127,9 @@ const CreatePage = ({ type }: any) => {
 
             const newAuctionId = response.data.Id;
             if (newAuctionId) {
-                // const {  sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom } = useWebSocket("ws://localhost:8181");
-
+                if (isLiveAuction == "true") {
+                    createRoom(newAuctionId.toString())
+                }
                 if (navigation == "auction") {
                     navigate('/auction')
                 } else {
