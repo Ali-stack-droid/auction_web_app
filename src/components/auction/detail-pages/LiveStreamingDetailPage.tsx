@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, List, ListItem, Avatar, CircularProgress, Container, Grid, IconButton } from '@mui/material';
+import { Typography, Box, List, ListItem, Avatar, CircularProgress, Container, Grid, IconButton, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import AuctionCard from '../auction-components/AuctionCard';
@@ -8,9 +8,11 @@ import useLiveStreamDetailStyles from './detail-pages-components/LiveStreamingDe
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
 import { getAuctionDetailById, deleteAuction, getCurrentLiveAuctions, getBiddersByLotId } from '../../Services/Methods';
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
+import useWebSocket from '../../../utils/useSocket';
 
 const LiveStreamingDetailPage = () => {
     const classes = useLiveStreamDetailStyles();
+    const { sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom, ws, } = useWebSocket();
 
     // const liveBidders = ["Bidder Name 1", "Bidder Name 2", "Bidder Name 3", "Bidder Name 4", "Bidder Name 5", "Bidder Name 6"];
     // const [liveStream, setLiveStream]: any = useState(liveStreamData.find((stream: any) => stream.id + "" === getQueryParam('aucId')))
@@ -34,6 +36,28 @@ const LiveStreamingDetailPage = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (ws) {
+            console.log("executed");
+            // ws.onmessage = (event) => {
+            //     const message = event.data;
+            //     console.log(message);
+            //     // if (message.startsWith("History|")) {
+            //     //     const historyMessages = message.substring(8).split("\n");
+            //     //     historyMessages.forEach((msg: string) => console.log(msg));
+            //     // } else {
+            //     //     console.log("Received message:", message);
+            //     // }
+            // };
+        }
+    }, [ws]);
+
+    useEffect(() => {
+        joinRoom("170")
+    }, []);
+
+    const endStream = () => {
+    }
 
 
     const fetchAuctionDetails = async () => {
@@ -182,6 +206,7 @@ const LiveStreamingDetailPage = () => {
 
     return (
         <Box p={2}>
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
                 <IconButton onClick={() => navigate('/live')}>
                     <KeyboardReturnRoundedIcon />
@@ -189,6 +214,13 @@ const LiveStreamingDetailPage = () => {
                 <Typography className={classes.title}>
                     Live Streaming Auction
                 </Typography>
+                <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => endStream()}
+                >
+                    End Stream
+                </Button>
             </Box>
 
             {!isFetchingData ?
