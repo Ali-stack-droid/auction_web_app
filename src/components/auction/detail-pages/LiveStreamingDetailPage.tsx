@@ -6,7 +6,7 @@ import AuctionCard from '../auction-components/AuctionCard';
 import PaginationButton from '../auction-components/PaginationButton';
 import useLiveStreamDetailStyles from './detail-pages-components/LiveStreamingDetailStyles';
 import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
-import { getAuctionDetailById, deleteAuction, getCurrentLiveAuctions } from '../../Services/Methods';
+import { getAuctionDetailById, deleteAuction, getCurrentLiveAuctions, getBiddersByLotId } from '../../Services/Methods';
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
 
 const LiveStreamingDetailPage = () => {
@@ -18,10 +18,12 @@ const LiveStreamingDetailPage = () => {
     const [deleteAuctionId, setDeleteAuctionId] = useState(0)
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [fetchingBidders, setFetchingBidders] = useState(false);
 
     // const [auctionDetails, setAuctionDetails]: any = useState({})
     const [auctionLots, setAuctionLots]: any = useState([])
     const [paginationedData, setPaginationedData]: any = useState([])
+    const [bidders, setBidders]: any = useState([])
     const [select, setSelect] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -31,6 +33,8 @@ const LiveStreamingDetailPage = () => {
             fetchAuctionDetails();
         }
     }, [])
+
+
 
     const fetchAuctionDetails = async () => {
         try {
@@ -68,6 +72,7 @@ const LiveStreamingDetailPage = () => {
                     },
                 }));
                 setAuctionLots(formattedLots)
+                fetchBidders(formattedLots[currentIndex].id)
                 setPaginationedData(formattedLots)
             } else {
                 setAuctionLots([])
@@ -80,6 +85,31 @@ const LiveStreamingDetailPage = () => {
         }
     };
 
+
+    const fetchBidders = async (id: number) => {
+        setFetchingBidders(true)
+        try {
+            const response = await getBiddersByLotId(id);
+            const bidders = response.data;
+            if (bidders.length > 0) {
+                const formattedBidders = response.data.map((bidder: any) => ({
+                    id: bidder.Id,
+                    clientId: bidder.ClientId,
+                    name: bidder.Name,
+                    bidAmount: bidder.BidAmount,
+                    email: bidder.Email,
+                    address: bidder.Address,
+                    company: bidder.Company,
+                }));
+                setBidders(formattedBidders)
+            } else {
+                setBidders([]);
+            }
+        } catch (error) {
+        } finally {
+            setFetchingBidders(false)
+        }
+    }
     const handleDelete = async () => {
         try {
             const response: any = await deleteAuction(deleteAuctionId);
@@ -123,14 +153,6 @@ const LiveStreamingDetailPage = () => {
         }
     };
 
-    // Confirm deletion
-    const handleConfirmDelete = () => {
-        if (!isDeleting) {
-            setIsDeleting(true)
-            handleDelete(); // Call the delete handler
-        }
-    };
-
     const handleMoveModal = (movedLotId: number) => {
         if (movedLotId > 0) {
             setAuctionLots((prevData: any) => prevData.filter((item: any) => item.id !== movedLotId));
@@ -141,8 +163,10 @@ const LiveStreamingDetailPage = () => {
         setCurrentIndex((prevIndex) => {
             if (id !== undefined) {
                 const newIndex = auctionLots.findIndex((lot: any) => lot.id === id);
+                fetchBidders(auctionLots[newIndex !== -1 ? newIndex : prevIndex].id)
                 return newIndex !== -1 ? newIndex : prevIndex; // Set index if found, otherwise keep previous index
             }
+            fetchBidders(auctionLots[(prevIndex + 1) % auctionLots.length].id)
             return (prevIndex + 1) % auctionLots.length; // Loop through the array
         });
     };
