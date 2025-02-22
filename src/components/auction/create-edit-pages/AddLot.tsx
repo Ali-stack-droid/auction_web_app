@@ -638,7 +638,7 @@ const AddLot = () => {
 
                     <Box mb={2}>
                         <Typography className={classes.label}>
-                            Upload Auction Image
+                            Upload Lot Image
                         </Typography>
                         <ImageUploader
                             file={file}

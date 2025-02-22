@@ -12,7 +12,7 @@ import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded
 const LiveStreamingDetailPage = () => {
     const classes = useLiveStreamDetailStyles();
 
-    const liveBidders = ["Bidder Name 1", "Bidder Name 2", "Bidder Name 3", "Bidder Name 4", "Bidder Name 5", "Bidder Name 6"];
+    // const liveBidders = ["Bidder Name 1", "Bidder Name 2", "Bidder Name 3", "Bidder Name 4", "Bidder Name 5", "Bidder Name 6"];
     // const [liveStream, setLiveStream]: any = useState(liveStreamData.find((stream: any) => stream.id + "" === getQueryParam('aucId')))
     const [confirmDelete, setConfirmDelete] = useState(false)
     const [deleteAuctionId, setDeleteAuctionId] = useState(0)
@@ -96,7 +96,7 @@ const LiveStreamingDetailPage = () => {
                     id: bidder.Id,
                     clientId: bidder.ClientId,
                     name: bidder.Name,
-                    bidAmount: bidder.BidAmount,
+                    bidAmount: bidder.BidAmount + " USD",
                     email: bidder.Email,
                     address: bidder.Address,
                     company: bidder.Company,
@@ -208,12 +208,12 @@ const LiveStreamingDetailPage = () => {
                         <Box className={classes.rightSection}>
                             <Typography variant="h6" className={classes.liveBiddersHeader}>Live Bidders</Typography>
                             <List className={classes.liveBiddersList} >
-                                {liveBidders.map((bidder, index) => (
+                                {bidders.map((bidder: any, index: number) => (
                                     <ListItem key={index} className={classes.liveBidderItem}>
                                         <Avatar />
                                         <Box className={classes.bidderBox}>
-                                            <Typography className={classes.bidderName}>{bidder}</Typography>
-                                            <Typography className={classes.bidderMessage}>Lorem ipsum dolor sit amet sim.</Typography>
+                                            <Typography className={classes.bidderName}>{bidder.name}</Typography>
+                                            <Typography className={classes.bidderMessage}>{bidder.bidAmount}</Typography>
                                         </Box>
                                     </ListItem>
                                 ))}

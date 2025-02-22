@@ -122,7 +122,7 @@ const useLiveStreamDetailStyles = makeStyles(() => ({
         padding: "2px",
         marginLeft: "10px"
     },
-    bidderName: { fontSize: "16px", color: theme.palette.primary.main10 },
+    bidderName: { fontSize: "16px", color: theme.palette.primary.main10, textTransform: "capitalize" },
     bidderMessage: { fontSize: "12px", color: theme.palette.primary.main10 },
 }));
 
