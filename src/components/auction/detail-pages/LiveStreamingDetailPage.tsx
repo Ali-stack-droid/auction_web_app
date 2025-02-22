@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Typography, Box, List, ListItem, Avatar, CircularProgress, Container, Grid, IconButton, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getQueryParam } from '../../../helper/GetQueryParam';
@@ -10,12 +10,10 @@ import { getAuctionDetailById, deleteAuction, getCurrentLiveAuctions, getBidders
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
 import useWebSocket from '../../../utils/useSocket';
 
-const LiveStreamingDetailPage = () => {
+const LiveStreamingDetailPage = ({ socket }: any) => {
     const classes = useLiveStreamDetailStyles();
-    const { sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom, ws, } = useWebSocket();
+    // const { sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom, ws, isConnected } = useWebSocket();
 
-    // const liveBidders = ["Bidder Name 1", "Bidder Name 2", "Bidder Name 3", "Bidder Name 4", "Bidder Name 5", "Bidder Name 6"];
-    // const [liveStream, setLiveStream]: any = useState(liveStreamData.find((stream: any) => stream.id + "" === getQueryParam('aucId')))
     const [confirmDelete, setConfirmDelete] = useState(false)
     const [deleteAuctionId, setDeleteAuctionId] = useState(0)
     const [isFetchingData, setIsFetchingData] = useState(false);
@@ -29,6 +27,8 @@ const LiveStreamingDetailPage = () => {
     const [select, setSelect] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    // console.log("auctionLots[currentIndex]", JSON.stringify(auctionLots[currentIndex], null, 2));
+
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true);
@@ -37,28 +37,83 @@ const LiveStreamingDetailPage = () => {
     }, [])
 
     useEffect(() => {
-        if (ws) {
-            console.log("executed");
-            // ws.onmessage = (event) => {
-            //     const message = event.data;
-            //     console.log(message);
-            //     // if (message.startsWith("History|")) {
-            //     //     const historyMessages = message.substring(8).split("\n");
-            //     //     historyMessages.forEach((msg: string) => console.log(msg));
-            //     // } else {
-            //     //     console.log("Received message:", message);
-            //     // }
-            // };
-        }
-    }, [ws]);
-
-    useEffect(() => {
-        joinRoom("170")
+        setUser("admin")
+        createRoom("4bebcbfb-15d9-4fbc-b41e-ee0c9add7131")
+        joinRoom("4bebcbfb-15d9-4fbc-b41e-ee0c9add7131")
     }, []);
 
-    const endStream = () => {
-    }
+    useEffect(() => {
+        socket.onmessage = (event: any) => {
+         
+                console.log("data", event.data);
+        };
+    }, [socket]);
 
+
+    const setUser = useCallback((userName: string) => {
+        if (socket) { // Check if WebSocket is connected
+            const data = {
+                event: "setUserName",
+                userName,
+            };
+            socket.send(JSON.stringify(data));
+        } else {
+            console.error("WebSocket is not connected.");
+        }
+    }, []);
+
+    const createRoom = useCallback((roomName: string) => {
+        if (socket) {
+            const data = {
+                event: "createRoom",
+                roomName,
+            };
+            socket.send(JSON.stringify(data));
+        } else {
+            console.error("WebSocket is not connected.");
+        }
+    }, [socket]);
+
+
+    const joinRoom = useCallback((roomName: string) => {
+        if (socket) { // Check if WebSocket is connected
+            const data = {
+                event: "joinRoom",
+                roomName,
+            };
+            socket.send(JSON.stringify(data));
+        } else {
+            console.error("WebSocket is not connected.");
+        }
+    }, [socket]);
+
+
+
+    const leaveRoom = useCallback((roomName: string) => {
+        if (socket) { // Check if WebSocket is connected
+            const data = {
+                event: "leaveRoom",
+                roomName,
+            };
+            socket.send(JSON.stringify(data));
+        } else {
+            console.error("WebSocket is not connected.");
+        }
+    }, [socket]);
+
+
+
+    const deleteRoom = useCallback((roomName: string) => {
+        if (socket) { // Check if WebSocket is connected
+            const data = {
+                event: "deleteRoom",
+                roomName,
+            };
+            socket.send(JSON.stringify(data));
+        } else {
+            console.error("WebSocket is not connected.");
+        }
+    }, [socket]);
 
     const fetchAuctionDetails = async () => {
         try {
@@ -134,21 +189,6 @@ const LiveStreamingDetailPage = () => {
             setFetchingBidders(false)
         }
     }
-    const handleDelete = async () => {
-        try {
-            const response: any = await deleteAuction(deleteAuctionId);
-            if (response.status === 200) {
-                SuccessMessage('Lot deleted successfully!')
-                setAuctionLots(auctionLots.filter((lot: any) => lot.id !== deleteAuctionId))
-                setPaginationedData(auctionLots.filter((lot: any) => lot.id !== deleteAuctionId))
-            } else {
-                ErrorMessage('Error deleting lot!')
-            }
-        } catch (error) {
-        } finally {
-            handleCloseModal()
-        }
-    };
 
     const navigate = useNavigate()
 
@@ -208,7 +248,10 @@ const LiveStreamingDetailPage = () => {
         <Box p={2}>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
-                <IconButton onClick={() => navigate('/live')}>
+                <IconButton onClick={() => {
+                    leaveRoom("4bebcbfb-15d9-4fbc-b41e-ee0c9add7131")
+                    navigate('/live')
+                }}>
                     <KeyboardReturnRoundedIcon />
                 </IconButton>
                 <Typography className={classes.title}>
@@ -217,7 +260,6 @@ const LiveStreamingDetailPage = () => {
                 <Button
                     variant="contained"
                     size="small"
-                    onClick={() => endStream()}
                 >
                     End Stream
                 </Button>
@@ -235,6 +277,7 @@ const LiveStreamingDetailPage = () => {
                                 handleNextLot={handleNextLot}
                                 handleSelectLot={handleSelectLot}
                                 auctionLots={auctionLots}
+                                deleteRoom={deleteRoom}
                             />
                         </Box>
                         <Box className={classes.rightSection}>
@@ -301,3 +344,283 @@ const LiveStreamingDetailPage = () => {
 };
 
 export default LiveStreamingDetailPage;
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { Typography, Box, List, ListItem, Avatar, CircularProgress, Container, Grid, IconButton, Button } from '@mui/material';
+// import { useNavigate } from 'react-router-dom';
+// import { getQueryParam } from '../../../helper/GetQueryParam';
+// import AuctionCard from '../auction-components/AuctionCard';
+// import PaginationButton from '../auction-components/PaginationButton';
+// import useLiveStreamDetailStyles from './detail-pages-components/LiveStreamingDetailStyles';
+// import { SuccessMessage, ErrorMessage } from '../../../utils/ToastMessages';
+// import { getAuctionDetailById, deleteAuction, getCurrentLiveAuctions, getBiddersByLotId } from '../../Services/Methods';
+// import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
+// import useWebSocket from '../../../utils/useSocket';
+
+// const LiveStreamingDetailPage = () => {
+//     const classes = useLiveStreamDetailStyles();
+//     const { sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom, ws } = useWebSocket();
+
+//     const [confirmDelete, setConfirmDelete] = useState(false);
+//     const [deleteAuctionId, setDeleteAuctionId] = useState(0);
+//     const [isFetchingData, setIsFetchingData] = useState(false);
+//     const [isDeleting, setIsDeleting] = useState(false);
+//     const [fetchingBidders, setFetchingBidders] = useState(false);
+
+//     const [auctionLots, setAuctionLots] = useState([]);
+//     const [paginationedData, setPaginationedData] = useState([]);
+//     const [bidders, setBidders] = useState([]);
+//     const [select, setSelect] = useState(false);
+//     const [currentIndex, setCurrentIndex] = useState(0);
+
+//     const navigate = useNavigate();
+
+//     // Set the username when the component mounts
+//     useEffect(() => {
+//         setUser("Admin"); // Replace with the actual username
+//     }, [setUser]);
+
+//     // Create a room when the component mounts
+//     useEffect(() => {
+//         const auctionId = getQueryParam("aucId");
+//         if (auctionId) {
+//             createRoom(auctionId); // Use auctionId as the room name
+//         }
+//     }, [createRoom]);
+
+//     // Join the room when the component mounts
+//     useEffect(() => {
+//         const auctionId = getQueryParam("aucId");
+//         if (auctionId) {
+//             joinRoom(auctionId); // Use auctionId as the room name
+//         }
+//     }, [joinRoom]);
+
+//     // Fetch auction details when the component mounts
+//     useEffect(() => {
+//         if (!isFetchingData) {
+//             setIsFetchingData(true);
+//             fetchAuctionDetails();
+//         }
+//     }, []);
+
+//     // Handle WebSocket messages
+//     useEffect(() => {
+//         if (ws) {
+//             ws.onmessage = (event) => {
+//                 const message = event.data;
+//                 console.log("Received message:", message);
+//                 // Handle incoming messages (e.g., new bids, chat messages)
+//             };
+//         }
+//     }, [ws]);
+
+//     const fetchAuctionDetails = async () => {
+//         try {
+//             const response = await getAuctionDetailById(getQueryParam("aucId"));
+//             const auction = response.data.Auction;
+//             const lots = response.data.Lots;
+
+//             if (lots?.length > 0) {
+//                 const formattedLots = lots.map((item: any) => ({
+//                     id: item.Id,
+//                     auctionId: item.AuctionId,
+//                     lotNumber: item.LotNo,
+//                     name: item.ShortDescription,
+//                     description: item.LongDescription,
+//                     countDown: "N/A",
+//                     location: "N/A",
+//                     image: item.Image,
+//                     type: "current",
+//                     highestBid: item.BidStartAmount,
+//                     sold: item.IsSold,
+//                     details: {
+//                         lotsAvailable: auction.TotalLots,
+//                         description: item.LongDescription,
+//                         date: `${item.StartDate} to ${item.EndDate}`,
+//                         time: `${item.StartTime} to ${item.EndTime}`,
+//                         orderNumber: item.OrderNo,
+//                         lot: item.LotNo,
+//                         category: item.Category,
+//                         subCategory: item.SubCategory,
+//                         winner: {
+//                             email: "N/A",
+//                             phone: "N/A",
+//                             location: "N/A",
+//                         },
+//                     },
+//                 }));
+//                 setAuctionLots(formattedLots);
+//                 fetchBidders(formattedLots[currentIndex].id);
+//                 setPaginationedData(formattedLots);
+//             } else {
+//                 setAuctionLots([]);
+//                 setPaginationedData([]);
+//             }
+//         } catch (error) {
+//             console.error("Error fetching auction details:", error);
+//         } finally {
+//             setIsFetchingData(false);
+//         }
+//     };
+
+//     const fetchBidders = async (id: number) => {
+//         setFetchingBidders(true);
+//         try {
+//             const response = await getBiddersByLotId(id);
+//             const bidders = response.data;
+//             if (bidders.length > 0) {
+//                 const formattedBidders = response.data.map((bidder: any) => ({
+//                     id: bidder.Id,
+//                     clientId: bidder.ClientId,
+//                     name: bidder.Name,
+//                     bidAmount: bidder.BidAmount + " USD",
+//                     email: bidder.Email,
+//                     address: bidder.Address,
+//                     company: bidder.Company,
+//                 }));
+//                 setBidders(formattedBidders);
+//             } else {
+//                 setBidders([]);
+//             }
+//         } catch (error) {
+//             console.error("Error fetching bidders:", error);
+//         } finally {
+//             setFetchingBidders(false);
+//         }
+//     };
+
+//     const handleNextLot = (id?: number) => {
+//         setCurrentIndex((prevIndex) => {
+//             if (id !== undefined) {
+//                 const newIndex = auctionLots.findIndex((lot: any) => lot.id === id);
+//                 fetchBidders(auctionLots[newIndex !== -1 ? newIndex : prevIndex].id);
+//                 return newIndex !== -1 ? newIndex : prevIndex;
+//             }
+//             fetchBidders(auctionLots[(prevIndex + 1) % auctionLots.length].id);
+//             return (prevIndex + 1) % auctionLots.length;
+//         });
+//     };
+
+//     const handleSelectLot = () => {
+//         setSelect(true);
+//         const listing: any = document.getElementById('listing');
+//         if (listing) {
+//             listing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+//         }
+//     };
+
+//     const handleEndStream = () => {
+//         const auctionId = getQueryParam("aucId");
+//         if (auctionId) {
+//             deleteRoom(auctionId); // Delete the room when the stream ends
+//             leaveRoom(auctionId); // Leave the room
+//             navigate('/live'); // Navigate back to the live page
+//         }
+//     };
+
+//     const handleSendBid = (lotId: number, clientId: number, amount: number) => {
+//         const auctionId = getQueryParam("aucId");
+//         if (auctionId) {
+//             sendMessage(auctionId, "New Bid", lotId, clientId, amount); // Send bid message to the room
+//         }
+//     };
+
+//     return (
+//         <Box p={2}>
+//             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
+//                 <IconButton onClick={() => navigate('/live')}>
+//                     <KeyboardReturnRoundedIcon />
+//                 </IconButton>
+//                 <Typography className={classes.title}>
+//                     Live Streaming Auction
+//                 </Typography>
+//                 <Button
+//                     variant="contained"
+//                     size="small"
+//                     onClick={handleEndStream}
+//                 >
+//                     End Stream
+//                 </Button>
+//             </Box>
+
+//             {!isFetchingData ? (
+//                 <Box>
+//                     <Box className={classes.container}>
+//                         <Box flex={1} className={classes.mediaSection}>
+//                             <AuctionCard
+//                                 width={"100%"}
+//                                 headerType={"live"}
+//                                 cardData={auctionLots[currentIndex]}
+//                                 handleEdit={() => {}}
+//                                 handleNextLot={handleNextLot}
+//                                 handleSelectLot={handleSelectLot}
+//                                 auctionLots={auctionLots}
+//                             />
+//                         </Box>
+//                         <Box className={classes.rightSection}>
+//                             <Typography variant="h6" className={classes.liveBiddersHeader}>Live Bidders</Typography>
+//                             <List className={classes.liveBiddersList}>
+//                                 {bidders.map((bidder: any, index: number) => (
+//                                     <ListItem key={index} className={classes.liveBidderItem}>
+//                                         <Avatar />
+//                                         <Box className={classes.bidderBox}>
+//                                             <Typography className={classes.bidderName}>{bidder.name}</Typography>
+//                                             <Typography className={classes.bidderMessage}>{bidder.bidAmount}</Typography>
+//                                         </Box>
+//                                     </ListItem>
+//                                 ))}
+//                             </List>
+//                         </Box>
+//                     </Box>
+//                     {auctionLots.length > 0 && select && (
+//                         <Box id="listing" width={'80vw'} pt={3}>
+//                             <Box className={classes.titleWrapper}>
+//                                 <Typography className={classes.title}>
+//                                     Auction Lots :
+//                                 </Typography>
+//                                 <Box className={classes.countBadge}>{auctionLots.length}</Box>
+//                             </Box>
+//                             <Container disableGutters maxWidth={false} sx={{ mt: 3 }}>
+//                                 <Grid container spacing={3}>
+//                                     {paginationedData && paginationedData.map((lot: any) => (
+//                                         <Grid item xs={12} sm={6} md={4} xl={3} key={lot.id}>
+//                                             <AuctionCard
+//                                                 key={lot.id}
+//                                                 headerType={'lots'}
+//                                                 cardData={lot}
+//                                                 handleEdit={() => {}}
+//                                                 handleDelete={() => {}}
+//                                                 handleMoveModal={() => {}}
+//                                                 isLiveLot={true}
+//                                                 handleNextLot={handleNextLot}
+//                                             />
+//                                         </Grid>
+//                                     ))}
+//                                 </Grid>
+//                             </Container>
+//                             <PaginationButton filteredData={auctionLots} setPaginationedData={setPaginationedData} />
+//                         </Box>
+//                     )}
+//                 </Box>
+//             ) : (
+//                 <Box
+//                     sx={{
+//                         display: 'flex',
+//                         justifyContent: 'center',
+//                         alignItems: 'center',
+//                         height: '70vh',
+//                         width: '100%',
+//                     }}
+//                 >
+//                     <CircularProgress size={70} disableShrink />
+//                 </Box>
+//             )}
+//         </Box>
+//     );
+// };
+
+// export default LiveStreamingDetailPage;

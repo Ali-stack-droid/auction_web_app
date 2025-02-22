@@ -29,7 +29,7 @@ const ProtectedRoute = ({ isAuthenticated, children }: any) => {
     return <AppProvider>{children}</AppProvider>;
 };
 
-const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
+const Routing = ({ isAuthenticated, setIsAuthenticated, socket }: any) => {
     return (
         <Box style={{ display: 'flex' }}>
             {/* Main Content Area */}
@@ -133,7 +133,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated }: any) => {
                             path="/live-streaming/details"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <LiveStreamingDetailPage />
+                                    <LiveStreamingDetailPage socket={socket}/>
                                 </ProtectedRoute>
                             }
                         />

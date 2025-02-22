@@ -16,6 +16,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 // redux imports
 import { getQueryParam } from '../../../helper/GetQueryParam';
+import useWebSocket from '../../../utils/useSocket';
 
 // Define the type of categories object
 type CategoryType = {
@@ -23,6 +24,8 @@ type CategoryType = {
 };
 
 const AddLot = () => {
+      const { ws, sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom, onMessage } = useWebSocket();
+
 
     const classes = useCreateAuctionStyles();
     const navigate = useNavigate();
@@ -380,9 +383,13 @@ const AddLot = () => {
         } else {
             createLot(formData)
                 .then((response) => {
+                    console.log(JSON.stringify(response.data, null, 2));
                     formik.resetForm();
-                    if (!isAnotherLot) {
-                        navigate('/auction')
+                    // if (!isAnotherLot) {
+                    //     navigate('/auction')
+                    // }
+                    if (response.data.RoomId) {
+                        createRoom(response.data.RoomId);
                     }
                     SuccessMessage('Lot created successfully!');
                 })
