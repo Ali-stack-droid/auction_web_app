@@ -181,6 +181,10 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
     }
 
     const handleNextLot = (id?: number) => {
+        document.getElementById('childContainer')?.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
         setCurrentIndex((prevIndex) => {
             if (id !== undefined) {
                 const newIndex = auctionLots.findIndex((lot: any) => lot.id === id);
@@ -219,13 +223,6 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                 <Typography className={classes.title}>
                     Live Streaming Auction
                 </Typography>
-                {/* <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => handleEndStream()}
-                >
-                    End Stream
-                </Button> */}
             </Box>
 
             {!isFetchingData ?
@@ -267,8 +264,27 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                                             </Box>
                                         </ListItem>
                                     ))
-                                        : null
-
+                                        :
+                                        <Box
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            height="50vh"
+                                            textAlign="center"
+                                        >
+                                            <Box>
+                                                <Box px={7} py={3}>
+                                                    <img
+                                                        src={`${process.env.PUBLIC_URL}/assets/pngs/norecord.png`}
+                                                        alt="No Record"
+                                                        style={{ width: '100%', height: '100%' }}
+                                                    />
+                                                </Box>
+                                                <Typography fontSize={15} color="textSecondary">
+                                                    No bidders found!
+                                                </Typography>
+                                            </Box>
+                                        </Box>
                                 }
                             </List>
                         </Box>
