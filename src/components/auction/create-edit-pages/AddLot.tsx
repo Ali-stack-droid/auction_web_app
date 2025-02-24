@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Typography, Button, MenuItem, FormControlLabel, Checkbox, IconButton, Modal } from '@mui/material';
+import { Box, Typography, Button, MenuItem } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import CustomTextField from '../../custom-components/CustomTextField';
@@ -16,16 +16,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 // redux imports
 import { getQueryParam } from '../../../helper/GetQueryParam';
-import useWebSocket from '../../../utils/useSocket';
+import { createRoom } from '../../../utils/SocektMethods';
 
 // Define the type of categories object
 type CategoryType = {
     [key: string]: string[]; // Index signature for dynamic keys with array of strings as values
 };
 
-const AddLot = () => {
-      const { ws, sendMessage, setUser, createRoom, joinRoom, leaveRoom, deleteRoom, onMessage } = useWebSocket();
-
+const AddLot = ({ socket }: any) => {
 
     const classes = useCreateAuctionStyles();
     const navigate = useNavigate();
@@ -383,13 +381,12 @@ const AddLot = () => {
         } else {
             createLot(formData)
                 .then((response) => {
-                    console.log(JSON.stringify(response.data, null, 2));
                     formik.resetForm();
-                    // if (!isAnotherLot) {
-                    //     navigate('/auction')
-                    // }
                     if (response.data.RoomId) {
-                        createRoom(response.data.RoomId);
+                        createRoom(socket, response.data.RoomId);
+                    }
+                    if (!isAnotherLot) {
+                        navigate('/auction')
                     }
                     SuccessMessage('Lot created successfully!');
                 })

@@ -79,7 +79,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated, socket }: any) => {
                             path="auction/lots/create"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <AddLot />
+                                    <AddLot socket={socket} />
                                 </ProtectedRoute>
                             }
                         />
@@ -133,7 +133,7 @@ const Routing = ({ isAuthenticated, setIsAuthenticated, socket }: any) => {
                             path="/live-streaming/details"
                             element={
                                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                                    <LiveStreamingDetailPage socket={socket}/>
+                                    <LiveStreamingDetailPage socket={socket} />
                                 </ProtectedRoute>
                             }
                         />

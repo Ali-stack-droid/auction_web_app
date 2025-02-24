@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
 import { setFeaturedAuctions, setFeaturedLots } from '../../Services/Methods';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
-import useWebSocket from '../../../utils/useSocket';
+
 
 const AuctionCard = ({
     headerType,
@@ -22,7 +22,9 @@ const AuctionCard = ({
     handleSelectLot,
     auctionLots,
     isLiveLot,
-    handleEndStream
+    handleEndStream,
+    liveBidders,
+    bidders
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
@@ -152,14 +154,20 @@ const AuctionCard = ({
                                     size="small"
                                     className={classes.button3}
                                 >
-                                    John Anderson Smith
+                                    {bidders.length > 0 ? bidders[bidders.length - 1].name
+                                        : liveBidders.length > 0
+                                            ? liveBidders.reduce((prev: any, current: any) => (prev.amount > current.amount ? prev : current)).sender
+                                            : 'No Heighest Bidder'}
                                 </Button>
                                 <Button
                                     variant="contained"
                                     size="small"
                                     className={classes.button3}
                                 >
-                                    Highest Bid : $10,000
+                                    Highest Bid : ${bidders.length > 0 ? bidders[bidders.length - 1].amount
+                                        : liveBidders.length > 0
+                                            ? liveBidders.reduce((prev: any, current: any) => (prev.amount > current.amount ? prev : current)).amount
+                                            : '0'}
                                 </Button>
                             </Box>
                         </Box>

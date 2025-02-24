@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
 import Routing from './routes/Routing';
 import { Box } from '@mui/material';
-import useWebSocket from './utils/useSocket';
 import { io } from 'socket.io-client';
+
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const SOCKET_URL = 'ws://localhost:8181'; // Use 'ws' for WebSocket protocol
-  const socket = new WebSocket(SOCKET_URL);
-  useEffect(() => {
 
+  const SOCKET_URL = "http://localhost:8181";
+  const socket = io(SOCKET_URL, { transports: ["websocket"] });
+
+  useEffect(() => {
     // Handle connection open
-    socket.onopen = () => {
-      console.log('WebSocket connection established');
-      // You can send an initial message to the server if needed
-      // socket.send(JSON.stringify({ type: 'greeting', message: 'Hello Server' }));
-    };
+    // socket.on("connect", () => {
+    //   console.log("Socket.IO connection established");
+
+    //   // Example: Send an initial message to the server if needed
+    //   // socket.on("testing-event", handleMessages);
+    // });
 
     sessionStorage.setItem('email', JSON.stringify('hassaan@gmail.com'));
     const token = sessionStorage.getItem('email');

@@ -11,6 +11,7 @@ export const createRoom = (socket: any, roomName: string): void => {
 export const joinRoom = (socket: any, roomName: string): void => {
     if (!roomName) return;
     socket.emit("message", JSON.stringify({ event: "joinRoom", roomName }));
+    socket.on("message", JSON.stringify({ event: "joinRoom", roomName }));
 };
 
 export const leaveRoom = (socket: any, roomName: string): void => {
@@ -42,6 +43,5 @@ export const sendMessage = (
         amount,
     };
 
-    console.log("📤 Sending Message:", messageData);
     socket.emit("message", JSON.stringify(messageData));
 };

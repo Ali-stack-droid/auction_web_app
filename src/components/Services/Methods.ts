@@ -20,7 +20,7 @@ export const getAuctionDetailById = (id: any) => getRequest(`/lots/auctiondetail
 export const setFeaturedAuctions = (id: any) => getRequest(`/auctions/featured?id=${id}`)
 
 
-// Lot Methos
+// Lot Methods
 export const createLot = (payload: any) => postWithFormRequest('/lots/create', payload);
 export const editLot = (payload: any) => postRequest('/lots/editlot', payload);
 export const editLotImage = (id: any, payload: any) => postWithFormRequest(`/lots/editcover?id=${id}`, payload);
@@ -33,7 +33,7 @@ export const deleteLot = (id: any) => getRequest(`/lots/delete?id=${id}`);
 export const getLotDetails = (id: any) => getRequest(`/lots/lotdetails?id=${id}`);
 export const moveLotToAuction = (lotId: any, newAuctionId: any) => putRequest(`/lots/movelot?id=${lotId}&newauctionid=${newAuctionId}`);
 export const getLotWinner = (id: any) => getRequest(`/lots/lotwinner?id=${id}`);
-export const getBiddersByLotId = (id: any) => getRequest(`/lots/biddersbylot?id=${id}`);
+export const getBiddersByLotId = (id: any) => getRequest(`/lots/livebiddersbylot?id=${id}`);
 export const getFeaturedLots = () => getRequest('/lots/featuredlisting')
 export const setFeaturedLots = (id: any) => getRequest(`/lots/featured?id=${id}`)
 

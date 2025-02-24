@@ -22,10 +22,9 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
     const [auctionLots, setAuctionLots]: any = useState([])
     const [paginationedData, setPaginationedData]: any = useState([])
     const [bidders, setBidders]: any = useState([])
+    const [liveBidders, setLiveBidders]: any = useState([])
     const [select, setSelect] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    // console.log("auctionLots[currentIndex]", JSON.stringify(auctionLots[currentIndex], null, 2));
 
     useEffect(() => {
         if (!isFetchingData) {
@@ -35,7 +34,44 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
     }, [])
 
     useEffect(() => {
-        joinRoom(socket, auctionLots[currentIndex])
+        if (!socket || !auctionLots[currentIndex]?.roomId) return;
+
+        joinRoom(socket, auctionLots[currentIndex].roomId);
+
+        const handleJoinRoomError = (message: any) => {
+            fetchBidders(auctionLots[currentIndex].id)
+            setLiveBidders([])
+        }
+
+        const handleChatHistory = (message: any) => {
+            setBidders([])
+            setLiveBidders((prevBidders: any) => [...prevBidders, message]);
+        }
+
+        const handleNewMessage = (data: any) => {
+            // const formattedData = {
+            //     amount: data.amount
+            //     clientID: 38
+            //     event: "newMessage"
+            //     lotID: 100
+            //     message: "ali cheema has placed a bid of $100 on this item."
+            //     sender: "Anonymous"
+            //     timestamp: "2025-02-24T17:21:36.703Z"
+            // }
+            setLiveBidders((prevBidders: any) => [...prevBidders, data]);
+
+        };
+
+        socket.on("send-message-room", handleNewMessage);
+        socket.on("chat-history", handleChatHistory);
+        socket.on("join-room-error", handleJoinRoomError);
+
+        return () => {
+            socket.off("send-message-room", handleNewMessage);
+            socket.off("chat-history", handleChatHistory);
+            socket.off("join-room-error", handleJoinRoomError);
+            leaveRoom(socket, auctionLots[currentIndex].roomId)
+        };
     }, [socket, auctionLots, currentIndex]);
 
     const fetchAuctionDetails = async () => {
@@ -99,10 +135,7 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                     id: bidder.Id,
                     clientId: bidder.ClientId,
                     name: bidder.Name,
-                    bidAmount: bidder.BidAmount + " USD",
-                    email: bidder.Email,
-                    address: bidder.Address,
-                    company: bidder.Company,
+                    amount: bidder.Amount + " USD",
                 }));
                 setBidders(formattedBidders)
             } else {
@@ -169,7 +202,8 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
     }
 
     const handleEndStream = () => {
-        deleteRoom(socket, auctionLots[currentIndex].roomId)
+        deleteRoom(socket, auctionLots[currentIndex].roomId);
+        navigate('/live')
     }
 
     return (
@@ -185,12 +219,13 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                 <Typography className={classes.title}>
                     Live Streaming Auction
                 </Typography>
-                <Button
+                {/* <Button
                     variant="contained"
                     size="small"
+                    onClick={() => handleEndStream()}
                 >
                     End Stream
-                </Button>
+                </Button> */}
             </Box>
 
             {!isFetchingData ?
@@ -206,20 +241,35 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                                 handleSelectLot={handleSelectLot}
                                 auctionLots={auctionLots}
                                 handleEndStream={handleEndStream}
+                                liveBidders={liveBidders}
+                                bidders={bidders}
                             />
                         </Box>
                         <Box className={classes.rightSection}>
                             <Typography variant="h6" className={classes.liveBiddersHeader}>Live Bidders</Typography>
                             <List className={classes.liveBiddersList} >
-                                {bidders.map((bidder: any, index: number) => (
+                                {bidders.length ? bidders.map((bidder: any, index: number) => (
                                     <ListItem key={index} className={classes.liveBidderItem}>
                                         <Avatar />
                                         <Box className={classes.bidderBox}>
                                             <Typography className={classes.bidderName}>{bidder.name}</Typography>
-                                            <Typography className={classes.bidderMessage}>{bidder.bidAmount}</Typography>
+                                            <Typography className={classes.bidderMessage}>{bidder.amount}</Typography>
                                         </Box>
                                     </ListItem>
-                                ))}
+                                ))
+                                    :
+                                    liveBidders.length ? liveBidders.map((bidder: any, index: number) => (
+                                        <ListItem key={index} className={classes.liveBidderItem}>
+                                            <Avatar />
+                                            <Box className={classes.bidderBox}>
+                                                <Typography className={classes.bidderName}>{bidder.sender}</Typography>
+                                                <Typography className={classes.bidderMessage}>{bidder.amount}</Typography>
+                                            </Box>
+                                        </ListItem>
+                                    ))
+                                        : null
+
+                                }
                             </List>
                         </Box>
                     </Box>
