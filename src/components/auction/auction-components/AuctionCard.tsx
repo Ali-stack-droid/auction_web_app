@@ -22,7 +22,7 @@ const AuctionCard = ({
     handleSelectLot,
     auctionLots,
     isLiveLot,
-    deleteRoom
+    handleEndStream
 }: any) => {
     const classes = useAuctionCardStyles();
     const navigate = useNavigate();
@@ -142,7 +142,7 @@ const AuctionCard = ({
                                 variant="contained"
                                 size="small"
                                 className={classes.button2}
-                                onClick={() => deleteRoom("4bebcbfb-15d9-4fbc-b41e-ee0c9add7131")}
+                                onClick={() => handleEndStream()}
                             >
                                 End Stream
                             </Button>
