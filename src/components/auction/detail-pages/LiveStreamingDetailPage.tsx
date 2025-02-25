@@ -25,6 +25,23 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
     const [liveBidders, setLiveBidders]: any = useState([])
     const [select, setSelect] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [mainCardHeight, setMainCardHeight] = useState<number>(0);
+
+
+    useEffect(() => {
+        const mainCard = document.getElementById("main-card");
+        if (mainCard) {
+            setMainCardHeight(mainCard.offsetHeight);
+        }
+
+        const handleResize = () => {
+            if (mainCard) setMainCardHeight(mainCard.offsetHeight);
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
 
     useEffect(() => {
         if (!isFetchingData) {
@@ -210,6 +227,26 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
         navigate('/live')
     }
 
+    const fakeBidders = [
+        { name: "Hassaan Asim", amount: 100 },
+        { name: "Ali Raza", amount: 150 },
+        { name: "Sara Khan", amount: 200 },
+        { name: "Ahmed Bilal", amount: 250 },
+        { name: "Zainab Fatima", amount: 300 },
+        { name: "Usman Tariq", amount: 350 },
+        { name: "Ayesha Noor", amount: 400 },
+        { name: "Farhan Malik", amount: 450 },
+        { name: "Hira Shah", amount: 500 },
+        { name: "Daniyal Ali", amount: 550 },
+        { name: "Laiba Ahmed", amount: 600 },
+        { name: "Rehan Qureshi", amount: 650 },
+        { name: "Iqra Javed", amount: 700 },
+        { name: "Saad Mehmood", amount: 750 },
+        { name: "Mariam Zafar", amount: 800 },
+        { name: "Fahad Hussain", amount: 850 },
+    ];
+
+
     return (
         <Box p={2}>
 
@@ -228,7 +265,7 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
             {!isFetchingData ?
                 <Box>
                     <Box className={classes.container}>
-                        <Box flex={1} className={classes.mediaSection}>
+                        <Box flex={1} className={classes.mediaSection} >
                             <AuctionCard
                                 width={"100%"}
                                 headerType={"live"}
@@ -242,10 +279,10 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                                 bidders={bidders}
                             />
                         </Box>
-                        <Box className={classes.rightSection}>
+                        <Box className={classes.rightSection} style={{ maxHeight: mainCardHeight ? `${mainCardHeight}px` : "auto" }}>
                             <Typography variant="h6" className={classes.liveBiddersHeader}>Live Bidders</Typography>
                             <List className={classes.liveBiddersList} >
-                                {bidders.length ? bidders.map((bidder: any, index: number) => (
+                                {fakeBidders.length ? fakeBidders.map((bidder: any, index: number) => (
                                     <ListItem key={index} className={classes.liveBidderItem}>
                                         <Avatar />
                                         <Box className={classes.bidderBox}>

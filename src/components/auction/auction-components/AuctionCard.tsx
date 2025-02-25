@@ -117,7 +117,7 @@ const AuctionCard = ({
     }
 
     return (
-        <Card className={headerType === "live" ? classes.liveCard : classes.card} elevation={2}>
+        <Card className={headerType === "live" ? classes.liveCard : classes.card} elevation={2} id="main-card">
             {/* Auction Image */}
             <Box sx={{
                 position: 'relative', // Ensure the button is positioned relative to the Box

@@ -107,7 +107,7 @@ const useLiveStreamDetailStyles = makeStyles(() => ({
     },
     liveBiddersList: {
         maxHeight: '90vh',
-        overflowY: 'hidden',
+        overflowY: 'scroll',
         // overflowX: 'hidden',
     },
     liveBidderItem: {
