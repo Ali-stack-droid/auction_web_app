@@ -42,6 +42,7 @@ const LotDetailPage = () => {
     const [isFetchingData, setIsFetchingData] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
 
+
     const [mainImage, setMainImage] = useState("");
 
     useEffect(() => {
@@ -216,6 +217,11 @@ const LotDetailPage = () => {
         }
     }
 
+    const handleViewBidders = () => {
+        setOpenBidders(true);
+        fetchBidders()
+    }
+
     return (
         <Box p={2}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2 }}>
@@ -277,7 +283,7 @@ const LotDetailPage = () => {
                             <Button
                                 variant="outlined"
                                 className={classes.viewButton}
-                                onClick={() => setOpenBidders(true)}
+                                onClick={() => handleViewBidders()}
                             >
                                 View Bidders
                             </Button>

@@ -282,7 +282,7 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                         <Box className={classes.rightSection} style={{ maxHeight: mainCardHeight ? `${mainCardHeight}px` : "auto" }}>
                             <Typography variant="h6" className={classes.liveBiddersHeader}>Live Bidders</Typography>
                             <List className={classes.liveBiddersList} >
-                                {fakeBidders.length ? fakeBidders.map((bidder: any, index: number) => (
+                                {bidders.length ? bidders.map((bidder: any, index: number) => (
                                     <ListItem key={index} className={classes.liveBidderItem}>
                                         <Avatar />
                                         <Box className={classes.bidderBox}>
