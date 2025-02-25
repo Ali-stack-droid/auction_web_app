@@ -76,6 +76,7 @@ const Lots = ({ searchTerm }: any) => {
                     sold: item.IsSold,
                     isPast: item.IsPast,
                     isFeatured: item.IsFeatured,
+                    isLive: item.IsLive,
                     details: {
                         endDate: item.EndDate,
                         endTime: item.EndTime,

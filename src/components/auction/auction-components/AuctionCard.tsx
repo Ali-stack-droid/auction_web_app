@@ -55,7 +55,11 @@ const AuctionCard = ({
 
         if (headerType === "lots") {
             if (location.pathname === "/inventory") {
-                return navigate(`/inventory/lots/details?lotId=${cardData.id}`);
+                if (cardData.isLive) {
+                    return navigate(`/live-streaming/details?aucId=${cardData.auctionId}&lotId=${cardData.id}`);
+                } else {
+                    return navigate(`/inventory/lots/details?lotId=${cardData.id}`);
+                }
             }
             return navigate(`/auction/lots/details?lotId=${cardData.id}`);
         }
