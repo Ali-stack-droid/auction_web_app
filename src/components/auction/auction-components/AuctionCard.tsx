@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
 import { setFeaturedAuctions, setFeaturedLots } from '../../Services/Methods';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
+import YouTube from 'react-youtube';
 
 
 const AuctionCard = ({
@@ -120,20 +121,29 @@ const AuctionCard = ({
 
     }
 
+    const opts = {
+        height: '350',
+        width: '100%',
+        playerVars: { autoplay: 1 },
+    };
+
     return (
         <Card className={headerType === "live" ? classes.liveCard : classes.card} elevation={2} id="main-card">
             {/* Auction Image */}
             <Box sx={{
                 position: 'relative', // Ensure the button is positioned relative to the Box
             }}>
-                <CardMedia
-                    onClick={handleCardMediaClick}
-                    component="img"
-                    height={isLiveDetail ? "350" : "200"}
-                    image={cardData?.image}
-                    alt={headerType === "live" ? "Live Streaming Image" : headerType === "Auction" ? "Auction" : "Lot" + " Image"}
-                    className={isLiveDetail ? classes.liveMedia : classes.media}
-                />
+                {!isLiveDetail ?
+                    <CardMedia
+                        onClick={handleCardMediaClick}
+                        component="img"
+                        height={"200"}
+                        image={cardData?.image}
+                        alt={headerType === "live" ? "Live Streaming Image" : headerType === "Auction" ? "Auction" : "Lot" + " Image"}
+                        className={classes.media}
+                    /> :
+                    <YouTube videoId="LxDJlhj6Yk0" opts={opts} className={classes.liveMedia} />
+                }
                 {
                     isLiveDetail ?
                         <Box>

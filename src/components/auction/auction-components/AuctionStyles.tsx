@@ -32,6 +32,7 @@ export const useAuctionCardStyles = makeStyles({
     liveMedia: {
         cursor: "pointer",
         borderRadius: "15px",
+        width: "100%"
     },
     contentWrapper: {
         display: 'flex',
