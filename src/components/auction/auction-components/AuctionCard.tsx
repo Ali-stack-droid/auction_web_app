@@ -108,7 +108,7 @@ const AuctionCard = ({
         try {
             const response = await setFeaturedAuctions(id);
             if (response) {
-                response.data.IsFeatured ?
+                response.data === "Selected Auction Featured..." ?
                     SuccessMessage('Auction featured successfully!') :
                     SuccessMessage('Auction unfeatured successfully!')
                 setIsFeaturedAuction(!isFeaturedAuction)
