@@ -173,8 +173,9 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                         name: item.Name,
                         countryId: item.CountryID,
                         countries: item.Countries,
-                    }));
+                    })).sort((a: any, b: any) => a.name.localeCompare(b.name)); // alphabetically ordered
                     setStates(updatedStates)
+
                     if (getQueryParam('aucId')) {
                         setStateId(updatedStates.find((state: any) => state.name === formik.values.state).id)
                     }
@@ -205,7 +206,7 @@ const LocationForm = ({ setLocationData, isSubmitted, setIsSubmitted, isUpdated,
                         name: item.Name,
                         stateId: item.StateID,
                         states: item.States,
-                    }));
+                    })).sort((a: any, b: any) => a.name.localeCompare(b.name)); // alphabetically ordered
                     setCities(updatedCities);
                     // if (getQueryParam('aucId')) {
                     //     formik.setFieldValue('city', {
