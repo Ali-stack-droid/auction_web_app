@@ -42,12 +42,12 @@ const AddLot = ({ socket }: any) => {
     const [lot, setLot]: any = useState({})
 
     const categories: CategoryType = {
-        Vehicles: ["Automobiles/Cars", "Motorcycles", "SUVs", "Trucks", "Buses", "RVs & Campers", "Boats", "Trailers", "Specialized Vehicles"],
-        HeavyEquipment: ["Construction Equipment", "Agricultural Equipment", "Industrial Equipment", "Mining Equipment", "Public Safety Equipment"],
-        RealEstate: ["Residential Properties", "Commercial Properties", "Vacant Land", "Buildings and Structures"],
-        ConsumerGoods: ["Electronics", "Furniture", "Home Appliances", "Clothing & Accessories", "Sporting Goods", "Toys & Games"],
-        GeneralSurplus: ["Office Equipment", "Medical Equipment", "Laboratory Equipment", "Aviation Equipment"],
-        Miscellaneous: ["Collectibles", "Antiques", "Art", "Jewelry", "Musical Instruments", "Books"]
+        "Vehicles": ["Automobiles/Cars", "Motorcycles", "SUVs", "Trucks", "Buses", "RVs & Campers", "Boats", "Trailers", "Specialized Vehicles"],
+        "Heavy Equipment": ["Construction Equipment", "Agricultural Equipment", "Industrial Equipment", "Mining Equipment", "Public Safety Equipment"],
+        "Real Estate": ["Residential Properties", "Commercial Properties", "Vacant Land", "Buildings and Structures"],
+        "Consumer Goods": ["Electronics", "Furniture", "Home Appliances", "Clothing & Accessories", "Sporting Goods", "Toys & Games"],
+        "General Surplus": ["Office Equipment", "Medical Equipment", "Laboratory Equipment", "Aviation Equipment"],
+        "Miscellaneous": ["Collectibles", "Antiques", "Art", "Jewelry", "Musical Instruments", "Books"]
     };
 
     const [selectedCategory, setSelectedCategory] = useState<string>("");
