@@ -11,7 +11,7 @@ import AuctionCard from './auction-components/AuctionCard';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import PaginationButton from './auction-components/PaginationButton';
-import { deleteAuction, getCurrentAuctions, getCurrentAuctionsByLocation, getCurrentLocations, getPastAuctions, getPastAuctionsByLocation, getPastLocations } from '../Services/Methods';
+import { deleteAuction, getCitiesByState, getCurrentAuctions, getCurrentAuctionsByLocation, getCurrentLocations, getPastAuctions, getPastAuctionsByLocation, getPastLocations, getStatesByCountry } from '../Services/Methods';
 import NoRecordFound from '../../utils/NoRecordFound';
 import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 
@@ -26,7 +26,10 @@ const Auction = ({ searchTerm }: any) => {
     const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
+    const [stateId, setStateId]: any = useState(0); // Filtered data state
+    const [cityId, setCityId]: any = useState(0); // Filtered data state
     const [locations, setLocations]: any = useState([]); // Filtered data state
+    const [states, setStates]: any = useState([]); // Filtered data state
 
     useEffect(() => {
         if (!isFetchingData) {
@@ -36,28 +39,54 @@ const Auction = ({ searchTerm }: any) => {
     }, [isCurrentAuction])
 
     useEffect(() => {
-        if (selectedLocation) {
-            setPaginationedData(filteredData.filter((item: any) => item.details.address === selectedLocation))
+        // setPaginationedData(filteredData.filter((item: any) => item.stateId === stateId))
+        if (stateId !== 0 && cityId === 0) {
+            fetchCitiesByState();
+        } else if (stateId !== 0 && cityId !== 0) {
+            fetchAddresses();
         } else {
+            setLocations(states)
             setPaginationedData(filteredData)
         }
-    }, [selectedLocation])
+    }, [selectedLocation, cityId, stateId])
 
+    const fetchCitiesByState = async () => {
+        try {
+            const response = await getCitiesByState(stateId);
+            const cities = response.data;
+            if (cities.length > 0) {
+                const updatedCities = cities.sort((a: any, b: any) => a.Name.localeCompare(b.Name));
+                setLocations(updatedCities);
+            } else {
+                setLocations([])
+            }
+        } catch (error) {
+        } finally {
+        }
+    };
+
+
+    const fetchAddresses = async () => {
+        try {
+            const locationResponse = isCurrentAuction
+                ? await getCurrentLocations()
+                : await getPastLocations();
+            const addresses = locationResponse.data;
+            if (addresses.length > 0) {
+                const updatedAddresses = addresses.sort((a: any, b: any) => a.localeCompare(b)); // alphabetically ordered
+                setLocations(updatedAddresses);
+            } else {
+                setLocations([])
+            }
+        } catch (error) {
+        } finally {
+        }
+    };
 
     const fetchAuctionData = async () => {
         try {
             // Critical request:
             let response;
-            // if (isCurrentAuction) {
-            //     response = selectedLocation
-            //         ? await getCurrentAuctionsByLocation(selectedLocation)
-            //         : await getCurrentAuctions()
-            // } else {
-            //     response = selectedLocation
-            //         ? await getPastAuctionsByLocation(selectedLocation)
-            //         : await getPastAuctions();
-            // }
-
             if (isCurrentAuction) {
                 response = await getCurrentAuctions()
             } else {
@@ -71,6 +100,9 @@ const Auction = ({ searchTerm }: any) => {
                     image: item.Image,
                     isFeatured: item.IsFeatured,
                     isPast: item.IsPast,
+                    cityId: item.CityId,
+                    stateId: item.StateId,
+                    address: item.Address,
                     details: {
                         address: item.Address,
                         location: `${item.City}, ${item.Country}`,
@@ -79,19 +111,17 @@ const Auction = ({ searchTerm }: any) => {
                     }
                 }));
                 setFilteredData(updatedData);
-                setPaginationedData(updatedData)
+                setPaginationedData(updatedData);
             } else {
                 setFilteredData([]);
                 setPaginationedData([])
             }
 
-            const locationResponse = isCurrentAuction
-                ? await getCurrentLocations()
-                : await getPastLocations();
-
+            const locationResponse = await getStatesByCountry(1);
             if (locationResponse.data && locationResponse.data.length > 0) {
                 const updatedLocation = locationResponse.data;
                 setLocations(updatedLocation);
+                setStates(updatedLocation);
             } else {
                 setLocations([]);
             }
@@ -174,6 +204,10 @@ const Auction = ({ searchTerm }: any) => {
                 }}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
+                cityId={cityId}
+                stateId={stateId}
+                setCityId={setCityId}
+                setStateId={setStateId}
                 locations={locations}
             />
 

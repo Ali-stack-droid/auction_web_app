@@ -15,8 +15,12 @@ const AuctionHeader = ({
     onToggle,
     selectedLocation,
     setSelectedLocation,
+    filterLots,
+    cityId,
+    stateId,
+    setCityId,
+    setStateId,
     locations,
-    filterLots
 }: any) => {
     const classes = useAuctionHeaderStyles();
     const navigate = useNavigate();
@@ -27,9 +31,15 @@ const AuctionHeader = ({
     const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
 
-    const handleFilterChange = (location: string) => {
-        setSelectedLocation((prev: any) => (prev === location ? null : location));
-        handleMenuClose();
+    const handleFilterChange = (locationId: string) => {
+        if (!stateId) {
+            setStateId(locationId);
+        } else if (!cityId) {
+            setCityId(locationId);
+        } else {
+            setSelectedLocation((prev: any) => (prev === locationId ? null : locationId));
+            handleMenuClose();
+        }
     };
 
     const handleAddClick = () => {
@@ -134,18 +144,21 @@ const AuctionHeader = ({
                         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                             {locations.map((location: any) => (
                                 <MenuItem
-                                    key={location}
-                                    onClick={() => handleFilterChange(location)}
-                                    className={`${classes.menuItem} ${selectedLocation === location ? 'selected' : ''}`}
+                                    key={location.Id ? location.id : location}
+                                    onClick={() => handleFilterChange(location.Id ? location.Id : location)}
+                                    // className={`${classes.menuItem} ${selectedLocation === location ? 'selected' : ''}`}
+                                    className={`${classes.menuItem}`}
                                 >
-                                    {location}
+                                    {location.Name ? location.Name : location}
                                 </MenuItem>
                             ))}
                         </Menu>
-                        {selectedLocation && (
-                            <IconButton onClick={() => setSelectedLocation(null)}>
+                        {(selectedLocation || stateId || cityId) ? (
+                            <IconButton onClick={() => { setStateId(0); setCityId(0); setSelectedLocation(null); }}>
                                 <CloseIcon style={{ color: 'red' }} />
-                            </IconButton>)}
+                            </IconButton>)
+                            : null
+                        }
                     </React.Fragment>
                 }
             </Box>
