@@ -645,24 +645,6 @@ const AddLot = ({ socket }: any) => {
                             helperText={formik.touched.endTime && formik.errors.endTime}
                         />
                     </Box>
-                    {/* 
-                    <Box mb={2}>
-                        <Typography className={classes.label}>
-                            Upload Lot Image
-                        </Typography>
-                        <ImageUploader
-                            file={file}
-                            setFile={(uploadedFile: any) => {
-                                setFile(uploadedFile); // Update local state
-                                formik.setFieldValue('auctionImage', uploadedFile); // Update Formik state
-                            }} />
-                        {formik.touched.auctionImage && formik.errors.auctionImage && (
-                            <Typography id="image-uploader" color="error" variant="body2">
-                                {formik.errors.auctionImage}
-                            </Typography>
-                        )}
-                    </Box> */}
-
                     <MultipleImageUploader
                         setFiles={(uploadedFiles: any) => {
                             setFiles(uploadedFiles); // Update local state
@@ -674,8 +656,6 @@ const AddLot = ({ socket }: any) => {
                             {formik.errors.auctionImage}
                         </Typography>
                     )}
-
-
                     <Box mt={3}>
                         <Typography className={classes.label}>
                             Internal Notes
