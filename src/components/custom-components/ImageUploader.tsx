@@ -12,25 +12,37 @@ const ImageUploader = ({ file, setFile }: any) => {
     const [fileSize, setFileSize] = useState(0);
 
     const onDrop = (acceptedFiles: File[]) => {
+
+
+        console.log("acceptedFiles: ", acceptedFiles)
+
+
         const allowedExtensions = ['.jpg', '.png'];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        console.log('acceptedFiles: ', acceptedFiles)
+        const file = acceptedFiles[0];
 
-        const filteredFiles = acceptedFiles.filter((file) => {
+        if (file) {
             const ext = file.name.split('.').pop()?.toLowerCase();
-            return ext && allowedExtensions.includes(`.${ext}`);
-        });
 
-        if (filteredFiles.length > 0) {
-            setFile(filteredFiles[0]);
-            setFileSize(filteredFiles[0].size);
-        } else {
-            ErrorMessage('Only JPG and PNG files are allowed.');
+            if (!ext || !allowedExtensions.includes(`.${ext}`)) {
+                ErrorMessage('Only JPG and PNG files are allowed.');
+                return;
+            }
+
+            if (file.size > maxSize) {
+                ErrorMessage('File size exceeds 5MB limit.');
+                return;
+            }
+
+            setFile(file);
+            setFileSize(file.size);
         }
     };
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
         accept: { 'image/jpeg': ['.jpg'], 'image/png': ['.png'] }, // Keep MIME types but don't rely on them
-        maxSize: 25 * 1024 * 1024, // Max file size 25MB
         onDragEnter: () => setBorderColor(theme.palette.primary.main), // Blue border when dragging
         onDragLeave: () => setBorderColor(theme.palette.primary.main4), // Reset border color
     });
@@ -81,7 +93,7 @@ const ImageUploader = ({ file, setFile }: any) => {
                         </Typography>
                         <Button variant="contained" sx={{ fontSize: "12px", mt: 1, textTransform: 'none' }}>Upload JPG Files Here</Button>
                         <Typography sx={{ fontSize: "12px", color: theme.palette.primary.main1, fontWeight: 600 }} mt={1}>
-                            Maximum file size is: 25 MB
+                            Maximum file size is: 5 MB
                         </Typography>
                     </Box>
                 )}

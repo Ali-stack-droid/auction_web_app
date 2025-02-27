@@ -2,6 +2,12 @@ import { makeStyles } from '@mui/styles';
 import theme from '../../../theme';
 
 export const useCreateAuctionStyles = makeStyles({
+    imagePreview: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+    },
     title: {
         fontSize: '30px',
         fontWeight: 600,

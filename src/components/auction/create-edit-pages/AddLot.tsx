@@ -17,6 +17,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 // redux imports
 import { getQueryParam } from '../../../helper/GetQueryParam';
 import { createRoom } from '../../../utils/SocektMethods';
+import MultipleImageUploader from '../../custom-components/MultipleImageUploader';
 
 // Define the type of categories object
 type CategoryType = {
@@ -31,7 +32,7 @@ const AddLot = ({ socket }: any) => {
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
     const isEdit = location.pathname === '/auction/lots/edit';
 
-    const [file, setFile] = useState(null)
+    const [files, setFiles] = useState([])
     const [lots, setLots]: any = useState([])
     const [confirmModal, setConfirmModal] = useState(false);
     const [submissionAttempt, setSubmissionAttempt] = useState(false);
@@ -353,10 +354,13 @@ const AddLot = ({ socket }: any) => {
     const handleFormSubmission = async (payload: any, isAnotherLot: number) => {
         const formData = new FormData();
         formData.append("payload", JSON.stringify(payload));
-        if (file) {
+        if (files) {
             if (isEdit) {
                 const edittedFormData = new FormData();
-                edittedFormData.append("file", file);
+                // edittedFormData.append("file", file)
+                files.forEach((file: File) => {
+                    edittedFormData.append("file", file);
+                });
                 editLotImage(getQueryParam('lotId'), edittedFormData)
                     .then((response) => {
                     })
@@ -364,8 +368,10 @@ const AddLot = ({ socket }: any) => {
                         ErrorMessage('Error updating image!');
                     });
             }
-            formData.append("file", file);
-            setFile(null);
+            files.forEach((file: any) => {
+                formData.append("file", file);
+            });
+            setFiles([]);
         }
 
         if (isEdit) {
@@ -398,7 +404,7 @@ const AddLot = ({ socket }: any) => {
 
     const handleConfirmAddLot = () => {
         formik.resetForm();
-        setFile(null)
+        setFiles([])
         setConfirmModal(false);
         const formattedLots = [...lots, lot];
         setLots(formattedLots)
@@ -639,7 +645,7 @@ const AddLot = ({ socket }: any) => {
                             helperText={formik.touched.endTime && formik.errors.endTime}
                         />
                     </Box>
-
+                    {/* 
                     <Box mb={2}>
                         <Typography className={classes.label}>
                             Upload Lot Image
@@ -655,7 +661,20 @@ const AddLot = ({ socket }: any) => {
                                 {formik.errors.auctionImage}
                             </Typography>
                         )}
-                    </Box>
+                    </Box> */}
+
+                    <MultipleImageUploader
+                        setFiles={(uploadedFiles: any) => {
+                            setFiles(uploadedFiles); // Update local state
+                            formik.setFieldValue('auctionImage', uploadedFiles); // Update Formik state
+                        }}
+                    />
+                    {formik.touched.auctionImage && formik.errors.auctionImage && (
+                        <Typography color="error" variant="body2">
+                            {formik.errors.auctionImage}
+                        </Typography>
+                    )}
+
 
                     <Box mt={3}>
                         <Typography className={classes.label}>
