@@ -146,15 +146,14 @@ const AuctionHeader = ({
                                 <MenuItem
                                     key={location.Id ? location.id : location}
                                     onClick={() => handleFilterChange(location.Id ? location.Id : location)}
-                                    // className={`${classes.menuItem} ${selectedLocation === location ? 'selected' : ''}`}
-                                    className={`${classes.menuItem}`}
+                                    className={`${classes.menuItem} ${selectedLocation === location ? 'selected' : ''}`}
                                 >
                                     {location.Name ? location.Name : location}
                                 </MenuItem>
                             ))}
                         </Menu>
                         {(selectedLocation || stateId || cityId) ? (
-                            <IconButton onClick={() => { setStateId(0); setCityId(0); setSelectedLocation(null); }}>
+                            <IconButton onClick={() => { setStateId(0); setCityId(0); setSelectedLocation(""); }}>
                                 <CloseIcon style={{ color: 'red' }} />
                             </IconButton>)
                             : null

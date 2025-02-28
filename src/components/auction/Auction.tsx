@@ -23,7 +23,7 @@ const Auction = ({ searchTerm }: any) => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
-    const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
+    const [selectedLocation, setSelectedLocation]: any = useState(""); // Filter by location
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
     const [stateId, setStateId]: any = useState(0); // Filtered data state
@@ -40,13 +40,15 @@ const Auction = ({ searchTerm }: any) => {
 
     useEffect(() => {
         // setPaginationedData(filteredData.filter((item: any) => item.stateId === stateId))
-        if (stateId !== 0 && cityId === 0) {
+        if (stateId !== 0 && cityId === 0 && selectedLocation === "") {
             fetchCitiesByState();
-        } else if (stateId !== 0 && cityId !== 0) {
+        } else if (stateId !== 0 && cityId !== 0 && selectedLocation === "") {
             fetchAddresses();
+        } else if (selectedLocation !== "") {
+            setPaginationedData(filteredData.filter((item: any) => item.cityId === cityId && item.stateId === stateId && item.address === selectedLocation))
         } else {
-            setLocations(states)
-            setPaginationedData(filteredData)
+            setPaginationedData(filteredData);
+            setLocations(states);
         }
     }, [selectedLocation, cityId, stateId])
 
@@ -55,7 +57,7 @@ const Auction = ({ searchTerm }: any) => {
             const response = await getCitiesByState(stateId);
             const cities = response.data;
             if (cities.length > 0) {
-                const updatedCities = cities.sort((a: any, b: any) => a.Name.localeCompare(b.Name));
+                const updatedCities = cities;
                 setLocations(updatedCities);
             } else {
                 setLocations([])
@@ -64,7 +66,6 @@ const Auction = ({ searchTerm }: any) => {
         } finally {
         }
     };
-
 
     const fetchAddresses = async () => {
         try {
