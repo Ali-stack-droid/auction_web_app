@@ -152,7 +152,7 @@ const AuctionHeader = ({
                                 </MenuItem>
                             ))}
                         </Menu>
-                        {(selectedLocation || stateId || cityId) ? (
+                        {(selectedLocation !== "" || stateId > 0 || cityId > 0) ? (
                             <IconButton onClick={() => { setStateId(0); setCityId(0); setSelectedLocation(""); }}>
                                 <CloseIcon style={{ color: 'red' }} />
                             </IconButton>)

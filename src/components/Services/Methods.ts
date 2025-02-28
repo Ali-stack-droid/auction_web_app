@@ -50,8 +50,7 @@ export const invoiceReminder = (payload: any) => postRequest('/invoices/invoicer
 // Location Methods
 export const getCurrentLocations = () => getRequest('/auctions/currentlocations');
 export const getPastLocations = () => getRequest('/auctions/pastlocations');
-export const getCurrentAuctionsByLocation = (location: any) => getRequest(`/auctions/currentlocationauctions?loc=${location}`);
-export const getPastAuctionsByLocation = (location: any) => getRequest(`/auctions/pastlocationauctions?loc=${location}`);
+export const getAllLocations = () => getRequest(`/auctions/alllocations`);
 
 export const getCountries = () => getRequest('/locations/getcountries');
 export const getStatesByCountry = (id: any) => getRequest(`/locations/getstatesbycountry?id=${id}`);

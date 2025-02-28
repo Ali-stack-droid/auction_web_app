@@ -11,7 +11,7 @@ import AuctionCard from './auction-components/AuctionCard';
 import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import PaginationButton from './auction-components/PaginationButton';
-import { deleteAuction, getCitiesByState, getCurrentAuctions, getCurrentAuctionsByLocation, getCurrentLocations, getPastAuctions, getPastAuctionsByLocation, getPastLocations, getStatesByCountry } from '../Services/Methods';
+import { deleteAuction, getCitiesByState, getCurrentAuctions, getCurrentLocations, getPastAuctions, getPastLocations, getStatesByCountry } from '../Services/Methods';
 import NoRecordFound from '../../utils/NoRecordFound';
 import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
 
@@ -39,7 +39,6 @@ const Auction = ({ searchTerm }: any) => {
     }, [isCurrentAuction])
 
     useEffect(() => {
-        // setPaginationedData(filteredData.filter((item: any) => item.stateId === stateId))
         if (stateId !== 0 && cityId === 0 && selectedLocation === "") {
             fetchCitiesByState();
         } else if (stateId !== 0 && cityId !== 0 && selectedLocation === "") {

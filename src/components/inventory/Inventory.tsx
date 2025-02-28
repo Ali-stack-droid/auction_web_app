@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CustomDialogue from '../custom-components/CustomDialogue';
-import { deleteLot, getCurrentLocations, getInventoryLots, getPastLocations } from '../Services/Methods';
+import { deleteLot, getAllLocations, getCitiesByState, getCurrentLocations, getInventoryLots, getPastLocations, getStatesByCountry } from '../Services/Methods';
 
 import NoRecordFound from '../../utils/NoRecordFound';
 import { ErrorMessage, SuccessMessage } from '../../utils/ToastMessages';
@@ -19,16 +19,18 @@ import PaginationButton from '../auction/auction-components/PaginationButton';
 
 const Lots = ({ searchTerm }: any) => {
     const [filterLots, setFilterLots] = useState('all');
-    const [selectedLocation, setSelectedLocation]: any = useState(null); // Filter by location
-
     const [fadeIn, setFadeIn] = useState(false); // Fade control state
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteLotId, setDeleteLotId] = useState(0);
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const [locations, setLocations]: any = useState([]);
+    const [selectedLocation, setSelectedLocation]: any = useState(""); // Filter by location
     const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
+    const [stateId, setStateId]: any = useState(0); // Filtered data state
+    const [cityId, setCityId]: any = useState(0); // Filtered data state
+    const [locations, setLocations]: any = useState([]); // Filtered data state
+    const [states, setStates]: any = useState([]); // Filtered data state    const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
     const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
 
     const parseDateTime = (lot: any) => {
@@ -41,20 +43,61 @@ const Lots = ({ searchTerm }: any) => {
         };
     };
 
+
+    useEffect(() => {
+        if (stateId !== 0 && cityId === 0 && selectedLocation === "") {
+            fetchCitiesByState();
+        } else if (stateId !== 0 && cityId !== 0 && selectedLocation === "") {
+            fetchAddresses();
+        } else if (selectedLocation !== "") {
+            setPaginationedData(filteredData.filter((item: any) => item.cityId === cityId && item.stateId === stateId && item.address === selectedLocation))
+        } else {
+            setPaginationedData(filteredData);
+            setLocations(states);
+        }
+    }, [selectedLocation, cityId, stateId])
+
+    const fetchCitiesByState = async () => {
+        try {
+            const response = await getCitiesByState(stateId);
+            const cities = response.data;
+            if (cities.length > 0) {
+                const updatedCities = cities;
+                setLocations(updatedCities);
+            } else {
+                setLocations([])
+            }
+        } catch (error) {
+        } finally {
+        }
+    };
+
+    const fetchAddresses = async () => {
+
+        try {
+            const locationResponse: any = filterLots === 'current' ? await getCurrentLocations()
+                : filterLots === 'past' ? await getPastLocations()
+                    : await getAllLocations();
+
+            const addresses = locationResponse.data;
+            if (addresses.length > 0) {
+                const updatedAddresses = addresses.sort((a: any, b: any) => a.localeCompare(b)); // alphabetically ordered
+                setLocations(updatedAddresses);
+            } else {
+                setLocations([])
+            }
+        } catch (error) {
+        } finally {
+        }
+    };
+
+
     useEffect(() => {
         if (!isFetchingData) {
             setIsFetchingData(true)
             fetchLotsData();
         }
     }, [filterLots])
-
-    useEffect(() => {
-        if (selectedLocation) {
-            setPaginationedData(filteredData.filter((item: any) => item.address === selectedLocation))
-        } else {
-            setPaginationedData(filteredData)
-        }
-    }, [selectedLocation])
 
     const fetchLotsData = async () => {
         try {
@@ -64,7 +107,6 @@ const Lots = ({ searchTerm }: any) => {
                 const updatedData = response.data.map((item: any) => ({
                     id: item.Id,
                     auctionId: item.AuctionId,
-                    address: item.Address,
                     lotNumber: item.LotNo,
                     name: item.ShortDescription,
                     description: item.LongDescription,
@@ -77,6 +119,9 @@ const Lots = ({ searchTerm }: any) => {
                     isPast: item.IsPast,
                     isFeatured: item.IsFeatured,
                     isLive: item.IsLive,
+                    cityId: item.CityId,
+                    stateId: item.StateId,
+                    address: item.Address,
                     details: {
                         endDate: item.EndDate,
                         endTime: item.EndTime,
@@ -122,20 +167,11 @@ const Lots = ({ searchTerm }: any) => {
                 setPaginationedData([]);
             }
 
-            const locationResponse = filterLots === 'current'
-                ? await getCurrentLocations()
-                : await getPastLocations();
-
-            if (filterLots === "all") {
-                const currentLocationsResponse = await getCurrentLocations();
-                const mergedLocations = [
-                    ...currentLocationsResponse.data,
-                    ...locationResponse.data
-                ];
-                setLocations(mergedLocations);
-            } else if (locationResponse.data && locationResponse.data.length > 0) {
+            const locationResponse = await getStatesByCountry(1);
+            if (locationResponse.data && locationResponse.data.length > 0) {
                 const updatedLocation = locationResponse.data;
                 setLocations(updatedLocation);
+                setStates(updatedLocation);
             } else {
                 setLocations([]);
             }
@@ -223,8 +259,11 @@ const Lots = ({ searchTerm }: any) => {
                 onToggle={handleToggle}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
+                cityId={cityId}
+                stateId={stateId}
+                setCityId={setCityId}
+                setStateId={setStateId}
                 locations={locations}
-                filterLots={filterLots}
             />
             <Box sx={{ minHeight: "500px" }}>
                 {!isFetchingData && paginationedData?.length ?
