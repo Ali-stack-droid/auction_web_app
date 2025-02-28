@@ -21,15 +21,16 @@ const Auction = ({ searchTerm }: any) => {
     const [deleteAuctionId, setDeleteAuctionId] = useState<string | null>(null);
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-
     const [isCurrentAuction, setIsCurrentAuction] = useState(true); // Toggle between Current and Past Auctions
-    const [selectedLocation, setSelectedLocation]: any = useState(""); // Filter by location
-    const [filteredData, setFilteredData]: any = useState([]); // Filtered data state
-    const [paginationedData, setPaginationedData]: any = useState([]); // Filtered data state
-    const [stateId, setStateId]: any = useState(0); // Filtered data state
-    const [cityId, setCityId]: any = useState(0); // Filtered data state
-    const [locations, setLocations]: any = useState([]); // Filtered data state
-    const [states, setStates]: any = useState([]); // Filtered data state
+
+    // Filter location states:
+    const [selectedLocation, setSelectedLocation]: any = useState("");
+    const [filteredData, setFilteredData]: any = useState([]);
+    const [paginationedData, setPaginationedData]: any = useState([]);
+    const [stateId, setStateId]: any = useState(0);
+    const [cityId, setCityId]: any = useState(0);
+    const [locations, setLocations]: any = useState([]);
+    const [states, setStates]: any = useState([]);
 
     useEffect(() => {
         if (!isFetchingData) {
