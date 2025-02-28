@@ -11,7 +11,7 @@ import CustomDialogue from '../custom-components/CustomDialogue';
 import AuctionHeader from './auction-components/AuctionHeader';
 import AuctionCard from './auction-components/AuctionCard';
 import PaginationButton from './auction-components/PaginationButton';
-import { deleteLot, getCitiesByState, getCurrentLocations, getFeaturedLots, getLotsByAuctionId, getPastLocations, getStatesByCountry } from '../Services/Methods';
+import { deleteLot, getAllLocations, getCitiesByState, getCurrentLocations, getFeaturedLots, getLotsByAuctionId, getPastLocations, getStatesByCountry } from '../Services/Methods';
 
 import NoRecordFound from '../../utils/NoRecordFound';
 import { getQueryParam } from '../../helper/GetQueryParam';
@@ -70,9 +70,7 @@ const Lots = ({ searchTerm }: any) => {
 
     const fetchAddresses = async () => {
         try {
-            const locationResponse = isCurrentLot
-                ? await getCurrentLocations()
-                : await getPastLocations();
+            const locationResponse = await getAllLocations();
             const addresses = locationResponse.data;
             if (addresses.length > 0) {
                 const updatedAddresses = addresses.sort((a: any, b: any) => a.localeCompare(b)); // alphabetically ordered
