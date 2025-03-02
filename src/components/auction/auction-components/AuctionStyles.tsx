@@ -133,9 +133,9 @@ export const useAuctionCardStyles = makeStyles({
         backgroundColor: "#C91818",
         position: 'absolute',
         top: "10px",
-        left: "10px",
+        left: "20px",
         opacity: 0.9, // Maintain original appearance
-        width: "200px",
+        width: "150px",
         height: "37.47px",
         fontSize: "13px",
         textTransform: "none"
@@ -155,10 +155,11 @@ export const useAuctionCardStyles = makeStyles({
         backgroundColor: theme.palette.primary.main,
         pointerEvents: 'none', // Prevent interaction while keeping styles
         opacity: 0.9, // Maintain original appearance
-        width: "170px",
+        width: "200px",
         height: "37.47px",
         fontSize: "12px",
-        textTransform: "none"
+        textTransform: "none",
+        right: "10px"
     },
     joinButton: {
         textTransform: "none",

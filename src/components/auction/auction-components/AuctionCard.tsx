@@ -11,6 +11,7 @@ import MoveLotModal from '../detail-pages/detail-pages-components/MoveLotModal';
 import { setFeaturedAuctions, setFeaturedLots } from '../../Services/Methods';
 import { ErrorMessage, SuccessMessage } from '../../../utils/ToastMessages';
 import YouTube from 'react-youtube';
+import VideoStreaming from './VideoStreaming';
 
 
 const AuctionCard = ({
@@ -142,7 +143,8 @@ const AuctionCard = ({
                         alt={headerType === "live" ? "Live Streaming Image" : headerType === "Auction" ? "Auction" : "Lot" + " Image"}
                         className={classes.media}
                     /> :
-                    <YouTube videoId="LxDJlhj6Yk0" opts={opts} className={classes.liveMedia} />
+                    <VideoStreaming />
+                    // <YouTube videoId="LxDJlhj6Yk0" opts={opts} className={classes.liveMedia} />
                 }
                 {
                     isLiveDetail ?
