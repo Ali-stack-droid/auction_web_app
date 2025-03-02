@@ -142,9 +142,9 @@ const AuctionCard = ({
                         image={cardData?.image}
                         alt={headerType === "live" ? "Live Streaming Image" : headerType === "Auction" ? "Auction" : "Lot" + " Image"}
                         className={classes.media}
-                    /> :
-                    <VideoStreaming />
-                    // <YouTube videoId="LxDJlhj6Yk0" opts={opts} className={classes.liveMedia} />
+                    />
+                    : cardData?.isYoutube ? <YouTube videoId={cardData?.youtubeId} opts={opts} className={classes.liveMedia} />
+                        : <VideoStreaming />
                 }
                 {
                     isLiveDetail ?

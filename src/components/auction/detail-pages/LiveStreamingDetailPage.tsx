@@ -111,6 +111,8 @@ const LiveStreamingDetailPage = ({ socket }: any) => {
                     type: "current",
                     highestBid: item.BidStartAmount,
                     sold: item.IsSold,
+                    isYoutube: item.IsYoutube || false,
+                    youtubeId: item.YoutubeId || "LxDJlhj6Yk0",
                     details: {
                         lotsAvailable: auction.TotalLots,
                         description: item.LongDescription,

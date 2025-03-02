@@ -127,6 +127,8 @@ const Lots = ({ searchTerm }: any) => {
                     cityId: item.CityId,
                     stateId: item.StateId,
                     address: item.Address,
+                    isYoutube: item.IsYoutube || false,
+                    youtubeId: item.YoutubeId || "LxDJlhj6Yk0",
                     details: {
                         description: item.LongDescription,
                         endDate: item.EndDate,
