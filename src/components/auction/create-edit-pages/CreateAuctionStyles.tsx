@@ -20,6 +20,12 @@ export const useCreateAuctionStyles = makeStyles({
         color: theme.palette.primary.main10,
         paddingBottom: '10px'
     },
+    labelYoutube: {
+        fontSize: '17px',
+        fontWeight: 600,
+        color: theme.palette.primary.main10,
+        // paddingBottom: '10px'
+    },
     checkBoxLabel: {
         fontSize: '15px',
         fontWeight: 600,

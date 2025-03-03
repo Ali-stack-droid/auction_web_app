@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Typography, Button, MenuItem } from '@mui/material';
+import { Box, Typography, Button, MenuItem, Switch } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import CustomTextField from '../../custom-components/CustomTextField';
@@ -87,6 +87,14 @@ const AddLot = ({ socket }: any) => {
         }
     }, []);
 
+    const youtubeRegex =
+        /(?:youtube\.com\/(?:watch\?v=|embed\/|live\/|v\/|e\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+
+    const extractYoutubeId = (url: string) => {
+        const match = url.match(youtubeRegex);
+        return match ? match[1] : "";
+    };
+
     const formik = useFormik({
         initialValues: {
             orderNumber: '',
@@ -101,7 +109,9 @@ const AddLot = ({ socket }: any) => {
             endTime: '',
             internalNotes: '',
             auctionImage: '',
-            bidsRange: [{ startAmount: '', endAmount: '', bidRangeAmount: '' }] // Initial bidsRange
+            bidsRange: [{ startAmount: '', endAmount: '', bidRangeAmount: '' }],
+            youtubeUrl: '',
+            isYoutube: true
         },
         validationSchema: Yup.object({
             orderNumber: Yup.string().required('Order Number is required'),
@@ -211,6 +221,16 @@ const AddLot = ({ socket }: any) => {
                 ),
             auctionImage: Yup.mixed().required('Auction Image is required'),
             internalNotes: Yup.string(),
+            isYoutube: Yup.boolean().default(false),
+            youtubeUrl: Yup.string()
+                .when("isYoutube", {
+                    is: true,
+                    then: (schema) =>
+                        schema
+                            .matches(youtubeRegex, "Invalid YouTube URL")
+                            .required("YouTube URL is required"),
+                    otherwise: (schema) => schema.nullable(),
+                }),
         }),
         onSubmit: (values) => {
             if (!isEdit) {
@@ -239,6 +259,8 @@ const AddLot = ({ socket }: any) => {
                         BidRange: bid.bidRangeAmount,
                         LotId: lots.length + 1,
                     })),
+                    YoutubeId: extractYoutubeId(values.youtubeUrl) || "",
+                    IsYoutube: values.isYoutube ? true : false,
                 };
                 setLot(newLot)
             } else {
@@ -267,6 +289,8 @@ const AddLot = ({ socket }: any) => {
                         BidRange: bid.bidRangeAmount,
                         LotId: getQueryParam('lotId'),
                     })),
+                    YoutubeId: extractYoutubeId(values.youtubeUrl) || "",
+                    IsYoutube: values.isYoutube ? true : false
                 };
                 handleFormSubmission(edittedLot, 0);
             }
@@ -301,8 +325,10 @@ const AddLot = ({ socket }: any) => {
                             endDate: formatDateInput(lot.EndDate),
                             endTime: formatTimeInput(lot.EndTime),
                             internalNotes: lot.InternalNotes || '',
+                            youtubeUrl: lot.YoutubeUrl || "",
                             auctionImage: lot.Image,
-                            bidsRange: bidsRange
+                            bidsRange: bidsRange,
+                            isYoutube: lot.IsYoutube
                         };
                         setSelectedCategory(formattedLot.category);
                         setSubCategories(categories[formattedLot.category]); // Update subcategories
@@ -668,6 +694,42 @@ const AddLot = ({ socket }: any) => {
                         />
                     </Box>
 
+                    <Box
+                        mt={3}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent={'space-between'}
+                        sx={{
+                            borderBottom: '1px solid #ccc',
+                        }}
+                    >
+
+                        <Typography className={classes.labelYoutube}>
+                            Youtube
+                        </Typography>
+                        <Switch
+                            name="isYoutube"
+                            checked={formik.values.isYoutube}
+                            onChange={formik.handleChange}
+                            color="primary"
+                        // size='small'
+                        />
+
+                    </Box>
+
+                    {formik.values.isYoutube &&
+                        <Box mt={3}>
+                            <Typography className={classes.label}>
+                                Youtube URL
+                            </Typography>
+                            <CustomMultiLineTextField
+                                name="youtubeUrl"
+                                placeholder=" &#x1F4CB; Please paste a valid Youtube URL "
+                                value={formik.values.youtubeUrl}
+                                onChange={formik.handleChange}
+                            />
+                        </Box>
+                    }
                     <Box className={classes.actionButtons}>
                         <Button
                             className={classes.cancelButton}
