@@ -57,7 +57,7 @@ const CreatePage = ({ type }: any) => {
                 ShippingMethod: locationData.shippingMethod === "Shipping",
                 PaymentTerms: locationData.paymentTerms,
                 TermsConditions: locationData.termsAndConditions,
-                CreatedAt: formatDate(auctionData.StartDate),
+                CreatedAt: formatDate(auctionData.startDate),
                 UpdatedAt: formatDate(auctionData.auctionPreviewStartDate),
                 CheckOutDate: formatDate(auctionData.checkoutDate),
                 CheckOutTime: formatTime(auctionData.checkoutTime),

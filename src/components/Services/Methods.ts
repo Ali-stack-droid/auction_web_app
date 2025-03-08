@@ -59,6 +59,16 @@ export const getAddressByCity = (city: any) => getRequest(`/auctions/getaddressb
 
 // Live Streaming Methods
 export const getCurrentLiveAuctions = () => getRequest('/auctions/currentliveauctions');
+export const createStream = (payload: any) => postRequest('/stream/create', payload);
+export const getStream = (payload: any) => getRequest('/stream/streaminfo');
+export const getStreamByLotId = (id: any) => getRequest(`/stream/streaminfobylotid?id=${id}`);
 
+
+
+export const goLive = ({ payload, token, body }: any) => getRequest(`/stream/go-live/${payload}?authorizationToken=${token}`, body);
+export const getAuthToken = () => postRequest(`/auth/token`);
+
+
+// https://auction.sttoro.com/api/auth/token
 // Inventory methods /lots/lotinventory
 export const getInventoryLots = () => getRequest('/lots/lotinventory');
