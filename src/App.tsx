@@ -8,7 +8,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const SOCKET_URL = "http://localhost:8181";
+  const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
   const socket = io(SOCKET_URL, { transports: ["websocket"] });
 
   useEffect(() => {

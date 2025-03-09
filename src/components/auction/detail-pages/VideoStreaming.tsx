@@ -13,7 +13,7 @@ import { createStream, getStreamByLotId } from "../../Services/Methods";
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 
-const apiKey = "k532vzf4a7cx";
+const apiKey = process.env.REACT_APP_STREAM_API_KEY as string;
 const user_id = uuidv4();
 const user = { id: user_id, name: "admin" };
 
