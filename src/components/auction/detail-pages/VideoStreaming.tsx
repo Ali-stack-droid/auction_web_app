@@ -46,7 +46,7 @@ export default function AdminVideoStream({ lotId }: { lotId: string }) {
         try {
             const newCallId = uuidv4(); // Generate new callId only if needed
             const payload = { userId: user_id, callId: newCallId, lotID: lotId };
-            const response = await axios.post("http://localhost:3000/initialize-stream", payload, {
+            const response = await axios.post(process.env.REACT_APP_SOCKET_URL + "/initialize-stream", payload, {
                 headers: { 'Content-Type': 'application/json' }
             });
 
