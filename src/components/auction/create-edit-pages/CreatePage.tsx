@@ -118,12 +118,13 @@ const CreatePage = ({ type }: any) => {
         formData.append("payload", JSON.stringify(payload));
         if (file) {
             formData.append("file", file);
+            formData.append("file", file);
             setFile(null)
         }
 
         createAuction(formData).then((response) => {
 
-            const newAuctionId = response.data.Id;
+            const newAuctionId = response.data[0].Id;
             if (newAuctionId) {
                 if (navigation == "auction") {
                     navigate('/auction')

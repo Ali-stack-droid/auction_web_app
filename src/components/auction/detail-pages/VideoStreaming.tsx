@@ -107,7 +107,7 @@ export default function AdminVideoStream({ lotId }: { lotId: string }) {
         myCall.join({ create: !liveLotInfo }) // Create call only if no previous record
             .catch(err => console.error("Failed to join the call", err));
 
-        alert("JOIN CALL: " + !liveLotInfo + callId)
+        // alert("JOIN CALL: " + !liveLotInfo + callId)
         setCall(myCall);
 
         return () => {
