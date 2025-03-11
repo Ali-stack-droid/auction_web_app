@@ -8,17 +8,11 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
+  const SOCKET_URL = "ws://16.170.106.236:8181/";
   const socket = io(SOCKET_URL, { transports: ["websocket"] });
 
   useEffect(() => {
-    // Handle connection open
-    // socket.on("connect", () => {
-    //   console.log("Socket.IO connection established");
-
-    //   // Example: Send an initial message to the server if needed
-    //   // socket.on("testing-event", handleMessages);
-    // });
+    console.log(socket.connected)
 
     sessionStorage.setItem('email', JSON.stringify('hassaan@gmail.com'));
     const token = sessionStorage.getItem('email');
