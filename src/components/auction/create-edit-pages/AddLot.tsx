@@ -222,15 +222,7 @@ const AddLot = ({ socket }: any) => {
             auctionImage: Yup.mixed().required('Auction Image is required'),
             internalNotes: Yup.string(),
             isYoutube: Yup.boolean().default(false),
-            youtubeUrl: Yup.string()
-                .when("isYoutube", {
-                    is: true,
-                    then: (schema) =>
-                        schema
-                            .matches(youtubeRegex, "Invalid YouTube URL")
-                            .required("YouTube URL is required"),
-                    otherwise: (schema) => schema.nullable(),
-                }),
+            // youtubeUrl: Yup.string().transform((value) => (value === "" ? null : value)).nullable()
         }),
         onSubmit: (values) => {
             if (!isEdit) {
@@ -259,7 +251,7 @@ const AddLot = ({ socket }: any) => {
                         BidRange: bid.bidRangeAmount,
                         LotId: lots.length + 1,
                     })),
-                    YoutubeId: extractYoutubeId(values.youtubeUrl) || "",
+                    YoutubeId: extractYoutubeId(values.youtubeUrl),
                     IsYoutube: values.isYoutube ? true : false,
                 };
                 setLot(newLot)
@@ -289,7 +281,7 @@ const AddLot = ({ socket }: any) => {
                         BidRange: bid.bidRangeAmount,
                         LotId: getQueryParam('lotId'),
                     })),
-                    YoutubeId: extractYoutubeId(values.youtubeUrl) || "",
+                    YoutubeId: extractYoutubeId(values.youtubeUrl),
                     IsYoutube: values.isYoutube ? true : false
                 };
                 handleFormSubmission(edittedLot, 0);
@@ -468,7 +460,10 @@ const AddLot = ({ socket }: any) => {
 
     const handleSubmit = (addAnother: number) => {
         setSubmissionAttempt(!submissionAttempt)
-        if (Object.keys(formik.errors).length === 0 && Object.values(formik.values).every(value => value !== '')) {
+        if (
+            Object.keys(formik.errors).length === 0 &&
+            Object.entries(formik.values).every(([key, value]) => key === "youtubeUrl" || value !== "")
+        ) {
             if (addAnother === 0) {
                 if (!isEdit) setSaveModal(true);
                 else handleSaveLot();
