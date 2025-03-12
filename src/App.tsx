@@ -12,8 +12,6 @@ function App() {
   const socket = io(SOCKET_URL, { transports: ["websocket"] });
 
   useEffect(() => {
-    console.log(socket.connected)
-
     sessionStorage.setItem('email', JSON.stringify('hassaan@gmail.com'));
     const token = sessionStorage.getItem('email');
     setIsAuthenticated(!!token);
