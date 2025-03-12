@@ -46,16 +46,11 @@ export default function AdminVideoStream({ lotId }: { lotId: string }) {
         try {
             const newCallId = uuidv4(); // Generate new callId only if needed
             const payload = { userId: user_id, callId: newCallId, lotID: lotId };
-            // console.log(payload);
             const response = await axios.post("http://16.170.106.236:8181/initialize-stream", payload, {
                 headers: { 'Content-Type': 'application/json' }
             });
-            // console.log("success generating token:", response.data.token);
-
-
 
             if (response.data?.token) {
-                // console.log("Generated Token:", response.data.Token);
                 setToken(response.data.token);
                 setCallId(newCallId);
                 return { token: response.data.token, callId: newCallId };
@@ -85,8 +80,11 @@ export default function AdminVideoStream({ lotId }: { lotId: string }) {
                 if (!generated) return;
                 newToken = generated.token;
                 newCallId = generated.callId;
-                // console.log("userid live stream ==", user_id);
-                await createStream({ LotId: lotId, Token: newToken, CallId: newCallId, UserId: user_id });
+                try {
+                    await createStream({ LotId: lotId, Token: newToken, CallId: newCallId, UserId: user_id });
+                } catch (error) {
+                    console.error(error)
+                }
             }
 
             if (!newToken || !newCallId) return; // Ensure both values exist
@@ -111,7 +109,6 @@ export default function AdminVideoStream({ lotId }: { lotId: string }) {
         myCall.join({ create: !liveLotInfo }) // Create call only if no previous record
             .catch(err => console.error("Failed to join the call", err));
 
-        // alert("JOIN CALL: " + !liveLotInfo + callId)
         setCall(myCall);
 
         return () => {
