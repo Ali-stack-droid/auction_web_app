@@ -30,7 +30,7 @@ const MultipleImageUploader = ({ setFiles }: any) => {
         setImages(validImages);
 
         const validFiles = validImages.map(image => image.file);
-        console.log("validFiles: ", validFiles);
+        // console.log("validFiles: ", validFiles);
         setFiles(validFiles); // Store only valid files as File[]
     };
 
