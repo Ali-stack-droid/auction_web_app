@@ -74,6 +74,7 @@ const AddLot = ({ socket }: any) => {
                             startTime: auction.StartTime,
                             endDate: auction.EndDate ? formatDateInput(auction.EndDate) : '',
                             endTime: auction.EndTime,
+                            isLive: auction.IsLive
                         };
                         setAuction(formattedAuctionDetails)
                     } else {
@@ -688,43 +689,47 @@ const AddLot = ({ socket }: any) => {
                             onChange={formik.handleChange}
                         />
                     </Box>
+                    {auction.isLive &&
+                        <Box>
+                            <Box
+                                mt={3}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent={'space-between'}
+                                sx={{
+                                    borderBottom: '1px solid #ccc',
+                                }}
+                            >
 
-                    <Box
-                        mt={3}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent={'space-between'}
-                        sx={{
-                            borderBottom: '1px solid #ccc',
-                        }}
-                    >
+                                <Typography className={classes.labelYoutube}>
+                                    Youtube
+                                </Typography>
+                                <Switch
+                                    name="isYoutube"
+                                    checked={formik.values.isYoutube}
+                                    onChange={formik.handleChange}
+                                    color="primary"
+                                // size='small'
+                                />
 
-                        <Typography className={classes.labelYoutube}>
-                            Youtube
-                        </Typography>
-                        <Switch
-                            name="isYoutube"
-                            checked={formik.values.isYoutube}
-                            onChange={formik.handleChange}
-                            color="primary"
-                        // size='small'
-                        />
+                            </Box>
 
-                    </Box>
-
-                    {formik.values.isYoutube &&
-                        <Box mt={3}>
-                            <Typography className={classes.label}>
-                                Youtube URL
-                            </Typography>
-                            <CustomMultiLineTextField
-                                name="youtubeUrl"
-                                placeholder=" &#x1F4CB; Please paste a valid Youtube URL "
-                                value={formik.values.youtubeUrl}
-                                onChange={formik.handleChange}
-                            />
+                            {formik.values.isYoutube &&
+                                <Box mt={3}>
+                                    <Typography className={classes.label}>
+                                        Youtube URL
+                                    </Typography>
+                                    <CustomMultiLineTextField
+                                        name="youtubeUrl"
+                                        placeholder=" &#x1F4CB; Please paste a valid Youtube URL "
+                                        value={formik.values.youtubeUrl}
+                                        onChange={formik.handleChange}
+                                    />
+                                </Box>
+                            }
                         </Box>
                     }
+
                     <Box className={classes.actionButtons}>
                         <Button
                             className={classes.cancelButton}
