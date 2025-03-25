@@ -17,7 +17,7 @@ const apiKey = process.env.REACT_APP_STREAM_API_KEY as string;
 const user_id = uuidv4();
 const user = { id: user_id, name: "admin" };
 
-export default function AdminVideoStream({ lotId }: { lotId: string }) {
+export default function AdminVideoStream({ lotId, onNoCall }: any) {
     const [client, setClient] = useState<StreamVideoClient | null>(null);
     const [call, setCall] = useState<Call | null>(null);
     const [liveLotInfo, setLiveLotInfo] = useState<any>(null);
@@ -117,28 +117,33 @@ export default function AdminVideoStream({ lotId }: { lotId: string }) {
         };
     }, [client, callId]);
 
-    if (!client || !call) return <h1>No Video Exist</h1>;
+    if (!token || !callId) return onNoCall;
+    if (!client || !call) return <h1>Loading...</h1>;
 
     return (
         <StreamVideo client={client}>
             <StreamTheme className="my-theme-overrides">
                 <StreamCall call={call}>
-                    <VideoLayout />
+                    <VideoLayout onNoCall={onNoCall} />
                 </StreamCall>
             </StreamTheme>
         </StreamVideo>
     );
 }
-
-const VideoLayout = () => {
+const VideoLayout = ({ onNoCall }: any) => {
     const { useLocalParticipant } = useCallStateHooks();
     const localParticipant = useLocalParticipant();
 
+    if (!localParticipant) return onNoCall || <div>No call available</div>;
+
     return (
         <div className="admin-layout">
-            {localParticipant && <ParticipantView participant={localParticipant} />}
-            <style>{`.str-video__call-controls__button {display: none !important;} .str-video__participant-details__name {color:white !important}`}</style>
-
+            <ParticipantView participant={localParticipant} />
+            <style>
+                {`.str-video__call-controls__button {display: none !important;} 
+                  .str-video__participant-details__name {color:white !important}`}
+            </style>
         </div>
     );
 };
+

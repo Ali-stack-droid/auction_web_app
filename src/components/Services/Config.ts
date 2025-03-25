@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const BASE_URL = `https://auction.sttoro.com/api/`;
+// const BASE_URL = `https://parkersauction.com/api/`;
 
 const client = axios.create({
     baseURL: BASE_URL,

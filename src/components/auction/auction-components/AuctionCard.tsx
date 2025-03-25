@@ -144,7 +144,17 @@ const AuctionCard = ({
                         className={classes.media}
                     />
                     : cardData?.isYoutube ? <YouTube videoId={cardData?.youtubeId} opts={opts} className={classes.liveMedia} />
-                        : <VideoStreaming lotId={cardData?.id} />
+                        : <VideoStreaming lotId={cardData?.id}
+                            onNoCall={
+                                <CardMedia
+                                    component="img"
+                                    height={"200"}
+                                    image={cardData?.image}
+                                    alt={"Live Streaming Image"}
+                                    className={classes.media}
+                                />
+                            }
+                        />
                 }
                 {
                     isLiveDetail ?
